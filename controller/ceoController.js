@@ -1,6 +1,6 @@
 import Ceo from "../model/CeoModel.js";
 import bcrypt from "bcrypt"
-import generateToken from "../util/generatetoken.js";
+import generateToken from "../utils/generatetoken.js";
 
 
 
