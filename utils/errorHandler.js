@@ -12,6 +12,7 @@ const logger = winston.createLogger({
   ],
 });
 
+// Error Class
 class errorHandler extends Error {
   constructor(message, statusCode) {
     super(message);
@@ -27,4 +28,4 @@ class errorHandler extends Error {
   }
 }
 
-module.exports = errorHandler;
+export default errorHandler;
