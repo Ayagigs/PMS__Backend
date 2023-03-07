@@ -23,7 +23,6 @@ export const adminReg = asyncHandler(async (req, res, next) => {
     country,
     companyRegNo,
     numOfEmployees,
-    role,
   } = req.body;
 
   if (
@@ -52,12 +51,12 @@ export const adminReg = asyncHandler(async (req, res, next) => {
   const findAdminByRegNo = await Admin.findOne({ companyRegNo });
 
   if (findAdminByRegNo) {
-    return next(new errorHandler("Admin already exists with this regNo", 404));
+    return next(new errorHandler("User already exists with this regNo", 404));
   }
   const findAdminByEmail = await Admin.findOne({ email });
 
   if (findAdminByEmail) {
-    return next(new errorHandler("Admin already exists with this email", 404));
+    return next(new errorHandler("User already exists with this email", 404));
   }
 
   const admin = await Admin.create({
@@ -72,10 +71,9 @@ export const adminReg = asyncHandler(async (req, res, next) => {
     state,
     country,
     numOfEmployees,
-    role,
   });
 
-  const token = generateToken(admin._id);
+  const token = generateToken(admin._id, admin.role);
 
   //   res.cookie("token", token, {
   //     path: "/",
@@ -88,9 +86,7 @@ export const adminReg = asyncHandler(async (req, res, next) => {
   res.json({
     status: "Success",
     token,
-    data: {
-      admin,
-    },
+    data: admin,
   });
 });
 
@@ -111,10 +107,10 @@ export const adminLogin = asyncHandler(async (req, res, next) => {
   const pass = bcrypt.compareSync(password, admin.password);
 
   if (!pass) {
-    return res.status(401).json({ message: "Incorrect password" });
+    return res.status(401).json({ message: "Incorrect credentials" });
   }
 
-  const token = generateToken(admin._id);
+  const token = generateToken(admin._id, admin.role);
   res.status(200).json({ admin, token });
 });
 
@@ -214,8 +210,16 @@ export const changePassword = asyncHandler(async (req, res, next) => {
 
 // Reset Password
 export const resetPassword = asyncHandler(async (req, res, next) => {
-  const { password } = req.body;
+  const { password, confirmPassword } = req.body;
   const { resetToken } = req.params;
+
+  if (!password || !confirmPassword) {
+    return next(new errorHandler("Please fill the form correctly", 404));
+  }
+
+  if (password !== confirmPassword) {
+    return next(new errorHandler("passwords not matched", 400));
+  }
 
   // hash token, then compare to the Token in DB
   const haskedToken = crypto
@@ -289,7 +293,7 @@ export const updatePersonalInfo = asyncHandler(async (req, res, next) => {
   const adminUser = await Admin.findById(req.userAuth);
 
   if (adminUser) {
-    const { firstName, lastName, role, companyEmail } = req.body;
+    const { firstName, lastName, companyEmail } = req.body;
 
     if (!firstName || !lastName || !role || !companyEmail) {
       return next(new errorHandler("Please filled the form properly", 422));
@@ -305,7 +309,6 @@ export const updatePersonalInfo = asyncHandler(async (req, res, next) => {
         $set: {
           firstName,
           lastName,
-          role,
           companyEmail,
         },
       },
@@ -323,22 +326,14 @@ export const updatePersonalInfo = asyncHandler(async (req, res, next) => {
   }
 });
 
-export const getSpecificCeoDetailsController = async (req, res) => {
-  try {
-    const companyFound = await Ceo.findById(req.userAuth);
+export const findAdminUser = asyncHandler(async (req, res) => {
+  const adminUser = await Admin.findById(req.userAuth);
 
-    if (companyFound) {
-      res.json({
-        status: "Success",
-        data: { companyFound },
-      });
-    } else {
-      res.json({
-        status: "Success",
-        message: "Please Login",
-      });
-    }
-  } catch (error) {
-    res.json(error.message);
+  if (!adminUser) {
+    return next(new errorHandler("No user Found, Please Login", 404));
   }
-};
+  res.status(200).json({
+    status: "Success",
+    data: adminUser,
+  });
+});

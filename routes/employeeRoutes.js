@@ -1,43 +1,46 @@
 import express from "express";
-import { employeeLoginController, employeeRegisterationController, getAllEmployeeController, getLoggedinEmployeeDetailsController, getSpecificEmployeeDetailsController, passwordSetUpController, registeringBulkEmployeeController } from "../controller/employeeController.js";
-import { isLogin } from "../middleware/isLogin.js";
+import {
+  employeeLogin,
+  employeeReg,
+  resetPassword,
+} from "../controllers/employeeController.js";
+import { protect } from "../middleware/protect.js";
 import multer from "multer";
-import { createGoalController } from "../controller/goalController.js";
 
-var storage = multer.diskStorage({  
-    destination:(req,file,cb)=>{  
-    cb(null,'./');  
-    },  
-    filename:(req,file,cb)=>{  
-    cb(null,file.originalname);  
-    }
-}); 
+var storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./");
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
 
 const employeeRoute = express.Router();
-const upload = multer({storage})
+const upload = multer({ storage });
 
-// CEO registering an staff/Manager
-employeeRoute.post("/registeration", isLogin, employeeRegisterationController);
-
-// Employee/Manager login
-employeeRoute.post("/login", employeeLoginController);
+employeeRoute.post("/registeration", protect, employeeReg);
+employeeRoute.post("/login", employeeLogin);
+employeeRoute.post("/resetpassword", resetPassword);
 
 // Get all company employees
-employeeRoute.get("", isLogin, getAllEmployeeController);
+// employeeRoute.get("", isLogin, getAllEmployeeController);
 
-//  Find employee by id
-employeeRoute.get("/byid/:id", getSpecificEmployeeDetailsController);
+// //  Find employee by id
+// employeeRoute.get("/byid/:id", getSpecificEmployeeDetailsController);
 
-// Get logged in employee details
-employeeRoute.get("/specific", isLogin, getLoggedinEmployeeDetailsController);
+// // Get logged in employee details
+// employeeRoute.get("/specific", isLogin, getLoggedinEmployeeDetailsController);
 
-// Add employees using csv files
-employeeRoute.post("/csvupload", upload.single("file"), isLogin, registeringBulkEmployeeController);
+// // Add employees using csv files
+// employeeRoute.post(
+//   "/csvupload",
+//   upload.single("file"),
+//   isLogin,
+//   registeringBulkEmployeeController
+// );
 
+// // Employee setting up their password after rreceiving mail
+// employeeRoute.put("/activation/:employeeid", passwordSetUpController);
 
-// Employee setting up their password after rreceiving mail
-employeeRoute.put("/activation/:employeeid", passwordSetUpController);
-
-
-
-export default employeeRoute
+export default employeeRoute;

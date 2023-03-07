@@ -22,7 +22,7 @@ const AdminSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      default: "CEO",
+      default: "Admin",
     },
     companyName: {
       type: String,
@@ -48,6 +48,7 @@ const AdminSchema = new mongoose.Schema(
     companyRegNo: {
       type: String,
       required: [true, "Company Reg No is required"],
+      unique: true,
     },
     companyEmail: {
       type: String,

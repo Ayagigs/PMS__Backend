@@ -1,95 +1,114 @@
 import mongoose from "mongoose";
 
-const employeeSchema = new mongoose.Schema({
-    employeeid: {
-        type: String,
-        required: [true, "Employee Id is required"]
+const employeeSchema = new mongoose.Schema(
+  {
+    employeeID: {
+      type: String,
+      required: [true, "Employee Id is required"],
     },
-    firstname: {
-        type: String,
-        required: [true, "First Name is required"]
+    firstName: {
+      type: String,
+      required: [true, "First Name is required"],
     },
-    middlename: {
-        type: String
+    middleName: {
+      type: String,
     },
-    lastname: {
-        type: String,
-        required: [true, "Last Name is required"]
+    lastName: {
+      type: String,
+      required: [true, "Last Name is required"],
     },
-    preferredname: {
-        type: String
+    preferredName: {
+      type: String,
     },
     role: {
-        type:String,
-        enum:["HR Manager", "Performance Manager", "Staff"]
+      type: String,
+      enum: ["HR Manager", "Performance Manager", "Staff"],
     },
     password: {
-        type: String
+      type: String,
     },
-    dob: {
-        type: Date
+    DOB: {
+      type: Date,
     },
     gender: {
-        type: String,
-        enum: ["Male", "Female", "Others"]
+      type: String,
+      enum: ["Male", "Female", "Others"],
     },
-    maritalstatus: {
-        type: String,
-        enum: ["Single", "Married", "Divorced"]
+    maritalStatus: {
+      type: String,
+      enum: ["Single", "Married", "Divorced"],
     },
-    email: {
-        type: String,
-        required: [true, "Email is required"]
+    workEmail: {
+      type: String,
+      required: [true, "Email is required"],
     },
-    phone: {
-        type: String,
-        required: [true, "Phone number is required"]
+    phoneNo: {
+      type: String,
+      required: [true, "Phone number is required"],
     },
-    profilephoto: {
-        type: String
+    profilePhoto: {
+      type: String,
     },
     department: {
-        type: String,
-        required: [true, "Department is required"]
+      type: String,
+      required: [true, "Department is required"],
     },
-    reportsto: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Employee"
+    reportSto: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Employee",
     },
-    jobtitle: {
-        type: String
+    jobTitle: {
+      type: String,
     },
     address: {
-        type: String
+      type: String,
     },
     state: {
-        type: String
+      type: String,
     },
     country: {
-        type: String
+      type: String,
     },
-    companyregno: {
-        type: String,
-        required: [true, "Company Reg No is required"]
+    employmentStatus: {
+      type: String,
+      enum: ["Full Time", "Part Time", "Contract", "Intern"],
     },
-    employmentstatus: {
-        type: String,
-        enum: ["Full Time", "Part Time", "Contract", "Intern"]
-    },
-    terminationdate: {
-        type: Date
+    terminationDate: {
+      type: Date,
     },
     status: {
-        type: String,
-        enum: ["Active", "Inactive"],
-        default: "Inactive"
-    }
-},
-{
+      type: String,
+      enum: ["Active", "Inactive"],
+      default: "Inactive",
+    },
+    resetPasswordToken: {
+      type: String,
+    },
+    resetTokencreatedAt: {
+      type: Date,
+    },
+    resetTokenExpiresAt: {
+      type: Date,
+    },
+    companyID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Admin",
+      required: true,
+    },
+  },
+  {
     timestamps: true,
-    toJSON: {virtuals: true}
-})
+    toJSON: { virtuals: true },
+  }
+);
 
-const Employee = mongoose.model("Employee", employeeSchema)
+employeeSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 12);
+  next();
+});
+
+employeeSchema.index({ employeeID: 1, companyID: 1 }, { unique: true });
+const Employee = mongoose.model("Employee", employeeSchema);
 
 export default Employee;

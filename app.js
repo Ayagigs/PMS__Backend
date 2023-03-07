@@ -7,8 +7,10 @@ import adminRoute from "./routes/adminRoutes.js";
 import startup from "./startup/routes.js";
 // import employeeRoute from "./routes/employeeRoutes.js";
 // import goalRouter from "./routes/goalRoutes.js";
-import globalErrorHandler from "./controller/errorHandlerController.js";
+import globalErrorHandler from "./controllers/errorHandlerController.js";
 import cookieParser from "cookie-parser";
+import mongoose from "mongoose";
+// mongoose.set("debug", true);
 
 const app = express();
 app.use(cors());
