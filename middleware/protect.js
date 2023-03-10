@@ -8,7 +8,7 @@ export const protect = expressAsyncHandler(async (req, res, next) => {
 
   const userDecoded = verifytoken(token);
 
-  req.userAuth = await userDecoded.id;
+  req.userAuth = await userDecoded;
 
   if (!userDecoded) {
     return res.json({

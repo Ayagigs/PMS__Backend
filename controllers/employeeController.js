@@ -2,13 +2,13 @@ import Admin from "../model/adminModel.js";
 import Employee from "../model/EmployeeModel.js";
 import bcrypt from "bcrypt";
 import validator from "validator";
-import generateToken from "../utils/generatetoken.js";
 import asyncHandler from "express-async-handler";
 import errorHandler from "../utils/errorHandler.js";
 import mongoose from "mongoose";
 import crypto from "crypto";
 import hatchedToken from "../utils/resetToken.js";
 import { emailSender } from "../utils/emailSender.js";
+import Company from "../model/companyModel.js";
 
 export const employeeReg = asyncHandler(async (req, res, next) => {
   const {
@@ -39,30 +39,26 @@ export const employeeReg = asyncHandler(async (req, res, next) => {
     return next(new errorHandler("Invalid Work Email", 422));
   }
 
-  const { companyRegNo, companyName, _id } = await Admin.findById(
-    req.userAuth
-  ).select("companyRegNo companyName _id");
-
   // Find the company with the given companyRegNo, companyName
-  const company = await Admin.findOne({
-    $or: [{ companyRegNo }, { companyName }],
-  });
+  const { companyID } = req.params;
+
+  const company = await Company.findOne({ companyID });
 
   if (!company) {
     return next(new errorHandler("Company not Found", 404));
   } else {
     const findEmployeeID = await Employee.findOne({
       employeeID,
-      companyID: _id,
+      companyID,
     });
 
-    if (findEmployeeID && companyRegNo) {
+    if (findEmployeeID) {
       return next(
         new errorHandler("User already exists with this employeeID", 404)
       );
     }
 
-    if (!mongoose.Types.ObjectId.isValid(_id)) {
+    if (!mongoose.Types.ObjectId.isValid(companyID)) {
       return next(new errorHandler("Invalid objectID", 404));
     }
 
@@ -79,13 +75,15 @@ export const employeeReg = asyncHandler(async (req, res, next) => {
       department,
       gender,
       role,
+      registeredBy: req.userAuth.role,
       resetPasswordToken: hatchPasswordToken,
       resetTokencreatedAt: Date.now(),
       resetTokenExpiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7days in milli
-      companyID: _id,
+      companyID,
     });
+    console.log(req.userAuth);
 
-    res.status(200).json({ status: "Success", data: employee });
+    // res.status(200).json({ status: "Success", data: employee });
     const invitationLink = `${process.env.CLIENT_URL}/resetPassword/${resetToken}`;
 
     // Reset Email
@@ -101,7 +99,7 @@ export const employeeReg = asyncHandler(async (req, res, next) => {
       >
         <h2>Hey ${employee.firstName},</h2>
         <p>
-        ${companyName} has invited you to join the team as ${employee.role}. Accept the invitation to start creating awesome things
+        ${req.userAuth.companyName} has invited you to join the team as ${employee.role}. Accept the invitation to start creating awesome things
           together.
         </p>
         <p>This invite only lasts for 7 days.</p>
@@ -147,10 +145,13 @@ export const employeeReg = asyncHandler(async (req, res, next) => {
 
     try {
       await emailSender(subject, message, send_to, sent_from);
-      const token = generateToken(employee._id, employee.role);
-      res
-        .status(200)
-        .json({ success: true, message: "Reset Email Sent", token });
+      const token = employee.generateToken();
+      res.status(200).json({
+        success: true,
+        data: employee,
+        message: "Reset Email Sent",
+        token,
+      });
     } catch (error) {
       res.status(500).send({ status: "Fail", message: error.message });
     }
@@ -211,166 +212,101 @@ export const employeeLogin = asyncHandler(async (req, res, next) => {
     return next(new errorHandler("Please activate your account", 404));
   }
 
-  const pass = bcrypt.compareSync(password, admin.password);
+  const pass = bcrypt.compareSync(password, employee.password);
 
   if (!pass) {
     return next(new errorHandler("Incorrect Password", 401));
   }
 
-  const token = generateToken(employee._id, employee.role);
+  const token = employee.generateToken();
   res.status(200).json({ data: employee, token });
 });
 
-// export const resetPassword = async (req, res) => {
-//   const { password, confirmPassword } = req.body;
-//   const { employeeID } = req.params;
+export const getAllEmployees = asyncHandler(async (req, res, next) => {
+  const employees = await Employee.find({ companyID: req.userAuth._id });
 
-//   try {
-//     const employee = await Employee.findOne({ employeeid });
+  if (employees) {
+    res.json({
+      status: "Success",
+      data: employees,
+    });
+  } else {
+    return next(new errorHandler("Employees not found", 422));
+  }
+});
 
-//     if (employee.status !== "Inactive") {
-//       return res.json({
-//         status: "Success",
-//         message: "Account has already been activated",
-//       });
-//     }
+export const registerBulkEmployee = async (req, res) => {
+  try {
+    const employeefound = await Employee.findById(req.userAuth);
+    const companyFound = await Admin.findById(req.userAuth);
 
-//     const salt = await bcrypt.genSalt(10);
-//     const passwordhash = await bcrypt.hash(password, salt);
+    csv()
+      .fromFile(req.file.path)
+      .then(async (jsonObj) => {
+        var empcount = 0;
+        for (let i = 0; i < jsonObj.length; i++) {
+          const employees = await Employee.find({
+            companyregno: !companyFound
+              ? employeefound.companyregno
+              : companyFound.companyregno,
+          });
 
-//     await Employee.findOneAndUpdate(
-//       { employeeid },
-//       {
-//         $set: {
-//           password: passwordhash,
-//           status: "Active",
-//         },
-//       },
-//       {
-//         new: true,
-//       }
-//     );
+          const employeeidFound = employees.find(
+            (element) => element.employeeid === jsonObj[i]["Employee Id"]
+          );
 
-//     res.json({
-//       status: "Success",
-//       message: "Account Setup Successfull",
-//     });
-//   } catch (error) {
-//     res.json(error.message);
-//   }
-// };
+          const employeeFound = employees.find(
+            (element) => element.email === jsonObj[i]["Email"]
+          );
 
-// export const getAllEmployee = asyncHandler( async (req, res, next) => {
-//   try {
-//     const companyFound = await Admin.findById(req.userAuth);
-//     const employeeFound = await Employee.findById(req.userAuth);
-//     const allemployees = await Employee.find({
-//       companyregno: !companyFound
-//         ? employeeFound.companyregno
-//         : companyFound.companyregno,
-//     });
+          if (employeeFound) {
+            continue;
+          } else if (employeeidFound) {
+            continue;
+          }
 
-//     res.json({
-//       status: "Success",
-//       data: allemployees,
-//     });
-//   } catch (error) {
-//     res.json(error.message);
-//   }
-// });
+          await Employee.create({
+            employeeid: jsonObj[i]["Employee Id"],
+            firstname: jsonObj[i]["First Name"],
+            lastname: jsonObj[i]["Last Name"],
+            email: jsonObj[i]["Email"],
+            phone: jsonObj[i]["Phone Number"],
+            department: jsonObj[i]["Department"],
+            gender: jsonObj[i]["Gender"],
+            role: jsonObj[i]["Role"],
+            jobtitle: jsonObj[i]["Job Title"],
+            companyregno: companyFound.companyregno,
+            status: "Inactive",
+          });
 
-// export const registeringBulkEmployeeController = async (req, res) => {
-//   try {
-//     const employeefound = await Employee.findById(req.userAuth);
-//     const companyFound = await Admin.findById(req.userAuth);
+          empcount++;
+        }
+        res.json({
+          status: "Success",
+          message: `${empcount} Employees added Successfully`,
+        });
+      });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
 
-//     csv()
-//       .fromFile(req.file.path)
-//       .then(async (jsonObj) => {
-//         var empcount = 0;
-//         for (let i = 0; i < jsonObj.length; i++) {
-//           const employees = await Employee.find({
-//             companyregno: !companyFound
-//               ? employeefound.companyregno
-//               : companyFound.companyregno,
-//           });
+export const getSpecificEmployee = async (req, res) => {
+  try {
+    const employee = await Employee.findById(req.userAuth._id);
 
-//           const employeeidFound = employees.find(
-//             (element) => element.employeeid === jsonObj[i]["Employee Id"]
-//           );
-
-//           const employeeFound = employees.find(
-//             (element) => element.email === jsonObj[i]["Email"]
-//           );
-
-//           if (employeeFound) {
-//             continue;
-//           } else if (employeeidFound) {
-//             continue;
-//           }
-
-//           await Employee.create({
-//             employeeid: jsonObj[i]["Employee Id"],
-//             firstname: jsonObj[i]["First Name"],
-//             lastname: jsonObj[i]["Last Name"],
-//             email: jsonObj[i]["Email"],
-//             phone: jsonObj[i]["Phone Number"],
-//             department: jsonObj[i]["Department"],
-//             gender: jsonObj[i]["Gender"],
-//             role: jsonObj[i]["Role"],
-//             jobtitle: jsonObj[i]["Job Title"],
-//             companyregno: companyFound.companyregno,
-//             status: "Inactive",
-//           });
-
-//           empcount++;
-//         }
-//         res.json({
-//           status: "Success",
-//           message: `${empcount} Employees added Successfully`,
-//         });
-//       });
-//   } catch (error) {
-//     res.json(error.message);
-//   }
-// };
-
-// export const getLoggedinEmployeeDetailsController = async (req, res) => {
-//   try {
-//     const employeeFound = await Employee.findById(req.userAuth);
-
-//     if (employeeFound) {
-//       res.json({
-//         status: "Success",
-//         data: { employeeFound },
-//       });
-//     } else {
-//       res.json({
-//         status: "Success",
-//         message: "Please Login",
-//       });
-//     }
-//   } catch (error) {
-//     res.json(error.message);
-//   }
-// };
-
-// export const getSpecificEmployeeDetailsController = async (req, res) => {
-//   try {
-//     const employeeFound = await Employee.findById(req.params.id);
-
-//     if (employeeFound) {
-//       res.json({
-//         status: "Success",
-//         data: { employeeFound },
-//       });
-//     } else {
-//       res.json({
-//         status: "Success",
-//         message: "Please Login",
-//       });
-//     }
-//   } catch (error) {
-//     res.json(error.message);
-//   }
-// };
+    if (employee) {
+      res.json({
+        status: "Success",
+        data: { employee },
+      });
+    } else {
+      res.json({
+        status: "Success",
+        message: "Please Login",
+      });
+    }
+  } catch (error) {
+    res.json(error.message);
+  }
+};

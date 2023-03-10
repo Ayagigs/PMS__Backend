@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 const employeeSchema = new mongoose.Schema(
   {
@@ -90,6 +92,10 @@ const employeeSchema = new mongoose.Schema(
     resetTokenExpiresAt: {
       type: Date,
     },
+    registeredBy: {
+      type: String,
+      required: true,
+    },
     companyID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Admin",
@@ -107,6 +113,18 @@ employeeSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
+
+employeeSchema.methods.generateToken = function () {
+  const token = jwt.sign(
+    { _id: this._id, role: this.role },
+    process.env.JWT_KEY,
+    {
+      expiresIn: process.env.TOKEN_EXPIRES,
+    }
+  );
+
+  return token;
+};
 
 employeeSchema.index({ employeeID: 1, companyID: 1 }, { unique: true });
 const Employee = mongoose.model("Employee", employeeSchema);

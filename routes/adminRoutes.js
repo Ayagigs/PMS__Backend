@@ -21,7 +21,7 @@ const router = express.Router();
 /************* Admin Routes ************/
 
 router.post("/registeration", adminReg);
-router.post("/adminlogin", adminLogin);
+router.post("/login", adminLogin);
 router.post("/logout", logout);
 router.post("/forgotpassword", forgotPassword);
 

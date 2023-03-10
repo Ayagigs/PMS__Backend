@@ -1,68 +1,52 @@
-{"level":"error","message":"Invalid OTP"}
-{"level":"error","message":"Invalid OTP"}
-{"level":"error","message":"Invalid OTP"}
-{"level":"error","message":"Admin already exists with this regNo"}
-{"level":"error","message":"Admin already exists with this email"}
-{"level":"error","message":"Can't find /api/v1/employee/registeration on this server"}
-{"level":"error","message":"Please filled the form properly."}
-{"level":"error","message":"Please filled the form properly."}
-{"level":"error","message":"Please filled the form properly."}
-{"level":"error","message":"Please filled the form properly."}
-{"level":"error","message":"Invalid Work Email"}
-{"level":"error","message":"Please filled the form properly."}
 {"level":"error","message":"Company not Found"}
+{"level":"error","message":"Company already exists with this Company name"}
 {"level":"error","message":"Company not Found"}
-{"level":"error","message":"Company not Found"}
-{"level":"error","message":"Company not Found"}
-{"level":"error","message":"User already exists with this regNo"}
-{"level":"error","message":"Company not Found"}
-{"level":"error","message":"Company not Found"}
-{"level":"error","message":"Company not Found"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"Invalid companyRegNo"}
-{"level":"error","message":"Invalid companyRegNo"}
-{"level":"error","message":"Company not Found"}
-{"level":"error","message":"Invalid companyRegNo"}
-{"level":"error","message":"Invalid companyRegNo"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
 {"level":"error","message":"User already exists with this employeeID"}
 {"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"Company already exists with this registeration number"}
 {"level":"error","message":"User already exists with this employeeID"}
 {"level":"error","message":"User already exists with this employeeID"}
 {"level":"error","message":"User already exists with this employeeID"}
+{"level":"error","message":"Company not Found"}
+{"level":"error","message":"Company not Found"}
+{"level":"error","message":"Company not Found"}
 {"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this email"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this email"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"Can't find /api/v1/employee/login on this server"}
 {"level":"error","message":"Please filled the form properly"}
+{"level":"error","message":"Please filled the form properly"}
+{"level":"error","message":"Employee with Jeffrey@gmail.com not found"}
+{"level":"error","message":"Employee with s not found"}
+{"level":"error","message":"Employee with xtyzzssaq5232b#2$ not found"}
+{"level":"error","message":"Please activate your account"}
+{"level":"error","message":"Please activate your account"}
+{"level":"error","message":"Can't find /api/v1/admin/resetpassword on this server"}
+{"level":"error","message":"Can't find /api/v1/admin/resetpassword on this server"}
+{"level":"error","message":"Please fill the form correctly"}
+{"level":"error","message":"Please fill the form correctly"}
+{"level":"error","message":"passwords not matched"}
+{"level":"error","message":"passwords not matched"}
+{"level":"error","message":"Can't find /api/v1/employee/resetpassword/47e271f6c953062db5fa4f78b8d827c1dd771957847138d2d1f5b728e777b39d on this server"}
+{"level":"error","message":"Employee with xtyzzssaq5232b#2$jq not found"}
+{"level":"error","message":"Incorrect Password"}
+{"level":"error","message":"Access denied"}
+{"level":"error","message":"Access denied"}
+{"level":"error","message":"Access denied"}
+{"level":"error","message":"Access denied"}
+{"level":"error","message":"Access denied"}
+{"level":"error","message":"Access denied"}
+{"level":"error","message":"Access denied"}
+{"level":"error","message":"Access denied"}
+{"level":"error","message":"Access denied"}
+{"level":"error","message":"Access denied"}
+{"level":"error","message":"Access denied"}
+{"level":"error","message":"Please activate your account"}
+{"level":"error","message":"Please activate your account"}
+{"level":"error","message":"Please activate your account"}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"Company already exists with this Company name"}
+{"level":"error","message":"Access denied"}
+{"level":"error","message":"Access denied"}
+{"level":"error","message":"Access denied"}
+{"level":"error","message":"Employee with wXdags6525 not found"}
+{"level":"error","message":"Please activate your account"}
+{"level":"error","message":"User already exists with this employeeID"}
+{"level":"error","message":"Can't find /api/v1/employee/findme on this server"}

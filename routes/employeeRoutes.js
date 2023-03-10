@@ -2,10 +2,15 @@ import express from "express";
 import {
   employeeLogin,
   employeeReg,
+  getAllEmployees,
+  getSpecificEmployee,
+  registerBulkEmployee,
   resetPassword,
 } from "../controllers/employeeController.js";
 import { protect } from "../middleware/protect.js";
+
 import multer from "multer";
+import restrictedTo from "../middleware/restrictedTo.js";
 
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -19,28 +24,24 @@ var storage = multer.diskStorage({
 const employeeRoute = express.Router();
 const upload = multer({ storage });
 
-employeeRoute.post("/registeration", protect, employeeReg);
+employeeRoute.post(
+  "/registeration/:companyID",
+  protect,
+  restrictedTo("Admin", "HR Manager"),
+  employeeReg
+);
+
+employeeRoute.get("/employees", protect, getAllEmployees);
+employeeRoute.get("/findme", protect, getSpecificEmployee);
 employeeRoute.post("/login", employeeLogin);
-employeeRoute.post("/resetpassword", resetPassword);
+employeeRoute.post("/resetpassword/:resetToken", resetPassword);
 
-// Get all company employees
-// employeeRoute.get("", isLogin, getAllEmployeeController);
-
-// //  Find employee by id
-// employeeRoute.get("/byid/:id", getSpecificEmployeeDetailsController);
-
-// // Get logged in employee details
-// employeeRoute.get("/specific", isLogin, getLoggedinEmployeeDetailsController);
-
-// // Add employees using csv files
-// employeeRoute.post(
-//   "/csvupload",
-//   upload.single("file"),
-//   isLogin,
-//   registeringBulkEmployeeController
-// );
-
-// // Employee setting up their password after rreceiving mail
-// employeeRoute.put("/activation/:employeeid", passwordSetUpController);
+// Add employees using csv files
+employeeRoute.post(
+  "/csvupload",
+  upload.single("file"),
+  protect,
+  registerBulkEmployee
+);
 
 export default employeeRoute;

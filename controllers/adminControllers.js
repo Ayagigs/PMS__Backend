@@ -1,6 +1,6 @@
 import Admin from "../model/adminModel.js";
 import validator from "validator";
-import generateToken from "../utils/generatetoken.js";
+// import generateToken from "../utils/generatetoken.js";
 import errorHandler from "../utils/errorHandler.js";
 import Token from "../model/tokenModel.js";
 import asyncHandler from "express-async-handler";
@@ -8,34 +8,14 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 
 import { emailSender } from "../utils/emailSender.js";
+import Company from "../model/companyModel.js";
 
 export const adminReg = asyncHandler(async (req, res, next) => {
-  const {
-    firstName,
-    lastName,
-    email,
-    password,
-    confirmPassword,
-    companyName,
-    businessType,
-    address,
-    state,
-    country,
-    companyRegNo,
-    numOfEmployees,
-  } = req.body;
+  /************************* ADMIN PERSONAL INFORMATION ******************************/
+  const { firstName, lastName, email, companyName, password, confirmPassword } =
+    req.body;
 
-  if (
-    !firstName ||
-    !lastName ||
-    !email ||
-    !password ||
-    !confirmPassword ||
-    !businessType ||
-    !companyName ||
-    !numOfEmployees ||
-    !companyRegNo
-  ) {
+  if (!firstName || !lastName || !email || !password || !confirmPassword) {
     return next(new errorHandler("Please filled the form properly.", 422));
   }
 
@@ -48,60 +28,92 @@ export const adminReg = asyncHandler(async (req, res, next) => {
     return next(new errorHandler("Passwords Must Matched.", 422));
   }
 
-  const findAdminByRegNo = await Admin.findOne({ companyRegNo });
-
-  if (findAdminByRegNo) {
-    return next(new errorHandler("User already exists with this regNo", 404));
-  }
   const findAdminByEmail = await Admin.findOne({ email });
 
   if (findAdminByEmail) {
     return next(new errorHandler("User already exists with this email", 404));
   }
 
-  const admin = await Admin.create({
+  const createAdmin = new Admin({
     firstName,
     lastName,
     email,
     password,
     companyName,
-    companyRegNo,
+  });
+
+  /************************* COMPANY INFORMATION ******************************/
+  const {
     businessType,
     address,
     state,
     country,
+    companyRegNo,
+    companyPhone,
     numOfEmployees,
+  } = req.body;
+
+  if (!businessType || !companyName || !numOfEmployees || !companyRegNo) {
+    return next(new errorHandler("Please filled the form properly.", 422));
+  }
+
+  const findCompanyByName = await Company.findOne({ companyName });
+
+  if (findCompanyByName) {
+    return next(
+      new errorHandler("Company already exists with this Company name", 404)
+    );
+  }
+
+  const findCompanyByRegNo = await Company.findOne({ companyRegNo });
+
+  if (findCompanyByRegNo) {
+    return next(
+      new errorHandler(
+        "Company already exists with this registeration number",
+        404
+      )
+    );
+  }
+
+  // Save the admin
+  const admin = await createAdmin.save();
+
+  const createCompany = new Company({
+    companyName,
+    companyRegNo,
+    businessType,
+    companyPhone,
+    address,
+    state,
+    country,
+    numOfEmployees,
+    companyID: admin._id,
   });
 
-  const token = generateToken(admin._id, admin.role);
-
-  //   res.cookie("token", token, {
-  //     path: "/",
-  //     httpOnly: true,
-  //     expires: new Date(Date.now() + 1000 * 86400),
-  //     sameSite: "none",
-  //     secure: true,
-  //   });
+  const company = await createCompany.save();
 
   res.json({
     status: "Success",
-    token,
-    data: admin,
+    message: "Registeration Successfully",
+    data: { admin, company },
   });
 });
 
 //Login Admin
 export const adminLogin = asyncHandler(async (req, res, next) => {
-  const { emailOrCompanyName, password } = req.body;
+  const { email, password } = req.body;
 
-  const admin = await Admin.findOne({
-    $or: [{ email: emailOrCompanyName }, { companyName: emailOrCompanyName }],
-  });
+  if (!validator.isEmail(email)) {
+    return next(new errorHandler("Invalid Email", 422));
+  }
+
+  const admin = await Admin.findOne({ email });
 
   if (!admin) {
     return res
       .status(401)
-      .json({ message: "No company with this email or company name" });
+      .json({ message: "No company with this email address" });
   }
 
   const pass = bcrypt.compareSync(password, admin.password);
@@ -110,8 +122,8 @@ export const adminLogin = asyncHandler(async (req, res, next) => {
     return res.status(401).json({ message: "Incorrect credentials" });
   }
 
-  const token = generateToken(admin._id, admin.role);
-  res.status(200).json({ admin, token });
+  const token = admin.generateToken();
+  res.status(200).json({ data: admin, token });
 });
 
 //Logout Admin
@@ -249,9 +261,9 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
 });
 
 export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
-  const adminUser = await Admin.findById(req.userAuth);
+  const company = await Company.findOne({ adminID: req.userAuth });
 
-  if (adminUser) {
+  if (company) {
     const {
       companyName,
       businessType,
@@ -262,8 +274,8 @@ export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
       numOfEmployees,
     } = req.body;
 
-    const updateCompany = await Admin.findByIdAndUpdate(
-      req.userAuth,
+    const updateCompany = await Company.findOneAndUpdate(
+      { adminID: req.userAuth },
       {
         $set: {
           companyName,
@@ -293,13 +305,13 @@ export const updatePersonalInfo = asyncHandler(async (req, res, next) => {
   const adminUser = await Admin.findById(req.userAuth);
 
   if (adminUser) {
-    const { firstName, lastName, companyEmail } = req.body;
+    const { firstName, lastName, email } = req.body;
 
-    if (!firstName || !lastName || !role || !companyEmail) {
+    if (!firstName || !lastName || !email) {
       return next(new errorHandler("Please filled the form properly", 422));
     }
 
-    if (!validator.isEmail(companyEmail)) {
+    if (!validator.isEmail(email)) {
       return next(new errorHandler("Invalid Email", 422));
     }
 
@@ -309,7 +321,7 @@ export const updatePersonalInfo = asyncHandler(async (req, res, next) => {
         $set: {
           firstName,
           lastName,
-          companyEmail,
+          email,
         },
       },
       {
