@@ -50,3 +50,12 @@
 {"level":"error","message":"Please activate your account"}
 {"level":"error","message":"User already exists with this employeeID"}
 {"level":"error","message":"Can't find /api/v1/employee/findme on this server"}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"Company already exists with this Company name"}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"Can't find /api/v1/ceo/login on this server"}
+{"level":"error","message":"Please filled the form properly."}
+{"level":"error","message":"Company not Found"}
+{"level":"error","message":"Company not Found"}
+{"level":"error","message":"User already exists with this employeeID"}

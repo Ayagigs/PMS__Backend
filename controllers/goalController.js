@@ -1,104 +1,111 @@
-// import Employee from "../model/EmployeeModel.js";
-// import Goal from "../model/GoalModel.js";
-// import Ceo from "../model/CeoModel.js";
+import Employee from "../model/EmployeeModel.js";
+import Goal from "../model/GoalModel.js";
+import Admin from "../model/adminModel.js";
 
-// export const createGoalController = async(req, res) => {
-//     const {goaltitle, startdate, enddate, category, description, keyobjectives} = req.body;
-//     const goalOwner = await Employee.findById(req.userAuth)
+export const addGoal = async(req, res) => {
+    const {goaltitle, startdate, enddate, category, description, keyobjectives} = req.body;
+    const goalOwner = await Employee.findById(req.userAuth)
+    
+    if (!mongoose.Types.ObjectId.isValid(req.userAuth)) {
+      return next(new errorHandler("Invalid objectID", 404));
+    }
 
-//     try{
-//         const goal = await Goal.create({
-//             goaltitle,
-//             startdate,
-//             enddate,
-//             category,
-//             description,
-//             keyobjectives,
-//             owner: goalOwner._id
-//         })
+    if (!goalOwner) {
+        return next(
+          new errorHandler("Invalid or Expired token", 404)
+        );
+    }
+  
 
-//         res.json({
-//             status: "Success",
-//             message: "Goal Added Successfully"
-//         })
+    try{
+        const goal = await Goal.create({
+            goaltitle,
+            startdate,
+            enddate,
+            category,
+            description,
+            keyobjectives,
+            owner: goalOwner._id
+        })
 
-//         await goalOwner.save();
+        res.json({
+            status: "Success",
+            message: "Goal Added Successfully"
+        })
 
-//     }catch(error){
-//         res.json(error.message)
-//     }
-// }
+        goalOwner.goals.push(goal._id)
 
-// export const getAllEmployeeandTheirCurrentGoals = async(req, res) => {
-//     try{
-//         const companyFound = await Ceo.findById(req.userAuth)
-//         const employeeFound = await Employee.findById(req.userAuth)
+        await goalOwner.save();
 
-//         const employees = await Employee.find({companyregno: !companyFound ? employeeFound.companyregno : companyFound.companyregno, role: "Staff"});
+        res.status(200).json({
+            success: true,
+            data: goal,
+        });
+        
 
-//         const employeegoaldetails = [];
+    }catch(error){
+        res.status(500).send({ status: "Fail", message: error.message });
+    }
+}
 
-//         for(let i = 0; i < employees.length; i++){
-//             const goal = await Goal.find({owner: employees[i]._id});
-//             const currentGoal =
+export const getEmployeeAndGoal = async(req, res) => {
+    try{
+        const {companyID} = req.params;
+        if (!mongoose.Types.ObjectId.isValid(companyID)) {
+            return next(new errorHandler("Invalid objectID", 404));
+        }
 
-//             employeegoaldetails.push({
-//                 profilephoto: employees[i].profilephoto,
-//                 employeename: employees[i].firstname + " " + employees[i].lastname,
-//                 currentGoal,
+        const employees = await Employee.find({companyID, role: "Staff"}).populate('goals');
 
-//             })
-//         }
+        res.status(200).json({
+            success: true,
+            data: employees,
+        });
 
-//         res.json({
-//             status: "Success",
-//             data: employeegoaldetails
-//         })
+    }catch(error){
+        res.status(500).send({ status: "Fail", message: error.message });
+    }
+}
 
-//     }catch(error){
-//         res.json(error.message)
-//     }
-// }
+export const getAllGoals = async (req, res) => {
+    try{
+        const goals = await Goal.find({owner: req.userAuth})
 
-// export const getAllGoalsController = async (req, res) => {
-//     try{
-//         const goals = await Goal.find({owner: req.userAuth})
+        res.status(200).json({
+            success: true,
+            data: goals,
+        });
 
-//         res.json({
-//             status: "Success",
-//             data: goals
-//         })
+    }catch(error){
+        res.status(500).send({ status: "Fail", message: error.message });
+    }
+}
 
-//     }catch(error){
-//         res.json(error.message)
-//     }
-// }
+export const editGoal = async (req, res) => {
+    const {goaltitle, startdate, enddate, category, description, keyobjectives, status, isCompleted} = req.body;
+    try{
+        const editedgoal = await Goal.findByIdAndUpdate(req.params.id, {
+            $set: {
+                goaltitle,
+                startdate,
+                enddate,
+                category,
+                description,
+                keyobjectives,
+                status,
+                isCompleted
+            }
+        },{
+            new: true
+        })
 
-// export const editGoalController = async (req, res) => {
-//     const {goaltitle, startdate, enddate, category, description, keyobjectives, status, isCompleted} = req.body;
-//     try{
-//         const editedgoal = await Goal.findByIdAndUpdate(req.params.id, {
-//             $set: {
-//                 goaltitle,
-//                 startdate,
-//                 enddate,
-//                 category,
-//                 description,
-//                 keyobjectives,
-//                 status,
-//                 isCompleted
-//             }
-//         },{
-//             new: true
-//         })
+        res.json({
+            status: "Success",
+            data: editedgoal
+        })
 
-//         res.json({
-//             status: "Success",
-//             data: editedgoal
-//         })
+    }catch(error){
+        res.status(500).send({ status: "Fail", message: error.message });
+    }
 
-//     }catch(error){
-//         res.json(error.message)
-//     }
-
-// }
+}

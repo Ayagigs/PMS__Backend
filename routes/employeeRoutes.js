@@ -8,10 +8,9 @@ import {
   resetPassword,
 } from "../controllers/employeeController.js";
 import { protect } from "../middleware/protect.js";
-
 import multer from "multer";
 import restrictedTo from "../middleware/restrictedTo.js";
-
+import generateOTP from "../middleware/generateOTP.js"
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "./");

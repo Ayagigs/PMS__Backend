@@ -340,12 +340,13 @@ export const updatePersonalInfo = asyncHandler(async (req, res, next) => {
 
 export const findAdminUser = asyncHandler(async (req, res) => {
   const adminUser = await Admin.findById(req.userAuth);
+  const company = await Company.find({companyName: adminUser.companyName})
 
   if (!adminUser) {
     return next(new errorHandler("No user Found, Please Login", 404));
   }
   res.status(200).json({
     status: "Success",
-    data: adminUser,
+    data: {adminUser, company},
   });
 });

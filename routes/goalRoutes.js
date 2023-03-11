@@ -1,19 +1,20 @@
-// import express from "express"
-// import { createGoalController, editGoalController, getAllEmployeeandTheirCurrentGoals, getAllGoalsController } from "../controller/goalController.js"
-// import { isLogin } from "../middleware/isLogin.js"
+import express from "express"
+import { addGoal, editGoal, getAllGoals, getEmployeeAndGoal } from "../controllers/goalController.js";
+import { protect } from "../middleware/protect.js";
+import restrictedTo from "../middleware/restrictedTo.js";
 
-// const goalRouter = express.Router()
+const goalRoute = express.Router()
 
-// // Add a new goal
-// goalRouter.post("", isLogin, createGoalController);
+// Add a new goal
+goalRoute.post("/addgoal", protect, addGoal);
 
-// // Get all employeess and their current goals
-// goalRouter.get("/currentGoals", isLogin, getAllEmployeeandTheirCurrentGoals);
+// Get all employeess and their current goals
+goalRoute.get("/employeegoals", protect, restrictedTo("Admin", "HR Manager"), getEmployeeAndGoal);
 
-// // Get all goals for an employee
-// goalRouter.get("", isLogin, getAllGoalsController)
+// Get all goals for an employee
+goalRoute.get("/goals", protect, getAllGoals)
 
-// // Edit the goals
-// goalRouter.put("/:id", isLogin, editGoalController)
+// Edit the goals
+goalRoute.put("/edit/:id", protect, editGoal)
 
-// export default goalRouter;
+export default goalRoute;
