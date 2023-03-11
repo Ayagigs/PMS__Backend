@@ -8,6 +8,7 @@ import crypto from "crypto";
 import hatchedToken from "../utils/resetToken.js";
 import { emailSender } from "../utils/emailSender.js";
 import Company from "../model/companyModel.js";
+import csv from "csvtojson"
 
 export const employeeReg = asyncHandler(async (req, res, next) => {
   const {
@@ -41,7 +42,7 @@ export const employeeReg = asyncHandler(async (req, res, next) => {
   // Find the company with the given companyRegNo, companyName
   const { companyID } = req.params;
 
-  const company = await Company.findById(companyID);
+  const company = await Company.findOne({companyID});
 
   if (!company) {
     return next(new errorHandler("Company not Found", 404));
@@ -185,10 +186,14 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
     resetTokenExpiresAt: { $gt: Date.now() },
   });
 
+  console.log(employee.resetPasswordToken)
+  console.log(haskedToken)
+
   if (employee) {
     employee.password = password;
     employee.status = "Active";
     await employee.save();
+
 
     res.status(200).send({
       status: "success",
@@ -218,6 +223,7 @@ export const employeeLogin = asyncHandler(async (req, res, next) => {
   if (employee.status !== "Active") {
     return next(new errorHandler("Please activate your account", 404));
   }
+  
 
   const pass = bcrypt.compareSync(password, employee.password);
 
@@ -233,7 +239,7 @@ export const employeeLogin = asyncHandler(async (req, res, next) => {
 
 
 export const getAllEmployees = asyncHandler(async (req, res, next) => {
-  const employees = await Employee.find({ companyID: req.userAuth._id });
+  const employees = await Employee.find({ companyID: req.params.companyID });
 
   if (employees) {
     res.json({
@@ -251,33 +257,49 @@ export const getAllEmployees = asyncHandler(async (req, res, next) => {
 export const registerBulkEmployee = async (req, res) => {
   try {
     const {companyID} = req.params;
+    const company = await Company.findOne({companyID});
+
+    if (!company) {
+      return next(new errorHandler("Company not Found", 404));
+    }
 
     csv()
-      .fromFile(req.file.path)
-      .then(async (jsonObj) => {
-        var empcount = 0;
-        for (let i = 0; i < jsonObj.length; i++) {
-          const employeeExist = await Employee.find({
-            companyID, employeeID: jsonObj[i]["Employee Id"]
-          });
+    .fromFile(req.file.path)
+    .then(async (jsonObj) => {
+      var empcount = 0;
+      for (let i = 0; i < jsonObj.length; i++) {
+        const employeeExist = await Employee.find({
+          companyID, employeeID: jsonObj[i]["Employee Id"]
+        });
 
-          if (employeeExist) {
-            continue;
-          }
+        if (employeeExist.length !== 0) {
+          continue;
+        }
+
+        
+        const resetToken = await crypto.randomBytes(32).toString("hex");
+
+        const hatchPasswordToken = hatchedToken(resetToken);
 
           const employee = await Employee.create({
-            employeeid: jsonObj[i]["Employee Id"],
-            firstname: jsonObj[i]["First Name"],
-            lastname: jsonObj[i]["Last Name"],
-            email: jsonObj[i]["Email"],
-            phone: jsonObj[i]["Phone Number"],
+            employeeID: jsonObj[i]["Employee Id"],
+            firstName: jsonObj[i]["First Name"],
+            lastName: jsonObj[i]["Last Name"],
+            workEmail: jsonObj[i]["Email"],
+            phoneNo: jsonObj[i]["Phone Number"],
             department: jsonObj[i]["Department"],
             gender: jsonObj[i]["Gender"],
             role: jsonObj[i]["Role"],
             jobtitle: jsonObj[i]["Job Title"],
-            companyID: companyFound._id,
+            companyID,
             status: "Inactive",
+            registeredBy: req.userAuth.role,
+            resetPasswordToken: hatchPasswordToken,
+            resetTokencreatedAt: Date.now(),
+            resetTokenExpiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7days in milli
           });
+
+          console.log(employee)
           empcount++;
 
           const invitationLink = `${process.env.CLIENT_URL}/resetPassword/${resetToken}`;
@@ -342,12 +364,6 @@ export const registerBulkEmployee = async (req, res) => {
           try {
             await emailSender(subject, message, send_to, sent_from);
             const token = employee.generateToken();
-            res.status(200).json({
-              success: true,
-              data: employee,
-              message: "Reset Email Sent",
-              token,
-            });
           } catch (error) {
             res.status(500).send({ status: "Fail", message: error.message });
           }

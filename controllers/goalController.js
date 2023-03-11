@@ -1,12 +1,15 @@
 import Employee from "../model/EmployeeModel.js";
 import Goal from "../model/GoalModel.js";
 import Admin from "../model/adminModel.js";
+import mongoose from "mongoose";
+import errorHandler from "../utils/errorHandler.js";
+import asyncHandler from "express-async-handler";
 
-export const addGoal = async(req, res) => {
+export const addGoal = asyncHandler(async (req, res, next) => {
     const {goaltitle, startdate, enddate, category, description, keyobjectives} = req.body;
     const goalOwner = await Employee.findById(req.userAuth)
     
-    if (!mongoose.Types.ObjectId.isValid(req.userAuth)) {
+    if (!mongoose.Types.ObjectId.isValid(req.userAuth._id)) {
       return next(new errorHandler("Invalid objectID", 404));
     }
 
@@ -28,14 +31,13 @@ export const addGoal = async(req, res) => {
             owner: goalOwner._id
         })
 
-        res.json({
-            status: "Success",
-            message: "Goal Added Successfully"
-        })
-
+        
         goalOwner.goals.push(goal._id)
-
         await goalOwner.save();
+
+
+        console.log(goalOwner.goals)
+
 
         res.status(200).json({
             success: true,
@@ -46,9 +48,9 @@ export const addGoal = async(req, res) => {
     }catch(error){
         res.status(500).send({ status: "Fail", message: error.message });
     }
-}
+})
 
-export const getEmployeeAndGoal = async(req, res) => {
+export const getEmployeeAndGoal = asyncHandler(async (req, res, next) => {
     try{
         const {companyID} = req.params;
         if (!mongoose.Types.ObjectId.isValid(companyID)) {
@@ -65,7 +67,7 @@ export const getEmployeeAndGoal = async(req, res) => {
     }catch(error){
         res.status(500).send({ status: "Fail", message: error.message });
     }
-}
+})
 
 export const getAllGoals = async (req, res) => {
     try{
@@ -81,7 +83,7 @@ export const getAllGoals = async (req, res) => {
     }
 }
 
-export const editGoal = async (req, res) => {
+export const editGoal = asyncHandler(async (req, res, next) => {
     const {goaltitle, startdate, enddate, category, description, keyobjectives, status, isCompleted} = req.body;
     try{
         const editedgoal = await Goal.findByIdAndUpdate(req.params.id, {
@@ -108,4 +110,4 @@ export const editGoal = async (req, res) => {
         res.status(500).send({ status: "Fail", message: error.message });
     }
 
-}
+})

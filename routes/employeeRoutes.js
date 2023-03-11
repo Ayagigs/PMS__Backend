@@ -30,17 +30,19 @@ employeeRoute.post(
   employeeReg
 );
 
-employeeRoute.get("/employees", protect, getAllEmployees);
+employeeRoute.get("/employees/:companyID", protect, getAllEmployees);
 employeeRoute.get("/findme", protect, getSpecificEmployee);
 employeeRoute.post("/login", employeeLogin);
 employeeRoute.post("/resetpassword/:resetToken", resetPassword);
 
 // Add employees using csv files
 employeeRoute.post(
-  "/csvupload",
+  "/csvupload/:companyID",
   upload.single("file"),
   protect,
-  registerBulkEmployee
+  restrictedTo("Admin", "HR Manager"),
+  registerBulkEmployee,
+  generateOTP
 );
 
 export default employeeRoute;

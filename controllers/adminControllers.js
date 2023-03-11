@@ -261,7 +261,8 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
 });
 
 export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
-  const company = await Company.findOne({ adminID: req.userAuth });
+  const company = await Company.findOne({ companyID: req.userAuth._id });
+  console.log(company)
 
   if (company) {
     const {
@@ -274,8 +275,9 @@ export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
       numOfEmployees,
     } = req.body;
 
+    
     const updateCompany = await Company.findOneAndUpdate(
-      { adminID: req.userAuth },
+      { companyID: req.userAuth._id },
       {
         $set: {
           companyName,
@@ -285,6 +287,18 @@ export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
           state,
           country,
           numOfEmployees,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+
+    await Admin.findByIdAndUpdate(
+      req.userAuth._id,
+      {
+        $set: {
+          companyName,
         },
       },
       {

@@ -9,7 +9,7 @@ const goalRoute = express.Router()
 goalRoute.post("/addgoal", protect, addGoal);
 
 // Get all employeess and their current goals
-goalRoute.get("/employeegoals", protect, restrictedTo("Admin", "HR Manager"), getEmployeeAndGoal);
+goalRoute.get("/employeegoals/:companyID", protect, getEmployeeAndGoal);
 
 // Get all goals for an employee
 goalRoute.get("/goals", protect, getAllGoals)
