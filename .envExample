@@ -1,0 +1,22 @@
+NODE_ENV = 
+PORT = 
+
+# Mongodb connection
+CONNECTION_STRING = 
+PASSWORD = 
+
+#Jwt
+TOKEN_EXPIRES = 
+JWT_KEY = 
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME = 
+CLOUDINARY_API_KEY = 
+CLOUDIARY_API_SECRET = 
+
+
+# EMAIL_HOST = smtp-mail.outlook.com
+EMAIL_USER = 
+EMAIL_PASS= 
+BASE_URL = 
+CLIENT_URL = 

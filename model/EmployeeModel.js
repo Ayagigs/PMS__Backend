@@ -96,6 +96,12 @@ const employeeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    goals : [
+        {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Goal"
+      }
+    ],
     companyID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Admin",

@@ -8,10 +8,9 @@ import {
   resetPassword,
 } from "../controllers/employeeController.js";
 import { protect } from "../middleware/protect.js";
-
 import multer from "multer";
 import restrictedTo from "../middleware/restrictedTo.js";
-
+import generateOTP from "../middleware/generateOTP.js"
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "./");
@@ -31,17 +30,19 @@ employeeRoute.post(
   employeeReg
 );
 
-employeeRoute.get("/employees", protect, getAllEmployees);
+employeeRoute.get("/employees/:companyID", protect, getAllEmployees);
 employeeRoute.get("/findme", protect, getSpecificEmployee);
 employeeRoute.post("/login", employeeLogin);
 employeeRoute.post("/resetpassword/:resetToken", resetPassword);
 
 // Add employees using csv files
 employeeRoute.post(
-  "/csvupload",
+  "/csvupload/:companyID",
   upload.single("file"),
   protect,
-  registerBulkEmployee
+  restrictedTo("Admin", "HR Manager"),
+  registerBulkEmployee,
+  generateOTP
 );
 
 export default employeeRoute;

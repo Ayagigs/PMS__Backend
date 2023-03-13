@@ -50,3 +50,71 @@
 {"level":"error","message":"Please activate your account"}
 {"level":"error","message":"User already exists with this employeeID"}
 {"level":"error","message":"Can't find /api/v1/employee/findme on this server"}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"Company already exists with this Company name"}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"Can't find /api/v1/ceo/login on this server"}
+{"level":"error","message":"Please filled the form properly."}
+{"level":"error","message":"Company not Found"}
+{"level":"error","message":"Company not Found"}
+{"level":"error","message":"User already exists with this employeeID"}
+{"level":"error","message":"User already exists with this employeeID"}
+{"level":"error","message":"User already exists with this employeeID"}
+{"level":"error","message":"Please fill the form correctly"}
+{"level":"error","message":"passwords not matched"}
+{"level":"error","message":"Invalid or Expired Token"}
+{"level":"error","message":"Invalid or Expired Token"}
+{"level":"error","message":"Invalid or Expired Token"}
+{"level":"error","message":"Invalid or Expired Token"}
+{"level":"error","message":"User already exists with this employeeID"}
+{"level":"error","message":"Invalid or Expired Token"}
+{"level":"error","message":"Invalid or Expired Token"}
+{"level":"error","message":"User already exists with this employeeID"}
+{"level":"error","message":"User already exists with this employeeID"}
+{"level":"error","message":"Invalid or Expired Token"}
+{"level":"error","message":"Please filled the form properly"}
+{"level":"error","message":"Employee with sophieokosodo@gmail.com not found"}
+{"level":"error","message":"Please activate your account"}
+{"level":"error","message":"Please activate your account"}
+{"level":"error","message":"Please activate your account"}
+{"level":"error","message":"Please activate your account"}
+{"level":"error","message":"Company already exists with this Company name"}
+{"level":"error","message":"Company already exists with this registeration number"}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"Can't find /api/v1/admin/resetpassword/98e8afbba813f9f38d0d00098f3064c876059ab911767e697b3ff19364aa182b640ce213df37597ca602ef28 on this server"}
+{"level":"error","message":"Can't find /api/v1/admin/resetpassword/98e8afbba813f9f38d0d00098f3064c876059ab911767e697b3ff19364aa182b640ce213df37597ca602ef28 on this server"}
+{"level":"error","message":"passwords not matched"}
+{"level":"error","message":"Please fill the form correctly"}
+{"level":"error","message":"Can't find /api/v1/employee/changepassword on this server"}
+{"level":"error","message":"Can't find /api/v1/admin/changepassword on this server"}
+{"level":"error","message":"Please add old and new password"}
+{"level":"error","message":"Old password incorrect"}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"Company already exists with this registeration number"}
+{"level":"error","message":"User not found, Please signup"}
+{"level":"error","message":"User not found, Please signup"}
+{"level":"error","message":"User not found, Please signup"}
+{"level":"error","message":"User not found, Please signup"}
+{"level":"error","message":"User not found, Please signup"}
+{"level":"error","message":"User not found, Please signup"}
+{"level":"error","message":"User not found, Please signup"}
+{"level":"error","message":"Can't find /api/v1/admin/updatepersonalinfo on this server"}
+{"level":"error","message":"Please filled the form properly"}
+{"level":"error","message":"Please filled the form properly"}
+{"level":"error","message":"Invalid Email"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Company not Found"}
+{"level":"error","message":"Company not Found"}
+{"level":"error","message":"Can't find /api/v1/employee/640ce7f713f311483cf7879b on this server"}
+{"level":"error","message":"Can't find /api/v1/employees/640ce7f713f311483cf7879b on this server"}
+{"level":"error","message":"User already exists with this employeeID"}
+{"level":"error","message":"Access denied"}
+{"level":"error","message":"User already exists with this employeeID"}
+{"level":"error","message":"Invalid objectID"}

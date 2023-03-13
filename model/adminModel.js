@@ -15,7 +15,7 @@ const AdminSchema = new mongoose.Schema(
     email: {
       type: String,
       required: [true, "Email is required"],
-      unigue: true,
+      unique: true,
     },
     password: {
       type: String,
@@ -25,11 +25,7 @@ const AdminSchema = new mongoose.Schema(
       type: String,
       default: "Admin",
     },
-    companyName: { type: String, unigue: true },
-    emailOrCompanyName: {
-      type: String,
-      unigue: true,
-    },
+    companyName: { type: String, unique: true }
   },
   {
     timestamps: true,

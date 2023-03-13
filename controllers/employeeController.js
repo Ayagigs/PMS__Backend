@@ -1,4 +1,3 @@
-import Admin from "../model/adminModel.js";
 import Employee from "../model/EmployeeModel.js";
 import bcrypt from "bcrypt";
 import validator from "validator";
@@ -9,6 +8,7 @@ import crypto from "crypto";
 import hatchedToken from "../utils/resetToken.js";
 import { emailSender } from "../utils/emailSender.js";
 import Company from "../model/companyModel.js";
+import csv from "csvtojson"
 
 export const employeeReg = asyncHandler(async (req, res, next) => {
   const {
@@ -42,7 +42,7 @@ export const employeeReg = asyncHandler(async (req, res, next) => {
   // Find the company with the given companyRegNo, companyName
   const { companyID } = req.params;
 
-  const company = await Company.findOne({ companyID });
+  const company = await Company.findOne({companyID});
 
   if (!company) {
     return next(new errorHandler("Company not Found", 404));
@@ -158,6 +158,10 @@ export const employeeReg = asyncHandler(async (req, res, next) => {
   }
 });
 
+
+
+
+
 export const resetPassword = asyncHandler(async (req, res, next) => {
   const { password, confirmPassword } = req.body;
   const { resetToken } = req.params;
@@ -182,10 +186,14 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
     resetTokenExpiresAt: { $gt: Date.now() },
   });
 
+  console.log(employee.resetPasswordToken)
+  console.log(haskedToken)
+
   if (employee) {
     employee.password = password;
     employee.status = "Active";
     await employee.save();
+
 
     res.status(200).send({
       status: "success",
@@ -195,6 +203,10 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
     return next(new errorHandler("Invalid or Expired Token", 404));
   }
 });
+
+
+
+
 
 export const employeeLogin = asyncHandler(async (req, res, next) => {
   const { employeeID, password } = req.body;
@@ -211,6 +223,7 @@ export const employeeLogin = asyncHandler(async (req, res, next) => {
   if (employee.status !== "Active") {
     return next(new errorHandler("Please activate your account", 404));
   }
+  
 
   const pass = bcrypt.compareSync(password, employee.password);
 
@@ -222,8 +235,11 @@ export const employeeLogin = asyncHandler(async (req, res, next) => {
   res.status(200).json({ data: employee, token });
 });
 
+
+
+
 export const getAllEmployees = asyncHandler(async (req, res, next) => {
-  const employees = await Employee.find({ companyID: req.userAuth._id });
+  const employees = await Employee.find({ companyID: req.params.companyID });
 
   if (employees) {
     res.json({
@@ -235,78 +251,149 @@ export const getAllEmployees = asyncHandler(async (req, res, next) => {
   }
 });
 
+
+
+
 export const registerBulkEmployee = async (req, res) => {
   try {
-    const employeefound = await Employee.findById(req.userAuth);
-    const companyFound = await Admin.findById(req.userAuth);
+    const {companyID} = req.params;
+    const company = await Company.findOne({companyID});
+
+    if (!company) {
+      return next(new errorHandler("Company not Found", 404));
+    }
 
     csv()
-      .fromFile(req.file.path)
-      .then(async (jsonObj) => {
-        var empcount = 0;
-        for (let i = 0; i < jsonObj.length; i++) {
-          const employees = await Employee.find({
-            companyregno: !companyFound
-              ? employeefound.companyregno
-              : companyFound.companyregno,
-          });
+    .fromFile(req.file.path)
+    .then(async (jsonObj) => {
+      var empcount = 0;
+      for (let i = 0; i < jsonObj.length; i++) {
+        const employeeExist = await Employee.find({
+          companyID, employeeID: jsonObj[i]["Employee Id"]
+        });
 
-          const employeeidFound = employees.find(
-            (element) => element.employeeid === jsonObj[i]["Employee Id"]
-          );
+        if (employeeExist.length !== 0) {
+          continue;
+        }
 
-          const employeeFound = employees.find(
-            (element) => element.email === jsonObj[i]["Email"]
-          );
+        
+        const resetToken = await crypto.randomBytes(32).toString("hex");
 
-          if (employeeFound) {
-            continue;
-          } else if (employeeidFound) {
-            continue;
-          }
+        const hatchPasswordToken = hatchedToken(resetToken);
 
-          await Employee.create({
-            employeeid: jsonObj[i]["Employee Id"],
-            firstname: jsonObj[i]["First Name"],
-            lastname: jsonObj[i]["Last Name"],
-            email: jsonObj[i]["Email"],
-            phone: jsonObj[i]["Phone Number"],
+          const employee = await Employee.create({
+            employeeID: jsonObj[i]["Employee Id"],
+            firstName: jsonObj[i]["First Name"],
+            lastName: jsonObj[i]["Last Name"],
+            workEmail: jsonObj[i]["Email"],
+            phoneNo: jsonObj[i]["Phone Number"],
             department: jsonObj[i]["Department"],
             gender: jsonObj[i]["Gender"],
             role: jsonObj[i]["Role"],
             jobtitle: jsonObj[i]["Job Title"],
-            companyregno: companyFound.companyregno,
+            companyID,
             status: "Inactive",
+            registeredBy: req.userAuth.role,
+            resetPasswordToken: hatchPasswordToken,
+            resetTokencreatedAt: Date.now(),
+            resetTokenExpiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7days in milli
           });
 
+          console.log(employee)
           empcount++;
+
+          const invitationLink = `${process.env.CLIENT_URL}/resetPassword/${resetToken}`;
+
+          // Reset Email
+          const message = `
+
+          <div
+              style="
+                width: 658px;
+                border-radius: 0px;
+                padding: 48px;
+                background: #f1f3f4;
+              "
+            >
+              <h2>Hey ${employee.firstName},</h2>
+              <p>
+              ${req.userAuth.companyName} has invited you to join the team as ${employee.role}. Accept the invitation to start creating awesome things
+                together.
+              </p>
+              <p>This invite only lasts for 7 days.</p>
+
+              <p
+                style="
+                  padding: 19px 32px;
+                  text-decoration: none;
+                  color: white;
+
+                  width: 211px;
+                  background: rgba(62, 69, 235, 1);
+                "
+              >
+                <a
+                  href="${invitationLink}"
+                  clicktracking="off"
+                  style="
+                    font-family: 'Satoshi';
+                    font-style: normal;
+                    font-weight: 700;
+                    font-size: 16px;
+                    line-height: 140%;
+                    display: flex;
+                    align-items: center;
+                    text-align: center;
+                    color: #ffffff;
+                    text-decoration: none;
+                    justify-content: center;
+                  "
+                  >Accept Invitation</a
+                >
+              </p>
+
+              <p><Regards.../P></p>
+              <p>Aya Team4</p>
+            </div>
+          `;
+
+          const subject = "Invitation";
+          const send_to = employee.workEmail;
+          const sent_from = process.env.EMAIL_USER;
+
+          try {
+            await emailSender(subject, message, send_to, sent_from);
+            const token = employee.generateToken();
+          } catch (error) {
+            res.status(500).send({ status: "Fail", message: error.message });
+          }
         }
-        res.json({
-          status: "Success",
+        res.status(200).send({
+          status: "success",
           message: `${empcount} Employees added Successfully`,
         });
       });
+
   } catch (error) {
-    res.json(error.message);
+    res.status(500).send({ status: "Fail", message: error.message });
   }
 };
+
+
+
 
 export const getSpecificEmployee = async (req, res) => {
   try {
     const employee = await Employee.findById(req.userAuth._id);
 
     if (employee) {
-      res.json({
-        status: "Success",
-        data: { employee },
+      res.status(200).json({
+        data: employee,
       });
     } else {
-      res.json({
-        status: "Success",
-        message: "Please Login",
-      });
+      return next(new errorHandler("Invalid or Expired Token", 404));
     }
   } catch (error) {
-    res.json(error.message);
+    res.status(500).send({ status: "Fail", message: error.message });
   }
 };
