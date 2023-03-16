@@ -118,3 +118,44 @@
 {"level":"error","message":"Access denied"}
 {"level":"error","message":"User already exists with this employeeID"}
 {"level":"error","message":"Invalid objectID"}
+{"level":"error","message":"Company already exists with this registeration number"}
+{"level":"error","message":"Company already exists with this registeration number"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Company already exists with this registeration number"}
+{"level":"error","message":"Company already exists with this registeration number"}
+{"level":"error","message":"Can't find /api/v1/employee/resetpassword/4937962c644703de1da945899034dc053ab8875646c70c9ff922bfac7e3d53a1 on this server"}
+{"level":"error","message":"Invalid or Expired Token"}
+{"level":"error","message":"Please filled the form properly."}
+{"level":"error","message":"Can't find /api/v1/employee/login on this server"}
+{"level":"error","message":"Access denied"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Company already exists with this Company name"}
+{"level":"error","message":"User already exists with this employeeID"}
+{"level":"error","message":"Company not Found"}
+{"level":"error","message":"User already exists with this employeeID"}
+{"level":"error","message":"User already exists with this employeeID"}
+{"level":"error","message":"User already exists with this employeeID"}
+{"level":"error","message":"Invalid or Expired Token"}
+{"level":"error","message":"Invalid or Expired Token"}
+{"level":"error","message":"Can't find /api/v1/review on this server"}
+{"level":"error","message":"Can't find /api/v1/review on this server"}
+{"level":"error","message":"Can't find /api/v1/review/performancereview/655467 on this server"}
+{"level":"error","message":"Can't find /api/v1/review/performancereview/655466567856577 on this server"}
+{"level":"error","message":"Access denied"}
+{"level":"error","message":"Access denied"}
+{"level":"error","message":"360 appraisal review end date can not be earlier than the start date"}
+{"level":"error","message":"Full-Year review end date can not be earlier than the start date"}
+{"level":"error","message":"360 appraisal review end date can not be earlier than the start date"}
+{"level":"error","message":"360 appraisal review end date can not be earlier than the start date"}
+{"level":"error","message":"Mid-Year review end date can not be earlier than the start date"}
+{"level":"error","message":"Full-Year review end date can not be earlier than the start date"}
+{"level":"error","message":"Full-Year review end date can not be earlier than the start date"}
+{"level":"error","message":"360 appraisal review end date can not be earlier than the start date"}
+{"level":"error","message":"Full-Year and Mid-Year Reviews can not be taken in same time frame"}
+{"level":"error","message":"Full-Year review end date can not be earlier than the start date"}
+{"level":"error","message":"Full-Year and Mid-Year Reviews can not be taken in same time frame"}
+{"level":"error","message":"Can't find /api/v1/goal/goalReview/64135320efe35f4a736a5f6c on this server"}
+{"level":"error","message":"Can't find /api/v1/goal/goalReview/64135320efe35f4a736a5f6c on this server"}
+{"level":"error","message":"Can't find /api/v1/goal/goalReview/64135320efe35f4a736a5f6c on this server"}

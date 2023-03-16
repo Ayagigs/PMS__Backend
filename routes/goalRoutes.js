@@ -15,6 +15,6 @@ goalRoute.get("/employeegoals/:companyID", protect, getEmployeeAndGoal);
 goalRoute.get("/goals", protect, getAllGoals)
 
 // Edit the goals
-goalRoute.put("/edit/:id", protect, editGoal)
+goalRoute.patch("/edit/:id", protect, editGoal)
 
 export default goalRoute;

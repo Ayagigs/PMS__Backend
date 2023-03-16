@@ -5,9 +5,10 @@ import mongoose from "mongoose";
 import errorHandler from "../utils/errorHandler.js";
 import asyncHandler from "express-async-handler";
 
+
 export const addGoal = asyncHandler(async (req, res, next) => {
     const {goaltitle, startdate, enddate, category, description, keyobjectives} = req.body;
-    const goalOwner = await Employee.findById(req.userAuth)
+    const goalOwner = await Employee.findById(req.userAuth._id)
     
     if (!mongoose.Types.ObjectId.isValid(req.userAuth._id)) {
       return next(new errorHandler("Invalid objectID", 404));
@@ -18,7 +19,7 @@ export const addGoal = asyncHandler(async (req, res, next) => {
           new errorHandler("Invalid or Expired token", 404)
         );
     }
-  
+    
 
     try{
         const goal = await Goal.create({
@@ -31,9 +32,30 @@ export const addGoal = asyncHandler(async (req, res, next) => {
             owner: goalOwner._id
         })
 
-        
+
+        const findPManager = await Employee.find({department: goalOwner.department, companyID: goalOwner.companyID, role: 'Performance Manager'})
+        const findHRManager = await Employee.find({companyID: goalOwner.companyID, role: 'HR Manager'})
+
+        if(findPManager && !goal.reviewers.includes(findPManager._id)){
+            goal.reviewers.push(findPManager._id)
+            findPManager.forEach(async(el) => {
+                el.goalsToReview.push(goal._id)
+
+                await el.save()
+            })
+        }
+        if(findHRManager && !goal.reviewers.includes(findHRManager._id)){
+            goal.reviewers.push(findHRManager._id)
+            findHRManager.forEach(async(el) => {
+                el.goalsToReview.push(goal._id)
+
+                await el.save()
+            })
+        }
+
         goalOwner.goals.push(goal._id)
         await goalOwner.save();
+        await goal.save()
 
 
         console.log(goalOwner.goals)
@@ -49,6 +71,7 @@ export const addGoal = asyncHandler(async (req, res, next) => {
         res.status(500).send({ status: "Fail", message: error.message });
     }
 })
+
 
 export const getEmployeeAndGoal = asyncHandler(async (req, res, next) => {
     try{
@@ -69,9 +92,10 @@ export const getEmployeeAndGoal = asyncHandler(async (req, res, next) => {
     }
 })
 
+
 export const getAllGoals = async (req, res) => {
     try{
-        const goals = await Goal.find({owner: req.userAuth})
+        const goals = await Goal.find({owner: req.userAuth}).populate('reviews')
 
         res.status(200).json({
             success: true,
@@ -83,8 +107,9 @@ export const getAllGoals = async (req, res) => {
     }
 }
 
+
 export const editGoal = asyncHandler(async (req, res, next) => {
-    const {goaltitle, startdate, enddate, category, description, keyobjectives, status, isCompleted} = req.body;
+    const {goaltitle, startdate, enddate, category, description, keyobjectives, status, isCompleted, reviewers} = req.body;
     try{
         const editedgoal = await Goal.findByIdAndUpdate(req.params.id, {
             $set: {
@@ -101,6 +126,16 @@ export const editGoal = asyncHandler(async (req, res, next) => {
             new: true
         })
 
+         editedgoal.reviewers.push(reviewers)
+         await editedgoal.save()
+
+         reviewers.array.forEach(async(element) => {
+            const employee = await Employee.findById(element)
+
+            employee.goalsToReview.push(req.params.id)
+         });
+
+
         res.json({
             status: "Success",
             data: editedgoal
@@ -111,3 +146,5 @@ export const editGoal = asyncHandler(async (req, res, next) => {
     }
 
 })
+
+

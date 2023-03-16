@@ -34,6 +34,7 @@ export const adminReg = asyncHandler(async (req, res, next) => {
     return next(new errorHandler("User already exists with this email", 404));
   }
 
+
   const createAdmin = new Admin({
     firstName,
     lastName,
@@ -263,7 +264,7 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
 export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
   const company = await Company.findOne({ companyID: req.userAuth._id });
   console.log(company)
-
+company.app
   if (company) {
     const {
       companyName,
@@ -273,7 +274,35 @@ export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
       country,
       companyRegNo,
       numOfEmployees,
+      midYearStartDate,
+      midYearEndDate,
+      fullYearStartDate,
+      fullYearEndDate,
+      appraisalStartDate,
+      appraisalEndDate
     } = req.body;
+
+    // validation for mid year end date should not be earlier than the start date
+    if(midYearEndDate <= midYearStartDate){
+      return next(new errorHandler("Mid-Year review end date can not be earlier than the start date", 500));
+    }
+    // validation for full year end date should not be earlier than the start date
+    if(fullYearEndDate <= fullYearStartDate){
+      return next(new errorHandler("Full-Year review end date can not be earlier than the start date", 500));
+    }
+    
+    // validation for appraisal end date should not be earlier than the start date
+    if(appraisalEndDate <= appraisalStartDate){
+      return next(new errorHandler("360 appraisal review end date can not be earlier than the start date", 500));
+    }
+    
+    // validation for full year and mid year should not be set in the same period
+    if(fullYearStartDate >= midYearStartDate && fullYearStartDate < midYearEndDate){
+      return next(new errorHandler("Full-Year and Mid-Year Reviews can not be taken in same time frame", 500));
+    }
+    if(midYearStartDate >= fullYearStartDate && midYearStartDate < fullYearEndDate){
+      return next(new errorHandler("Full-Year and Mid-Year Reiews can not be taken in same time frame", 500));
+    }
 
     
     const updateCompany = await Company.findOneAndUpdate(
@@ -287,6 +316,12 @@ export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
           state,
           country,
           numOfEmployees,
+          midYearStartDate,
+          midYearEndDate,
+          fullYearStartDate,
+          fullYearEndDate,
+          appraisalStartDate,
+          appraisalEndDate
         },
       },
       {
@@ -308,7 +343,7 @@ export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
       status: "Success",
-      data: updateCompany,
+      data: {updateCompany,}
     });
   } else {
     return next(new errorHandler("User not found, Please signup", 404));

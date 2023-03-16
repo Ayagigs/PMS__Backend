@@ -9,6 +9,9 @@ import hatchedToken from "../utils/resetToken.js";
 import { emailSender } from "../utils/emailSender.js";
 import Company from "../model/companyModel.js";
 import csv from "csvtojson"
+import Reviews from "../model/reviewModel.js";
+import { EReviewType } from "../enums/EReviewType.js";
+import { EReviewTime } from "../enums/EReviewTime.js";
 
 export const employeeReg = asyncHandler(async (req, res, next) => {
   const {
@@ -186,9 +189,6 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
     resetTokenExpiresAt: { $gt: Date.now() },
   });
 
-  console.log(employee.resetPasswordToken)
-  console.log(haskedToken)
-
   if (employee) {
     employee.password = password;
     employee.status = "Active";
@@ -240,6 +240,8 @@ export const employeeLogin = asyncHandler(async (req, res, next) => {
 
 export const getAllEmployees = asyncHandler(async (req, res, next) => {
   const employees = await Employee.find({ companyID: req.params.companyID });
+
+
 
   if (employees) {
     res.json({
@@ -397,3 +399,8 @@ export const getSpecificEmployee = async (req, res) => {
     res.status(500).send({ status: "Fail", message: error.message });
   }
 };
+
+
+
+
+

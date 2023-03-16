@@ -107,12 +107,38 @@ const employeeSchema = new mongoose.Schema(
       ref: "Admin",
       required: true,
     },
+    goalsToReview: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Gaol"
+      }
+    ],
+    appraisalsGiven: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Employee'
+      }
+    ],
+    performanceReviewGiven: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Employee'
+      }
+    ],
+    fullYearReviewGiven: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Employee'
+      }
+    ]
   },
   {
     timestamps: true,
     toJSON: { virtuals: true },
   }
 );
+
+
 
 employeeSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
