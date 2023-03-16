@@ -95,7 +95,7 @@ export const getEmployeeAndGoal = asyncHandler(async (req, res, next) => {
 
 export const getAllGoals = async (req, res) => {
     try{
-        const goals = await Goal.find({owner: req.userAuth}).populate('reviews')
+        const goals = await Goal.find({owner: req.userAuth}).populate('reviews').populate("feedback")
 
         res.status(200).json({
             success: true,

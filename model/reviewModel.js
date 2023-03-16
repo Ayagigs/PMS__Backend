@@ -22,7 +22,8 @@ const reviewSchema = new mongoose.Schema({
     },
     feedback: [
         {
-            type: String
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Feedback"
         }
     ],
     score: {

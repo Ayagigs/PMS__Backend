@@ -5,9 +5,10 @@ import { EReviewType } from "../enums/EReviewType.js";
 import Company from "../model/companyModel.js";
 import { ERatings } from "../enums/ERatings.js";
 import { EReviewTime } from "../enums/EReviewTime.js";
+import Feedback from "../model/feedbackModel.js";
 
 export const addPerformanceReview = async(req, res) => {
-    const { feedback, score, competency, ratings} = req.body;
+    const { score, competency, ratings} = req.body;
     // id of employee to be reviewed
     const {employeeID} = req.params
 
@@ -52,7 +53,6 @@ export const addPerformanceReview = async(req, res) => {
             reviewee: employeeID,
             reviewType : EReviewType.PERFORMANCE,
             reviewTime: year,
-            feedback,
             score,
             competency,
             date: Date.now(),
@@ -137,7 +137,7 @@ export const add360Appraisal = async(req, res) => {
 
 export const addGoalReview = async(req, res) => {
     try{
-      const { feedback, score, competency, ratings} = req.body;
+      const { score, competency, ratings} = req.body;
       const {goalID} = req.params
 
       // employee adding the goal review
@@ -158,7 +158,6 @@ export const addGoalReview = async(req, res) => {
           reviewer: req.userAuth._id,
           reviewee: goal.owner,
           reviewType : EReviewType.GOALREVIEW,
-          feedback,
           goal: goalID,
           score,
           competency,
@@ -189,12 +188,25 @@ export const addFeedback = async(req, res) => {
 
     // getting the review you want to add a feedback to
     const review = await Reviews.findById(reviewID)
+
     
     try{
+      const userFeedback = await Feedback.create({
+        feedback,
+        reviewer: req.userAuth._id,
+        review: reviewID
+      })
       // Adding to feedback array
-      review.feedback.push(feedback)
-
+      review.feedback.push(userFeedback._id)
+      
       await review.save()
+      
+      // Adding the feedback id to the goal feedback model
+      if(review.reviewType === EReviewType.GOALREVIEW){
+        const goal = await Goal.findById(review.goal)
+        goal.feedback.push(userFeedback._id)
+        await goal.save()
+      }
 
       res.status(200).send({status: 'Success', data: review.feedback})
 
@@ -203,6 +215,7 @@ export const addFeedback = async(req, res) => {
         res.status(500).send({status: 'Fail', message: error.message})
     }
 }
+
 
 
 export const employeesFor360Appraisal = async (req, res, next) => {
@@ -329,7 +342,7 @@ export const employeesForGoalReview = async(req, res) => {
 }
 
 export const getAllReviews = async(req, res) => {
-  const reviews = await Reviews.find().populate("reviewer").populate("reviewee").populate("goal")
+  const reviews = await Reviews.find().populate("reviewer").populate("goal")
 
   try{
     res.status(200).send({status: 'Success', data: reviews})
@@ -348,4 +361,17 @@ export const getMyReviews = async(req, res) => {
   }catch(error){
     res.status(500).send({"status": 'Fail', message: error.message})
   }
-}
+} 
+
+
+export const getAllFeedbackForAReview = async(req, res) => {
+  const {reviewID} = req.body;
+
+  try{
+    const feedbacks = Feedback.find({review: reviewID}).populate("reviewer").populate("review")
+    res.status(200).send({status: 'Success', data: feedbacks})
+
+  }catch(error){
+    res.status(500).send({"status": 'Fail', message: error.message})
+  }
+} 

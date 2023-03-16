@@ -48,6 +48,12 @@ const goalSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Reviews'
         }
+    ],
+    feedback: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Feedback"
+        }
     ]
 
 })
