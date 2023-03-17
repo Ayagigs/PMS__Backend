@@ -9,6 +9,7 @@ import crypto from "crypto";
 
 import { emailSender } from "../utils/emailSender.js";
 import Company from "../model/companyModel.js";
+import Employee from "../model/EmployeeModel.js";
 
 export const adminReg = asyncHandler(async (req, res, next) => {
   /************************* ADMIN PERSONAL INFORMATION ******************************/
@@ -387,7 +388,7 @@ export const updatePersonalInfo = asyncHandler(async (req, res, next) => {
   }
 });
 
-export const findAdminUser = asyncHandler(async (req, res) => {
+export const findAdminUser = asyncHandler(async (req, res, next) => {
   const adminUser = await Admin.findById(req.userAuth);
   const company = await Company.find({companyName: adminUser.companyName})
 
@@ -399,3 +400,30 @@ export const findAdminUser = asyncHandler(async (req, res) => {
     data: {adminUser, company},
   });
 });
+
+
+export const deactivateEmployee = asyncHandler(async(req, res, next) => {
+  const adminUser = await Admin.findById(req.userAuth);
+  const {employeeID} = req.params;
+
+  if (!adminUser) {
+    return next(new errorHandler("No user Found, Please Login", 404));
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(employeeID)) {
+    return next(new errorHandler("Invalid objectID", 404));
+  }
+
+  const employee = await Employee.findByIdAndUpdate(employeeID, {
+    $set: {
+      status: Inactive
+    }
+  }, {
+    new: true
+  })
+
+  res.status(200).json({
+    status: "Success",
+    data: employee,
+  });
+})

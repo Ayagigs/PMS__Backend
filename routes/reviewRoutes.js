@@ -8,10 +8,14 @@ import restrictedTo from '../middleware/restrictedTo.js';
 
 const reviewRoute = express.Router()
 
+// ********************************* POST REQUEST ********************************************
 reviewRoute.post("/performancereview/:employeeID", protect, restrictedTo("HR Manager", "Performance Manager", "Admin"), isReviewTime, addPerformanceReview)
 reviewRoute.post("/appraisal/:employeeID", protect, isAppraisalTime, add360Appraisal)
 reviewRoute.post("/goalreview/:goalID", protect, canReviewGoal, addGoalReview)
 reviewRoute.post("/feedback/:reviewID", protect, addFeedback)
+
+
+// ******************************** GET REQUEST *******************************************
 reviewRoute.get("/performanceReview", protect, restrictedTo("HR Manager","Performance Manager", "Admnin"), isReviewTime, employeesForPerformanceReview)
 reviewRoute.get("/appraisal", protect, isAppraisalTime, employeesFor360Appraisal)
 reviewRoute.get("/goalReview", protect, employeesForGoalReview)

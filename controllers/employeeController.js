@@ -402,5 +402,83 @@ export const getSpecificEmployee = async (req, res) => {
 
 
 
+export const editEmployeeDetails = async(req, res) => {
+  const {
+    firstName,
+    lastName,
+    middleName,
+    preferredName,
+    jobTitle,
+    employmentStatus,
+    workEmail,
+    phoneNo,
+    workNo,
+    homeNo,
+    address,
+    state,
+    country,
+    gender,
+    maritalStatus,
+    DOB
+  } = req.body;
 
 
+  try{
+    const employee = await Employee.findByIdAndUpdate(req.userAuth._id, {
+      $set: {
+        firstName,
+        lastName,
+        middleName,
+        preferredName,
+        jobTitle,
+        employmentStatus,
+        workEmail,
+        phoneNo,
+        workNo,
+        homeNo,
+        address,
+        state,
+        country,
+        gender,
+        maritalStatus,
+        DOB
+      }
+    }, {
+      new: true
+    })
+
+    res.status(200).send({status: 'Success', data: employee})
+
+    
+  }catch(error){
+    res.status(500).send({ status: "Fail", message: error.message });
+  }
+}
+
+
+export const profilePhotoUpload = asyncHandler(async(req, res, next) => {
+
+  try{
+    // fint the user that wants to update profile
+    const employee = await Employee.findById(req.userAuth._id);
+
+    // check if the user exists
+    if(!employee){
+      return next(new errorHandler("No user Found, Please Login", 404));
+    }
+
+    if(req.file){
+      await Employee.findByIdAndUpdate(req.userAuth._id, {
+          $set:{
+              profilePhoto: req.file.path
+          },
+      },{
+          new: true
+      })
+    }
+    res.status.send({status: 'Success', message: 'Profile Upload Successfull'})
+
+    }catch(error){
+        return res.status(500).send({status: 'Success', message: error.message})
+    }
+})

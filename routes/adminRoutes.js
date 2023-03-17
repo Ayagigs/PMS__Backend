@@ -3,6 +3,7 @@ import {
   adminLogin,
   adminReg,
   changePassword,
+  deactivateEmployee,
   findAdminUser,
   forgotPassword,
   logout,
@@ -14,6 +15,7 @@ import {
 import generateOTP from "../middleware/generateOtp.js";
 import localVariables from "../middleware/localVariables.js";
 import { protect } from "../middleware/protect.js";
+import restrictedTo from "../middleware/restrictedTo.js";
 import verifyOTP from "../middleware/verifyOtp.js";
 
 const router = express.Router();
@@ -32,6 +34,7 @@ router.put("/resetpassword/:resetToken", resetPassword);
 router.patch("/changepassword", protect, changePassword);
 router.patch("/updatecompanydetails", protect, updateCompanyDetails);
 router.patch("/updatepersonalinfo", protect, updatePersonalInfo);
+router.patch("/deactivate/:employeeID", protect, restrictedTo("Admin"), deactivateEmployee);
 
 /************* Get Request ************/
 router.get("/findme", protect, findAdminUser);

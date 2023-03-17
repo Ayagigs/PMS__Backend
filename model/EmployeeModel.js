@@ -48,6 +48,12 @@ const employeeSchema = new mongoose.Schema(
       type: String,
       required: [true, "Phone number is required"],
     },
+    workNo: {
+      type: String, 
+    },
+    homeNo: {
+      type: String,
+    },
     profilePhoto: {
       type: String,
     },
