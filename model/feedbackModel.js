@@ -4,13 +4,14 @@ const feedbackSchema = new mongoose.Schema({
     feedback: {
         type: String
     },
-    reviewer: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Employee"
+    employeeName: {
+        type: String,
     },
-    review: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Reviews"
+    employeeProfile: {
+        type: String 
+    },
+    employeeRole: {
+        type: String
     }
 })
 

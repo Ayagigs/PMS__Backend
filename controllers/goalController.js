@@ -32,32 +32,9 @@ export const addGoal = asyncHandler(async (req, res, next) => {
             owner: goalOwner._id
         })
 
-
-        const findPManager = await Employee.find({department: goalOwner.department, companyID: goalOwner.companyID, role: 'Performance Manager'})
-        const findHRManager = await Employee.find({companyID: goalOwner.companyID, role: 'HR Manager'})
-
-        if(findPManager && !goal.reviewers.includes(findPManager._id)){
-            goal.reviewers.push(findPManager._id)
-            findPManager.forEach(async(el) => {
-                el.goalsToReview.push(goal._id)
-
-                await el.save()
-            })
-        }
-        if(findHRManager && !goal.reviewers.includes(findHRManager._id)){
-            goal.reviewers.push(findHRManager._id)
-            findHRManager.forEach(async(el) => {
-                el.goalsToReview.push(goal._id)
-
-                await el.save()
-            })
-        }
-
         goalOwner.goals.push(goal._id)
         await goalOwner.save();
         await goal.save()
-
-
         console.log(goalOwner.goals)
 
 
@@ -126,14 +103,20 @@ export const editGoal = asyncHandler(async (req, res, next) => {
             new: true
         })
 
-         editedgoal.reviewers.push(reviewers)
-         await editedgoal.save()
+        
+        
+        for(var i = 0; i < reviewers.length; i++){
+            editedgoal.reviewers.push(reviewers[i])
+            await editedgoal.save()
+            
+            const employee = await Employee.findById(reviewers[i])
+            
+            employee.goalsToReview.push(editedgoal._id)
+            
+            await employee.save()
 
-         reviewers.array.forEach(async(element) => {
-            const employee = await Employee.findById(element)
-
-            employee.goalsToReview.push(req.params.id)
-         });
+            console.log(employee)
+         }
 
 
         res.json({

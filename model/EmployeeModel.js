@@ -110,7 +110,7 @@ const employeeSchema = new mongoose.Schema(
     goalsToReview: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Gaol"
+        ref: "Goal"
       }
     ],
     appraisalsGiven: [

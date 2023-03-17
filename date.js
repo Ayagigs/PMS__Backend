@@ -1,7 +1,5 @@
-let currentDate = new Date()
-let date = new Date('2023-03-15T12:10:12.834Z')
-let date2 = new Date(Date.now())
+let arr = [1, 4, 3, 4, 5]
 
+let sum = arr.reduce((a, b) => a + b)/arr.length
 
-console.log(currentDate)
-console.log(date2 - date)
+console.log(sum)
