@@ -7,6 +7,7 @@ import {
   findAdminUser,
   forgotPassword,
   logout,
+  profilePhotoUpload,
   resetPassword,
   updateCompanyDetails,
   updatePersonalInfo,
@@ -26,6 +27,7 @@ router.post("/registeration", generateOTP, adminReg);
 router.post("/login", adminLogin);
 router.post("/logout", logout);
 router.post("/forgotpassword", forgotPassword);
+router.post("/photoupload", protect, restrictedTo('Admin'), profilePhotoUpload);
 
 /************* Put Request ************/
 router.put("/resetpassword/:resetToken", resetPassword);

@@ -427,3 +427,31 @@ export const deactivateEmployee = asyncHandler(async(req, res, next) => {
     data: employee,
   });
 })
+
+
+export const profilePhotoUpload = asyncHandler(async(req, res, next) => {
+
+  try{
+    // fint the user that wants to update profile
+    const admin = await Admin.findById(req.userAuth._id);
+
+    // check if the user exists
+    if(!admin){
+      return next(new errorHandler("No user Found, Please Login", 404));
+    }
+
+    if(req.file){
+      await Admin.findByIdAndUpdate(req.userAuth._id, {
+          $set:{
+              profilePhoto: req.file.path
+          },
+      },{
+          new: true
+      })
+    }
+    res.status(200).send({status: 'Success', message: 'Profile Upload Successfull'})
+
+    }catch(error){
+        return res.status(500).send({status: 'Success', message: error.message})
+    }
+})

@@ -476,7 +476,7 @@ export const profilePhotoUpload = asyncHandler(async(req, res, next) => {
           new: true
       })
     }
-    res.status.send({status: 'Success', message: 'Profile Upload Successfull'})
+    res.status(200).send({status: 'Success', message: 'Profile Upload Successfull'})
 
     }catch(error){
         return res.status(500).send({status: 'Success', message: error.message})
