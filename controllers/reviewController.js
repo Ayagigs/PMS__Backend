@@ -8,6 +8,7 @@ import { EReviewTime } from "../enums/EReviewTime.js";
 
 
 const ratingCalculator = (score) => {
+  let finalScore = score.toFixed(1)
   if (finalScore >= 5) return ERatings.OUTSTANDING;
   if (finalScore >= 4) return ERatings.EXCELLENT;
   if (finalScore >= 3) return ERatings.VGOOD;
@@ -74,7 +75,7 @@ export const addPerformanceReview = async (req, res) => {
       competency,
       date: Date.now(),
       ratings: ratingCalculator(finalScore),
-      finalScore: finalScore,
+      finalScore: finalScore.toFixed(1),
       feedback
     });
 
@@ -82,6 +83,11 @@ export const addPerformanceReview = async (req, res) => {
     reviewer.performanceReviewGiven.push(employeeID);
 
     employeeBeingReviewed.reviews.push(review._id)
+
+    employeeBeingReviewed.score = parseFloat(employeeBeingReviewed.score + score)
+    employeeBeingReviewed.competency = parseFloat(employeeBeingReviewed.competency + competency)
+    employeeBeingReviewed.finalScore = (employeeBeingReviewed.competency + employeeBeingReviewed.score)/2
+    employeeBeingReviewed.rating = ratingCalculator(employeeBeingReviewed.finalScore.toFixed(1))
     
     await reviewer.save();
     await employeeBeingReviewed.save()
@@ -121,6 +127,11 @@ export const addSelfAppraisal = async (req, res) => {
     });
 
     employee.reviews.push(review._id)
+
+    employee.score = parseFloat(employeeBeingReviewed.score + score)
+    employee.competency = parseFloat(employeeBeingReviewed.competency + competency)
+    employee.finalScore = (employeeBeingReviewed.competency + employeeBeingReviewed.score)/2
+    employee.rating = ratingCalculator(employeeBeingReviewed.finalScore.toFixed(1))
 
     await employee.save();
 
@@ -180,7 +191,7 @@ export const add360Appraisal = async (req, res) => {
       competency,
       date: Date.now(),
       ratings: ratingCalculator(finalScore),
-      finalScore: finalScore,
+      finalScore: finalScore.toFixed(1),
       feedback
     });
 
@@ -188,6 +199,11 @@ export const add360Appraisal = async (req, res) => {
     reviewer.appraisalsGiven.push(employeeID);
     
     employeeBeingReviewed.reviews.push(review._id)
+
+    employeeBeingReviewed.score = parseFloat(employeeBeingReviewed.score + score)
+    employeeBeingReviewed.competency = parseFloat(employeeBeingReviewed.competency + competency)
+    employeeBeingReviewed.finalScore = (employeeBeingReviewed.competency + employeeBeingReviewed.score)/2
+    employeeBeingReviewed.rating = ratingCalculator(employeeBeingReviewed.finalScore.toFixed(1))
 
     await reviewer.save();
     await employeeBeingReviewed.save()
@@ -233,13 +249,18 @@ export const addGoalReview = async (req, res) => {
       competency,
       date: Date.now(),
       ratings: ratingCalculator(finalScore),
-      finalScore: finalScore,
+      finalScore: finalScore.toFixed(1),
       feedback
     });
 
     goal.reviews.push(review._id);
     
     employeeBeingReviewed.reviews.push(review._id)
+
+    employeeBeingReviewed.score = parseFloat(employeeBeingReviewed.score + score)
+    employeeBeingReviewed.competency = parseFloat(employeeBeingReviewed.competency + competency)
+    employeeBeingReviewed.finalScore = (employeeBeingReviewed.competency + employeeBeingReviewed.score)/2
+    employeeBeingReviewed.rating = ratingCalculator(employeeBeingReviewed.finalScore.toFixed(1))
 
     await employeeBeingReviewed.save()
     await goal.save();
@@ -288,6 +309,7 @@ export const employeesFor360Appraisal = async (req, res, next) => {
 
     // once the review period is over, clears the array containing those reviewed
     const delay = company.appraisalEndDate - today;
+
 
     setTimeout(async () => {
       await Employee.findByIdAndUpdate(

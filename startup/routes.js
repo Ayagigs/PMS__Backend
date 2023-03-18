@@ -15,4 +15,5 @@ export default function (app) {
   app.use("/api/v1/review", reviewRoute)
   app.use("/api/v1/department", departmentRoute)
   app.use("/api/v1/category", categoryRoute)
+  
 }

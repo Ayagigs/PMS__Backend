@@ -12,6 +12,7 @@ import {
   updateCompanyDetails,
   updatePersonalInfo,
 } from "../controllers/adminControllers.js";
+import { contactUsMail } from "../controllers/contactusController.js";
 
 import generateOTP from "../middleware/generateOtp.js";
 import localVariables from "../middleware/localVariables.js";
@@ -28,6 +29,7 @@ router.post("/login", adminLogin);
 router.post("/logout", logout);
 router.post("/forgotpassword", forgotPassword);
 router.post("/photoupload", protect, restrictedTo('Admin'), profilePhotoUpload);
+router.post("/contactus", contactUsMail)
 
 /************* Put Request ************/
 router.put("/resetpassword/:resetToken", resetPassword);

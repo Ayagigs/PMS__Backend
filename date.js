@@ -1,14 +1,4 @@
-let arr = [
-    {
-        text: "Go away 2",
-        order: 3
-    },
-    {
-        text: "Go away 1",
-        order: 2
-    }
+let arr = 4.9534
+let sum = arr.toFixed(1)
 
-]
-let sum = arr.filter((el) => el.text !== "Go away 1")
-
-console.log(sum)
+console.log(parseFloat('' + 0.5))

@@ -1,5 +1,5 @@
 import express from 'express';
-import { add360Appraisal, addGoalReview, addPerformanceReview, employeesFor360Appraisal, employeesForGoalReview, employeesForPerformanceReview, getAllReviews, getMyReviews } from '../controllers/reviewController.js';
+import { add360Appraisal, addGoalReview, addPerformanceReview, addSelfAppraisal, employeesFor360Appraisal, employeesForGoalReview, employeesForPerformanceReview, getAllReviews, getMyReviews } from '../controllers/reviewController.js';
 import canReviewGoal from '../middleware/canReviewGoal.js';
 import isAppraisalTime from '../middleware/isAppraisalTime.js';
 import isReviewTime from '../middleware/isReviewTime.js';
@@ -12,6 +12,7 @@ const reviewRoute = express.Router()
 reviewRoute.post("/performancereview/:employeeID", protect, restrictedTo("HR Manager", "Performance Manager", "Admin"), isReviewTime, addPerformanceReview)
 reviewRoute.post("/appraisal/:employeeID", protect, isAppraisalTime, add360Appraisal)
 reviewRoute.post("/goalreview/:goalID", protect, canReviewGoal, addGoalReview)
+reviewRoute.post("/selfappraisal", protect, addSelfAppraisal)
 
 
 // ******************************** GET REQUEST *******************************************
