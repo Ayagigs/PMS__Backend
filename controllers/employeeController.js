@@ -239,7 +239,7 @@ export const employeeLogin = asyncHandler(async (req, res, next) => {
 
 
 export const getAllEmployees = asyncHandler(async (req, res, next) => {
-  const employees = await Employee.find({ companyID: req.params.companyID });
+  const employees = await Employee.find({ companyID: req.params.companyID }).populate('reviews');
 
 
 

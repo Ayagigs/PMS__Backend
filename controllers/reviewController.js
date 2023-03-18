@@ -5,18 +5,31 @@ import { EReviewType } from "../enums/EReviewType.js";
 import Company from "../model/companyModel.js";
 import { ERatings } from "../enums/ERatings.js";
 import { EReviewTime } from "../enums/EReviewTime.js";
-import Feedback from "../model/feedbackModel.js";
 
 
+const ratingCalculator = (score) => {
+  if (finalScore >= 5) return ERatings.OUTSTANDING;
+  if (finalScore >= 4) return ERatings.EXCELLENT;
+  if (finalScore >= 3) return ERatings.VGOOD;
+  if (finalScore >= 2) return ERatings.SATISFACTORY;
+  return ERatings.UNSATISFACTORY;
+}
 
 export const addPerformanceReview = async (req, res) => {
-  const { scores, competencyScores } = req.body;
+  const { scores, competencyScores, feedback } = req.body;
   // id of employee to be reviewed
   const { employeeID } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(employeeID)) {
+    return res.status(404).send({status: 'Fail', message: 'Invalid Object Id'})
+  }
 
   // get detils of the person giving the review and company they belong to
   const reviewer = await Employee.findById(req.userAuth._id);
   const company = await Company.findOne({ companyID: reviewer.companyID });
+
+  // get details of employee being reviewed
+  const employeeBeingReviewed = await Employee.findById(employeeID)
 
   // get employees already reviewed by this user
   const employeesAlreadyReviewed = reviewer.performanceReviewGiven;
@@ -51,33 +64,27 @@ export const addPerformanceReview = async (req, res) => {
   // calculating the final score of the employee
   const finalScore = (score + competency) / 2;
 
-  // calculating the employee ratings from the final score
-  let rating = "";
-  if (finalScore <= 5) rating = ERatings.OUTSTANDING;
-  else if (finalScore <= 4) rating = ERatings.EXCELLENT;
-  else if (finalScore <= 3) rating = ERatings.VGOOD;
-  else if (finalScore <= 2) rating = ERatings.SATISFACTORY;
-  else rating = ERatings.UNSATISFACTORY;
-
   try {
     const review = await Reviews.create({
       reviewer: req.userAuth._id,
       reviewee: employeeID,
       reviewType: EReviewType.PERFORMANCE,
       reviewTime: year,
-      // score,
+      score,
       competency,
       date: Date.now(),
-      ratings: rating,
+      ratings: ratingCalculator(finalScore),
       finalScore: finalScore,
+      feedback
     });
 
     // adding the just reviewed employee to those who have already being reviewed
     reviewer.performanceReviewGiven.push(employeeID);
-    console.log(reviewer);
 
+    employeeBeingReviewed.reviews.push(review._id)
+    
     await reviewer.save();
-    console.log(reviewer);
+    await employeeBeingReviewed.save()
 
     res.status(200).send({ status: "Success", message: review });
   } catch (error) {
@@ -87,15 +94,59 @@ export const addPerformanceReview = async (req, res) => {
 
 
 
+export const addSelfAppraisal = async (req, res) => {
+  const { scores, competencyScores, feedback } = req.body;
+
+  const employee = await Employee.findById(req.userAuth._id);
+
+  
+  let score = scores.reduce((a, b) => a + b)/scores.length
+  let competency = competencyScores.reduce((a, b) => a + b)/competencyScores.length
+
+  // calculating the final score
+  const finalScore = (score + competency) / 2;
+
+
+  try {
+    const review = await Reviews.create({
+      reviewer: req.userAuth._id,
+      reviewee: req.userAuth._id,
+      reviewType: EReviewType.SELFAPPRAISAL,
+      score,
+      competency,
+      date: Date.now(),
+      ratings: ratingCalculator(finalScore),
+      finalScore: finalScore,
+      feedback
+    });
+
+    employee.reviews.push(review._id)
+
+    await employee.save();
+
+    res.status(200).send({ status: "Success", message: review });
+  } catch (error) {
+    res.status(500).send({ status: "Fail", message: error.message });
+  }
+};
+
+
 export const add360Appraisal = async (req, res) => {
-  const { scores, competencyScores } = req.body;
+  const { scores, competencyScores, feedback } = req.body;
   const { employeeID } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(employeeID)) {
+    return res.status(404).send({status: 'Fail', message: 'Invalid Object Id'})
+  }
 
   // Get the person reviewing an employee
   const reviewer = await Employee.findById(req.userAuth._id);
 
   // Get the Employees that have already been reviewed by this user
   const employeesAlreadyReviewed = reviewer.appraisalsGiven;
+
+  // get details of employee being reviewed
+  const employeeBeingReviewed = await Employee.findById(employeeID)
 
   // check if the employee about to be reviewed have been reviewed before by this user
   if (employeesAlreadyReviewed.includes(employeeID)) {
@@ -119,13 +170,6 @@ export const add360Appraisal = async (req, res) => {
   // calculating the final score
   const finalScore = (score + competency) / 2;
 
-  // calculating the ratings from the employee final score
-  let rating = "";
-  if (finalScore <= 5) rating = ERatings.OUTSTANDING;
-  else if (finalScore <= 4) rating = ERatings.EXCELLENT;
-  else if (finalScore <= 3) rating = ERatings.VGOOD;
-  else if (finalScore <= 2) rating = ERatings.SATISFACTORY;
-  else rating = ERatings.UNSATISFACTORY;
 
   try {
     const review = await Reviews.create({
@@ -135,15 +179,18 @@ export const add360Appraisal = async (req, res) => {
       score,
       competency,
       date: Date.now(),
-      ratings: rating,
+      ratings: ratingCalculator(finalScore),
       finalScore: finalScore,
+      feedback
     });
 
     // add the just reviewed employee to the array containing those he/she has reviewed
     reviewer.appraisalsGiven.push(employeeID);
-    console.log(employeeID);
+    
+    employeeBeingReviewed.reviews.push(review._id)
 
     await reviewer.save();
+    await employeeBeingReviewed.save()
 
     res.status(200).send({ status: "Success", message: review });
   } catch (error) {
@@ -155,11 +202,18 @@ export const add360Appraisal = async (req, res) => {
 
 export const addGoalReview = async (req, res) => {
   try {
-    const { scores, competencyScores } = req.body;
+    const { scores, competencyScores, feedback } = req.body;
     const { goalID } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(goalID)) {
+      return res.status(404).send({status: 'Fail', message: 'Invalid Object Id'})
+    }
 
     // employee adding the goal review
     const reviewer = await Employee.findById(req.userAuth._id);
+
+    // get details of employee being reviewed
+    const employeeBeingReviewed = await Employee.findById(employeeID)
 
     const goal = await Goal.findById(goalID);
 
@@ -170,13 +224,6 @@ export const addGoalReview = async (req, res) => {
 
     const finalScore = (score + competency) / 2;
 
-    let rating = "";
-    if (finalScore <= 5) rating = ERatings.OUTSTANDING;
-    else if (finalScore <= 4) rating = ERatings.EXCELLENT;
-    else if (finalScore <= 3) rating = ERatings.VGOOD;
-    else if (finalScore <= 2) rating = ERatings.SATISFACTORY;
-    else rating = ERatings.UNSATISFACTORY;
-
     const review = await Reviews.create({
       reviewer: req.userAuth._id,
       reviewee: goal.owner,
@@ -185,11 +232,16 @@ export const addGoalReview = async (req, res) => {
       score,
       competency,
       date: Date.now(),
-      ratings: rating,
+      ratings: ratingCalculator(finalScore),
       finalScore: finalScore,
+      feedback
     });
 
     goal.reviews.push(review._id);
+    
+    employeeBeingReviewed.reviews.push(review._id)
+
+    await employeeBeingReviewed.save()
     await goal.save();
 
     // remove the goal reviewed now from the list of goal you need to review
@@ -208,41 +260,6 @@ export const addGoalReview = async (req, res) => {
 };
 
 
-
-export const addFeedback = async (req, res) => {
-  const { feedback } = req.body;
-  const { reviewID } = req.params;
-
-  // getting the review you want to add a feedback to
-  const review = await Reviews.findById(reviewID);
-
-  // getting the user details that is adding the review
-  const employee = await Employee.findById(req.userAuth._id);
-
-  try {
-    const userFeedback = await Feedback.create({
-      feedback,
-      employeeName: employee.firstName + " " + employee.lastName,
-      employeeProfile: employee.profilePhoto,
-      employeeRole: employee.role,
-    });
-    // Adding to feedback array
-    review.feedback.push(userFeedback._id);
-
-    await review.save();
-
-    // Adding the feedback to the goal model if it is a goal review
-    if (review.reviewType === EReviewType.GOALREVIEW) {
-      const goal = await Goal.findById(review.goal);
-      goal.feedback.push(userFeedback._id);
-      await goal.save();
-    }
-
-    res.status(200).send({ status: "Success", data: review.feedback });
-  } catch (error) {
-    res.status(500).send({ status: "Fail", message: error.message });
-  }
-};
 
 
 
@@ -420,3 +437,5 @@ export const getMyReviews = async (req, res) => {
     res.status(500).send({ status: "Fail", message: error.message });
   }
 };
+
+

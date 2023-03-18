@@ -108,6 +108,12 @@ const employeeSchema = new mongoose.Schema(
         ref: "Goal"
       }
     ],
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Reviews"
+      }
+    ],
     companyID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Admin",

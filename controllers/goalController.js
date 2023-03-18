@@ -29,6 +29,7 @@ export const addGoal = asyncHandler(async (req, res, next) => {
             category,
             description,
             keyobjectives,
+            companyID: goalOwner.companyID,
             owner: goalOwner._id
         })
 
@@ -57,7 +58,7 @@ export const getEmployeeAndGoal = asyncHandler(async (req, res, next) => {
             return next(new errorHandler("Invalid objectID", 404));
         }
 
-        const employees = await Employee.find({companyID, role: "Staff"}).populate('goals');
+        const employees = await Goal.find({companyID}).populate('owner').populate('reviews');
 
         res.status(200).json({
             success: true,
@@ -72,7 +73,7 @@ export const getEmployeeAndGoal = asyncHandler(async (req, res, next) => {
 
 export const getAllGoals = async (req, res) => {
     try{
-        const goals = await Goal.find({owner: req.userAuth}).populate('reviews').populate("feedback")
+        const goals = await Goal.find({owner: req.userAuth}).populate('reviews')
 
         res.status(200).json({
             success: true,

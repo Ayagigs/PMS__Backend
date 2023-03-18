@@ -49,12 +49,10 @@ const goalSchema = new mongoose.Schema({
             ref: 'Reviews'
         }
     ],
-    feedback: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Feedback"
-        }
-    ]
+    companyID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Admin'
+    }
 
 })
 

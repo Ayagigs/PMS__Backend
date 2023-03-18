@@ -20,12 +20,9 @@ const reviewSchema = new mongoose.Schema({
         type: String,
         enum: EReviewTime
     },
-    feedback: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Feedback"
-        }
-    ],
+    feedback: {
+        type: String
+    },
     score: {
         type: Number,
         required: [true, "Score is needed"]
