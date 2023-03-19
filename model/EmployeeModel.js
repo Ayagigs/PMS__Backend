@@ -82,13 +82,16 @@ const employeeSchema = new mongoose.Schema(
       enum: ["Full Time", "Part Time", "Contract", "Intern"],
     },
     score: {
-      type: Number
+      type: Number,
+      default: 0
     },
     competency: {
-      type: Number
+      type: Number,
+      default: 0
     },
     finalScore: {
-      type: Number
+      type: Number,
+      default: 0
     },
     rating: {
       type: String

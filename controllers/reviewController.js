@@ -5,14 +5,14 @@ import { EReviewType } from "../enums/EReviewType.js";
 import Company from "../model/companyModel.js";
 import { ERatings } from "../enums/ERatings.js";
 import { EReviewTime } from "../enums/EReviewTime.js";
+import mongoose from "mongoose";
 
 
 const ratingCalculator = (score) => {
-  let finalScore = score.toFixed(1)
-  if (finalScore >= 5) return ERatings.OUTSTANDING;
-  if (finalScore >= 4) return ERatings.EXCELLENT;
-  if (finalScore >= 3) return ERatings.VGOOD;
-  if (finalScore >= 2) return ERatings.SATISFACTORY;
+  if (score >= 5) return ERatings.OUTSTANDING;
+  if (score >= 4) return ERatings.EXCELLENT;
+  if (score >= 3) return ERatings.VGOOD;
+  if (score >= 2) return ERatings.SATISFACTORY;
   return ERatings.UNSATISFACTORY;
 }
 
@@ -45,6 +45,15 @@ export const addPerformanceReview = async (req, res) => {
       });
   }
 
+  if (reviewer.department !== employeeBeingReviewed.department) {
+    return res
+      .status(403)
+      .send({
+        status: "Forbidden",
+        message: "You Can not review this employee",
+      });
+  }
+
 
   // checking if today is a mid-year of full-year so we can get the review time
   const today = new Date();
@@ -63,7 +72,7 @@ export const addPerformanceReview = async (req, res) => {
   let competency = competencyScores.reduce((a, b) => a + b)/competencyScores.length
 
   // calculating the final score of the employee
-  const finalScore = (score + competency) / 2;
+  const finalScore = ((score + competency) / 2).toFixed(1);
 
   try {
     const review = await Reviews.create({
@@ -71,11 +80,11 @@ export const addPerformanceReview = async (req, res) => {
       reviewee: employeeID,
       reviewType: EReviewType.PERFORMANCE,
       reviewTime: year,
-      score,
-      competency,
+      score: score.toFixed(1),
+      competency: competency.toFixed(1),
       date: Date.now(),
       ratings: ratingCalculator(finalScore),
-      finalScore: finalScore.toFixed(1),
+      finalScore: finalScore,
       feedback
     });
 
@@ -84,8 +93,8 @@ export const addPerformanceReview = async (req, res) => {
 
     employeeBeingReviewed.reviews.push(review._id)
 
-    employeeBeingReviewed.score = parseFloat(employeeBeingReviewed.score + score)
-    employeeBeingReviewed.competency = parseFloat(employeeBeingReviewed.competency + competency)
+    employeeBeingReviewed.score = (employeeBeingReviewed.score + score)/2
+    employeeBeingReviewed.competency = (employeeBeingReviewed.competency + competency)/2
     employeeBeingReviewed.finalScore = (employeeBeingReviewed.competency + employeeBeingReviewed.score)/2
     employeeBeingReviewed.rating = ratingCalculator(employeeBeingReviewed.finalScore.toFixed(1))
     
@@ -110,7 +119,7 @@ export const addSelfAppraisal = async (req, res) => {
   let competency = competencyScores.reduce((a, b) => a + b)/competencyScores.length
 
   // calculating the final score
-  const finalScore = (score + competency) / 2;
+  const finalScore = ((score + competency) / 2).toFixed(1);
 
 
   try {
@@ -118,8 +127,8 @@ export const addSelfAppraisal = async (req, res) => {
       reviewer: req.userAuth._id,
       reviewee: req.userAuth._id,
       reviewType: EReviewType.SELFAPPRAISAL,
-      score,
-      competency,
+      score: score.toFixed(1),
+      competency: competency.toFixed(1),
       date: Date.now(),
       ratings: ratingCalculator(finalScore),
       finalScore: finalScore,
@@ -128,8 +137,8 @@ export const addSelfAppraisal = async (req, res) => {
 
     employee.reviews.push(review._id)
 
-    employee.score = parseFloat(employeeBeingReviewed.score + score)
-    employee.competency = parseFloat(employeeBeingReviewed.competency + competency)
+    employee.score = (employeeBeingReviewed.score + score)/2
+    employee.competency = (employeeBeingReviewed.competency + competency)/2
     employee.finalScore = (employeeBeingReviewed.competency + employeeBeingReviewed.score)/2
     employee.rating = ratingCalculator(employeeBeingReviewed.finalScore.toFixed(1))
 
@@ -169,6 +178,17 @@ export const add360Appraisal = async (req, res) => {
       });
   }
 
+
+  if (reviewer.department !== employeeBeingReviewed.department) {
+    return res
+      .status(403)
+      .send({
+        status: "Forbidden",
+        message: "You Can not review this employee",
+      });
+  }
+
+  
   // checking if its self appraisal or 360 appraisal
   let appraisal = "";
   if (employeeID === req.userAuth._id) appraisal = EReviewType.SELFAPPRAISAL;
@@ -179,7 +199,7 @@ export const add360Appraisal = async (req, res) => {
   let competency = competencyScores.reduce((a, b) => a + b)/competencyScores.length
 
   // calculating the final score
-  const finalScore = (score + competency) / 2;
+  const finalScore = ((score + competency) / 2).toFixed(1);
 
 
   try {
@@ -187,11 +207,11 @@ export const add360Appraisal = async (req, res) => {
       reviewer: req.userAuth._id,
       reviewee: employeeID,
       reviewType: appraisal,
-      score,
-      competency,
+      score: score.toFixed(1),
+      competency: competency.toFixed(1),
       date: Date.now(),
       ratings: ratingCalculator(finalScore),
-      finalScore: finalScore.toFixed(1),
+      finalScore: finalScore,
       feedback
     });
 
@@ -227,29 +247,40 @@ export const addGoalReview = async (req, res) => {
 
     // employee adding the goal review
     const reviewer = await Employee.findById(req.userAuth._id);
-
-    // get details of employee being reviewed
-    const employeeBeingReviewed = await Employee.findById(employeeID)
-
+    
     const goal = await Goal.findById(goalID);
+    
+    // get details of employee being reviewed
+    const employeeBeingReviewed = await Employee.findById(goal.owner)
+    if(reviewer.role !== ('Performance Manager' || 'HR Manager')){
+      if (!goal.reviewers.includes(reviewer._id)  ) {
+        return res
+          .status(403)
+          .send({
+            status: "Forbidden",
+            message: "You Cannn not review this goal",
+          });
+      }
+    }
 
     
     let score = scores.reduce((a, b) => a + b)/scores.length
     let competency = competencyScores.reduce((a, b) => a + b)/competencyScores.length
     
 
-    const finalScore = (score + competency) / 2;
+    const finalScore = ((score + competency) / 2).toFixed(1);
+
 
     const review = await Reviews.create({
       reviewer: req.userAuth._id,
       reviewee: goal.owner,
       reviewType: EReviewType.GOALREVIEW,
       goal: goalID,
-      score,
-      competency,
+      score: score.toFixed(1),
+      competency: competency.toFixed(1),
       date: Date.now(),
       ratings: ratingCalculator(finalScore),
-      finalScore: finalScore.toFixed(1),
+      finalScore: finalScore,
       feedback
     });
 
@@ -257,10 +288,10 @@ export const addGoalReview = async (req, res) => {
     
     employeeBeingReviewed.reviews.push(review._id)
 
-    employeeBeingReviewed.score = parseFloat(employeeBeingReviewed.score + score)
-    employeeBeingReviewed.competency = parseFloat(employeeBeingReviewed.competency + competency)
+    employeeBeingReviewed.score = ((employeeBeingReviewed.score + score)/2).toFixed(1)
+    employeeBeingReviewed.competency = ((employeeBeingReviewed.competency + competency)/2).toFixed(1)
     employeeBeingReviewed.finalScore = (employeeBeingReviewed.competency + employeeBeingReviewed.score)/2
-    employeeBeingReviewed.rating = ratingCalculator(employeeBeingReviewed.finalScore.toFixed(1))
+    employeeBeingReviewed.rating = ratingCalculator(employeeBeingReviewed.finalScore)
 
     await employeeBeingReviewed.save()
     await goal.save();
@@ -420,6 +451,8 @@ export const employeesForPerformanceReview = async (req, res) => {
   }
 };
 
+
+
 export const employeesForGoalReview = async (req, res) => {
   const employee = await Employee.findById(req.userAuth._id).populate({ 
     path: 'goalsToReview',
@@ -435,6 +468,8 @@ export const employeesForGoalReview = async (req, res) => {
   }
 };
 
+
+
 export const getAllReviews = async (req, res) => {
   const reviews = await Reviews.find()
     .populate("reviewer")
@@ -447,6 +482,8 @@ export const getAllReviews = async (req, res) => {
     res.status(500).send({ status: "Fail", message: error.message });
   }
 };
+
+
 
 export const getMyReviews = async (req, res) => {
   const reviews = await Reviews.find({ reviewee: req.userAuth._id }).populate(

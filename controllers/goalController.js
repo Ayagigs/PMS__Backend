@@ -36,7 +36,20 @@ export const addGoal = asyncHandler(async (req, res, next) => {
         goalOwner.goals.push(goal._id)
         await goalOwner.save();
         await goal.save()
-        console.log(goalOwner.goals)
+
+        const pm = await Employee.find({companyID: goalOwner.companyID, department: goalOwner.department, role: 'Performance Manager'})
+        const hr = await Employee.find({companyID: goalOwner.companyID, department: goalOwner.department, role: 'HR Manager'})
+
+        for(var i = 0; i < pm.length; i++){
+            pm[i].goalsToReview.push(goal._id)
+
+            await pm[i].save()
+        }
+        
+        for(var i = 0; i < hr.length; i++){
+            hr[i].goalsToReview.push(goal._id)
+            await hr[i].save()
+        }
 
 
         res.status(200).json({
@@ -73,7 +86,7 @@ export const getEmployeeAndGoal = asyncHandler(async (req, res, next) => {
 
 export const getAllGoals = async (req, res) => {
     try{
-        const goals = await Goal.find({owner: req.userAuth}).populate('reviews')
+        const goals = await Goal.find({owner: req.userAuth._id}).populate('reviewers')
 
         res.status(200).json({
             success: true,
@@ -88,6 +101,15 @@ export const getAllGoals = async (req, res) => {
 
 export const editGoal = asyncHandler(async (req, res, next) => {
     const {goaltitle, startdate, enddate, category, description, keyobjectives, status, isCompleted, reviewers} = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return next(new errorHandler("Invalid objectID", 404));
+    }
+    
+    const goal = await Goal.findById(req.params.id)
+    if(!goal){
+        return next(new errorHandler("Goal not found", 404));
+    }
     try{
         const editedgoal = await Goal.findByIdAndUpdate(req.params.id, {
             $set: {
@@ -98,7 +120,8 @@ export const editGoal = asyncHandler(async (req, res, next) => {
                 description,
                 keyobjectives,
                 status,
-                isCompleted
+                isCompleted,
+                reviewers
             }
         },{
             new: true
@@ -107,27 +130,53 @@ export const editGoal = asyncHandler(async (req, res, next) => {
         
         
         for(var i = 0; i < reviewers.length; i++){
-            editedgoal.reviewers.push(reviewers[i])
-            await editedgoal.save()
-            
             const employee = await Employee.findById(reviewers[i])
+
+            if(!employee){
+                return next(new errorHandler("Employee not found", 404));
+            }
+
+            if(employee.goalsToReview.includes(editedgoal._id)){
+                continue;
+            }
             
             employee.goalsToReview.push(editedgoal._id)
+            console.log(employee.goalsToReview)
             
             await employee.save()
 
-            console.log(employee)
          }
 
 
-        res.json({
-            status: "Success",
-            data: editedgoal
-        })
+         res.status(200).json({
+            success: true,
+            data: editGoal,
+        });
 
     }catch(error){
         res.status(500).send({ status: "Fail", message: error.message });
     }
+
+})
+
+
+export const findGoalById = asyncHandler(async(req, res, next) => {
+    const {goalID} = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return next(new errorHandler("Invalid objectID", 404));
+    }
+    
+    const goal = await Goal.findById(goalID).populate('reviews')
+    
+    if(!goal){
+        return next(new errorHandler("Goal not found", 404));
+    }
+
+    res.status(200).json({
+        success: true,
+        data: goal,
+    });
 
 })
 

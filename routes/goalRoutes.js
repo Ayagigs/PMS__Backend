@@ -1,5 +1,5 @@
 import express from "express"
-import { addGoal, editGoal, getAllGoals, getEmployeeAndGoal } from "../controllers/goalController.js";
+import { addGoal, editGoal, findGoalById, getAllGoals, getEmployeeAndGoal } from "../controllers/goalController.js";
 import { protect } from "../middleware/protect.js";
 import restrictedTo from "../middleware/restrictedTo.js";
 
@@ -13,6 +13,7 @@ goalRoute.get("/employeegoals/:companyID", protect, getEmployeeAndGoal);
 
 // Get all goals for an employee
 goalRoute.get("/goals", protect, getAllGoals)
+goalRoute.get("/findgoal/:goalID", protect, findGoalById)
 
 // Edit the goals
 goalRoute.patch("/edit/:id", protect, editGoal)

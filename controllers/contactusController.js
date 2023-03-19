@@ -10,6 +10,7 @@ export const contactUsMail = async(req, res) => {
       border-radius: 0px;
       padding: 48px;
       background: rgb(250, 250, 250);
+      boxSizing: borderBox;
     "
   >
     <h2 style="
