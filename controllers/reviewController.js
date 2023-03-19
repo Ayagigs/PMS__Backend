@@ -291,7 +291,7 @@ export const addGoalReview = async (req, res) => {
     employeeBeingReviewed.score = ((employeeBeingReviewed.score + score)/2).toFixed(1)
     employeeBeingReviewed.competency = ((employeeBeingReviewed.competency + competency)/2).toFixed(1)
     employeeBeingReviewed.finalScore = (employeeBeingReviewed.competency + employeeBeingReviewed.score)/2
-    employeeBeingReviewed.rating = ratingCalculator(employeeBeingReviewed.finalScore)
+    employeeBeingReviewed.rating = ratingCalculator(employeeBeingReviewed.finalScore.toFixed(1))
 
     await employeeBeingReviewed.save()
     await goal.save();
@@ -469,26 +469,8 @@ export const employeesForGoalReview = async (req, res) => {
 };
 
 
-
-export const getAllReviews = async (req, res) => {
-  const reviews = await Reviews.find()
-    .populate("reviewer")
-    .populate("goal")
-    .populate("feedback");
-
-  try {
-    res.status(200).send({ status: "Success", data: reviews });
-  } catch (error) {
-    res.status(500).send({ status: "Fail", message: error.message });
-  }
-};
-
-
-
 export const getMyReviews = async (req, res) => {
-  const reviews = await Reviews.find({ reviewee: req.userAuth._id }).populate(
-    "feedback"
-  );
+  const reviews = await Reviews.find({ reviewee: req.userAuth._id })
 
   try {
     res.status(200).send({ status: "Success", data: reviews });
@@ -498,3 +480,20 @@ export const getMyReviews = async (req, res) => {
 };
 
 
+export const getAllReviews = async(req, res) => {
+  const {companyID} = req.params;
+
+  try{
+    const employees = await Employee.find({companyID: companyID}).populate({ 
+      path: 'reviews',
+      populate: {
+        path: 'reviewer',
+      }
+    })
+    
+    res.status(200).send({ status: "Success", data: employees });
+
+  }catch (error) {
+    res.status(500).send({ status: "Fail", message: error.message });
+  }
+}

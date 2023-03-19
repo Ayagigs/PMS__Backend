@@ -459,24 +459,23 @@ export const editEmployeeDetails = async(req, res) => {
 export const profilePhotoUpload = asyncHandler(async(req, res, next) => {
 
   try{
-    // fint the user that wants to update profile
-    const employee = await Employee.findById(req.userAuth._id);
+      // fint the user that wants to update profile
+      const employee = await Employee.findById(req.userAuth._id);
 
-    // check if the user exists
-    if(!employee){
-      return next(new errorHandler("No user Found, Please Login", 404));
-    }
-
-    if(req.file){
-      await Employee.findByIdAndUpdate(req.userAuth._id, {
-          $set:{
-              profilePhoto: req.file.path
-          },
-      },{
-          new: true
-      })
-    }
-    res.status(200).send({status: 'Success', message: 'Profile Upload Successfull'})
+      // check if the user exists
+      if(!employee){
+        return next(new errorHandler("No user Found, Please Login", 404));
+      }
+      if(req.file){
+        await Employee.findByIdAndUpdate(req.userAuth._id, {
+            $set:{
+                profilePhoto: req.file.path
+            },
+        },{
+            new: true
+        })
+      }
+      res.status(200).send({status: 'Success', message: 'Profile Upload Successfull'})
 
     }catch(error){
         return res.status(500).send({status: 'Success', message: error.message})

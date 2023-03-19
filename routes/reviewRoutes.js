@@ -19,7 +19,7 @@ reviewRoute.post("/selfappraisal", protect, addSelfAppraisal)
 reviewRoute.get("/performanceReview", protect, restrictedTo("HR Manager","Performance Manager", "Admnin"), isReviewTime, employeesForPerformanceReview)
 reviewRoute.get("/appraisal", protect, isAppraisalTime, employeesFor360Appraisal)
 reviewRoute.get("/goalReview", protect, employeesForGoalReview)
-reviewRoute.get("/allreviews", protect, restrictedTo("HR Manager","Performance Manager", "Admin"),  getAllReviews)
+reviewRoute.get("/allreviews/:companyID", protect, restrictedTo("HR Manager","Performance Manager", "Admin"),  getAllReviews)
 reviewRoute.get("/myreviews", protect, getMyReviews)
 
 

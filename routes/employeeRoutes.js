@@ -24,8 +24,9 @@ var storage = multer.diskStorage({
 });
 
 const employeeRoute = express.Router();
-const upload = multer({ profileStorage });
+const upload = multer(storage);
 
+const profileupload = multer({profileStorage})
 
 // ************************ POST REQUEST ************************
 employeeRoute.post(
@@ -36,7 +37,7 @@ employeeRoute.post(
 );
 employeeRoute.post("/login", employeeLogin);
 employeeRoute.post("/resetpassword/:resetToken", resetPassword);
-employeeRoute.post("/profile", protect, upload.single("profile") , profilePhotoUpload)
+employeeRoute.post("/profile", protect, profileupload.single("profile") , profilePhotoUpload)
 
 // Add employees using csv files
 employeeRoute.post(
