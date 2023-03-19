@@ -9,6 +9,7 @@ import crypto from "crypto";
 
 import { emailSender } from "../utils/emailSender.js";
 import Company from "../model/companyModel.js";
+import Employee from "../model/EmployeeModel.js";
 
 export const adminReg = asyncHandler(async (req, res, next) => {
   /************************* ADMIN PERSONAL INFORMATION ******************************/
@@ -33,6 +34,7 @@ export const adminReg = asyncHandler(async (req, res, next) => {
   if (findAdminByEmail) {
     return next(new errorHandler("User already exists with this email", 404));
   }
+
 
   const createAdmin = new Admin({
     firstName,
@@ -263,7 +265,7 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
 export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
   const company = await Company.findOne({ companyID: req.userAuth._id });
   console.log(company)
-
+company.app
   if (company) {
     const {
       companyName,
@@ -273,7 +275,35 @@ export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
       country,
       companyRegNo,
       numOfEmployees,
+      midYearStartDate,
+      midYearEndDate,
+      fullYearStartDate,
+      fullYearEndDate,
+      appraisalStartDate,
+      appraisalEndDate
     } = req.body;
+
+    // validation for mid year end date should not be earlier than the start date
+    if(midYearEndDate <= midYearStartDate){
+      return next(new errorHandler("Mid-Year review end date can not be earlier than the start date", 500));
+    }
+    // validation for full year end date should not be earlier than the start date
+    if(fullYearEndDate <= fullYearStartDate){
+      return next(new errorHandler("Full-Year review end date can not be earlier than the start date", 500));
+    }
+    
+    // validation for appraisal end date should not be earlier than the start date
+    if(appraisalEndDate <= appraisalStartDate){
+      return next(new errorHandler("360 appraisal review end date can not be earlier than the start date", 500));
+    }
+    
+    // validation for full year and mid year should not be set in the same period
+    if(fullYearStartDate >= midYearStartDate && fullYearStartDate < midYearEndDate){
+      return next(new errorHandler("Full-Year and Mid-Year Reviews can not be taken in same time frame", 500));
+    }
+    if(midYearStartDate >= fullYearStartDate && midYearStartDate < fullYearEndDate){
+      return next(new errorHandler("Full-Year and Mid-Year Reiews can not be taken in same time frame", 500));
+    }
 
     
     const updateCompany = await Company.findOneAndUpdate(
@@ -287,6 +317,12 @@ export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
           state,
           country,
           numOfEmployees,
+          midYearStartDate,
+          midYearEndDate,
+          fullYearStartDate,
+          fullYearEndDate,
+          appraisalStartDate,
+          appraisalEndDate
         },
       },
       {
@@ -308,7 +344,7 @@ export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
       status: "Success",
-      data: updateCompany,
+      data: {updateCompany,}
     });
   } else {
     return next(new errorHandler("User not found, Please signup", 404));
@@ -352,7 +388,7 @@ export const updatePersonalInfo = asyncHandler(async (req, res, next) => {
   }
 });
 
-export const findAdminUser = asyncHandler(async (req, res) => {
+export const findAdminUser = asyncHandler(async (req, res, next) => {
   const adminUser = await Admin.findById(req.userAuth);
   const company = await Company.find({companyName: adminUser.companyName})
 
@@ -364,3 +400,61 @@ export const findAdminUser = asyncHandler(async (req, res) => {
     data: {adminUser, company},
   });
 });
+
+
+export const deactivateEmployee = asyncHandler(async(req, res, next) => {
+  const adminUser = await Admin.findById(req.userAuth);
+  const {employeeID} = req.params;
+
+  if (!adminUser) {
+    return next(new errorHandler("No user Found, Please Login", 404));
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(employeeID)) {
+    return next(new errorHandler("Invalid objectID", 404));
+  }
+
+  const employee = await Employee.findByIdAndUpdate(employeeID, {
+    $set: {
+      status: Inactive
+    }
+  }, {
+    new: true
+  })
+
+  res.status(200).json({
+    status: "Success",
+    data: employee,
+  });
+})
+
+
+export const profilePhotoUpload = asyncHandler(async(req, res, next) => {
+
+  try{
+    // fint the user that wants to update profile
+    const admin = await Admin.findById(req.userAuth._id);
+
+    // check if the user exists
+    if(!admin){
+      return next(new errorHandler("User not Found", 404));
+    }
+
+    if(req.file){
+      await Admin.findByIdAndUpdate(req.userAuth._id, {
+          $set:{
+              profilePhoto: req.file.path
+          },
+      },{
+          new: true
+      })
+    }
+    res.status(200).send({status: 'Success', message: 'Profile Upload Successfull'})
+
+    }catch(error){
+        return res.status(500).send({status: 'Success', message: error.message})
+    }
+})
+
+
+

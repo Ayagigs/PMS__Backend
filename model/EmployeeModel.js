@@ -48,6 +48,12 @@ const employeeSchema = new mongoose.Schema(
       type: String,
       required: [true, "Phone number is required"],
     },
+    workNo: {
+      type: String, 
+    },
+    homeNo: {
+      type: String,
+    },
     profilePhoto: {
       type: String,
     },
@@ -74,6 +80,21 @@ const employeeSchema = new mongoose.Schema(
     employmentStatus: {
       type: String,
       enum: ["Full Time", "Part Time", "Contract", "Intern"],
+    },
+    score: {
+      type: Number,
+      default: 0
+    },
+    competency: {
+      type: Number,
+      default: 0
+    },
+    finalScore: {
+      type: Number,
+      default: 0
+    },
+    rating: {
+      type: String
     },
     terminationDate: {
       type: Date,
@@ -102,17 +123,49 @@ const employeeSchema = new mongoose.Schema(
         ref: "Goal"
       }
     ],
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Reviews"
+      }
+    ],
     companyID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Admin",
       required: true,
     },
+    goalsToReview: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Goal"
+      }
+    ],
+    appraisalsGiven: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Employee'
+      }
+    ],
+    performanceReviewGiven: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Employee'
+      }
+    ],
+    fullYearReviewGiven: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Employee'
+      }
+    ]
   },
   {
     timestamps: true,
     toJSON: { virtuals: true },
   }
 );
+
+
 
 employeeSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

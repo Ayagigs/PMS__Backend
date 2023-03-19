@@ -40,6 +40,24 @@ const companySchema = new mongoose.Schema({
     ref: "Admin",
     required: true,
   },
+  midYearStartDate: {
+    type: Date
+  },
+  midYearEndDate: {
+    type: Date
+  },
+  fullYearStartDate: {
+    type: Date
+  },
+  fullYearEndDate: {
+    type: Date
+  },
+  appraisalStartDate: {
+    type: Date
+  },
+  appraisalEndDate: {
+    type: Date
+  }
 });
 
 const Company = mongoose.model("Company", companySchema);

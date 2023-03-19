@@ -29,12 +29,6 @@ const goalSchema = new mongoose.Schema({
         enum: ["In Progress", "Completed", "Overdue"],
         default: "In Progress"
     },
-    feedbacks: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Feedbacks"
-        }
-    ],
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Employee"
@@ -42,7 +36,24 @@ const goalSchema = new mongoose.Schema({
     isCompleted: {
         type: Boolean,
         default: "false"
+    },
+    reviewers: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Employee'
+        }
+    ],
+    reviews: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Reviews'
+        }
+    ],
+    companyID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Admin'
     }
+
 })
 
 const Goal = mongoose.model("Goal", goalSchema)

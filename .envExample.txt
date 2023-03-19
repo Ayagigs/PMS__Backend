@@ -1,21 +1,21 @@
 NODE_ENV = 
 PORT = 
 
-# Mongodb connection
+// ***** Mongodb connection ******
 CONNECTION_STRING = 
 PASSWORD = 
 
-#Jwt
+// ***** Jwt ******
 TOKEN_EXPIRES = 
 JWT_KEY = 
 
-# Cloudinary
+// ***** Cloudinary *****
 CLOUDINARY_CLOUD_NAME = 
 CLOUDINARY_API_KEY = 
-CLOUDIARY_API_SECRET = 
+CLOUDINARY_API_SECRET = 
 
 
-# EMAIL_HOST = smtp-mail.outlook.com
+// ***** Email ******
 EMAIL_USER = 
 EMAIL_PASS= 
 BASE_URL = 
