@@ -466,6 +466,7 @@ export const profilePhotoUpload = asyncHandler(async(req, res, next) => {
       if(!employee){
         return next(new errorHandler("No user Found, Please Login", 404));
       }
+
       if(req.file){
         await Employee.findByIdAndUpdate(req.userAuth._id, {
             $set:{
@@ -475,7 +476,7 @@ export const profilePhotoUpload = asyncHandler(async(req, res, next) => {
             new: true
         })
       }
-      res.status(200).send({status: 'Success', message: 'Profile Upload Successfull'})
+      res.status(200).send({status: 'Success', message: "Profile Upload Successfull"})
 
     }catch(error){
         return res.status(500).send({status: 'Success', message: error.message})

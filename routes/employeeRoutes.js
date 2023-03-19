@@ -14,6 +14,7 @@ import multer from "multer";
 import { profileStorage } from "../config/cloudinary.js";
 import restrictedTo from "../middleware/restrictedTo.js";
 import generateOTP from "../middleware/generateOTP.js"
+import { v2 as cloudinary } from "cloudinary";
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "./");
@@ -24,10 +25,9 @@ var storage = multer.diskStorage({
 });
 
 const employeeRoute = express.Router();
-const upload = multer(storage);
+const upload = multer({storage});
 
-const profileupload = multer({profileStorage})
-
+const profileupload = multer({storage: profileStorage})
 // ************************ POST REQUEST ************************
 employeeRoute.post(
   "/registeration/:companyID",
@@ -37,7 +37,7 @@ employeeRoute.post(
 );
 employeeRoute.post("/login", employeeLogin);
 employeeRoute.post("/resetpassword/:resetToken", resetPassword);
-employeeRoute.post("/profile", protect, profileupload.single("profile") , profilePhotoUpload)
+employeeRoute.post("/profile",protect, profileupload.single('profile'), profilePhotoUpload)
 
 // Add employees using csv files
 employeeRoute.post(

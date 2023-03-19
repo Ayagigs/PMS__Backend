@@ -19,8 +19,13 @@ import localVariables from "../middleware/localVariables.js";
 import { protect } from "../middleware/protect.js";
 import restrictedTo from "../middleware/restrictedTo.js";
 import verifyOTP from "../middleware/verifyOtp.js";
+import multer from "multer";
+import { profileStorage } from "../config/cloudinary.js";
 
 const router = express.Router();
+
+
+const profileupload = multer({storage: profileStorage})
 
 /************* Admin Routes ************/
 
@@ -28,7 +33,7 @@ router.post("/registeration", generateOTP, adminReg);
 router.post("/login", adminLogin);
 router.post("/logout", logout);
 router.post("/forgotpassword", forgotPassword);
-router.post("/photoupload", protect, restrictedTo('Admin'), profilePhotoUpload);
+router.post("/photoupload", protect, restrictedTo('Admin'), profileupload.single("profile"), profilePhotoUpload);
 router.post("/contactus", contactUsMail)
 
 /************* Put Request ************/

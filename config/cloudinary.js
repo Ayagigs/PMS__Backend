@@ -6,17 +6,17 @@ dotenv.config();
 
 // configure
 cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_CLOUD_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
+    cloud_name: "dvcpjoxks",
+    api_key:  "839563865712681",
+    api_secret:  "5NxpYs7NbVqnD8R5QpQ6BZ7VppA"
 })
 
-// CCREATE AN INSTANCCE OF CLOUDIARY STORAGE
+// CCREATE AN INSTANCCE OF CLOUDINARY STORAGE
 export const profileStorage = new CloudinaryStorage({
-    cloudinary,
-    allowedFormats: ["jpg", "png", "mov", "svg"],
+    cloudinary: cloudinary,
     params: {
-        folder: "forum-api",
-        transformation: [{width:400, height: 400, crop: "limit"}]
+        allowedFormats: ["jpg", "png", "jpeg", "mov", "svg"],
+        folder: "View",
+        transformation: [{width:400, height: 400, crop: "limit"}],
     }
 })

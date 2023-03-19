@@ -437,7 +437,7 @@ export const profilePhotoUpload = asyncHandler(async(req, res, next) => {
 
     // check if the user exists
     if(!admin){
-      return next(new errorHandler("No user Found, Please Login", 404));
+      return next(new errorHandler("User not Found", 404));
     }
 
     if(req.file){
