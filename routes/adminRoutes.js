@@ -15,7 +15,7 @@ import {
 } from "../controllers/adminControllers.js";
 import { contactUsMail } from "../controllers/contactusController.js";
 
-// import generateOTP from "../middleware/generateOtp.js";
+import generateOTP from "../middleware/generateOtp.js";
 import localVariables from "../middleware/localVariables.js";
 import { protect } from "../middleware/protect.js";
 import restrictedTo from "../middleware/restrictedTo.js";
@@ -29,7 +29,7 @@ const profileupload = multer({ storage: profileStorage });
 
 /************* Admin Routes ************/
 
-router.post("/registeration", adminReg);
+router.post("/registeration", adminReg, localVariables, generateOTP);
 router.post("/login", adminLogin);
 router.post("/logout", logout);
 router.post("/forgotpassword", forgotPassword);
@@ -60,6 +60,6 @@ router.patch(
 /************* Get Request ************/
 router.get("/findme", protect, findAdminUser);
 
-// router.post("/generateotp", localVariables, generateOTP);
+router.post("/generateotp", localVariables, generateOTP);
 
 export default router;
