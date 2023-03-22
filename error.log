@@ -60,3 +60,15 @@
 {"level":"error","message":"Invalid OTP"}
 {"level":"error","message":"Invalid OTP"}
 {"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Can't find /api/v1/admin/generateotp on this server"}
+{"level":"error","message":"Can't find /api/v1/admin/generateotp on this server"}
+{"level":"error","message":"Can't find /api/v1/admin/generateotp on this server"}
+{"level":"error","message":"Can't find /api/v1/admin/generateotp on this server"}
+{"level":"error","message":"Can't find /api/v1/admin/generateotp on this server"}
+{"level":"error","message":"Can't find /api/v1/admin/generateotp on this server"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}

@@ -60,6 +60,6 @@ router.patch(
 /************* Get Request ************/
 router.get("/findme", protect, findAdminUser);
 
-router.get("/generateotp", localVariables, generateOTP);
+router.post("/generateotp", localVariables, generateOTP);
 
 export default router;

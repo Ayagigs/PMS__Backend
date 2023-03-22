@@ -109,30 +109,28 @@ export const createAdminAccount = asyncHandler(async (req, res, next) => {
   if (!userData) {
     return next(new errorHandler("Unable to create account", 400));
   } else {
-    const admin = await Admin.create({
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      email: userData.email,
-      companyName: userData.companyName,
-      password: userData.password,
-    });
+    // const admin = await Admin.create({
+    //   firstName: userData.firstName,
+    //   lastName: userData.lastName,
+    //   email: userData.email,
+    //   companyName: userData.companyName,
+    //   password: userData.password,
+    // });
 
-    const company = await Company.create({
-      businessType: userData.businessType,
-      address: userData.address,
-      state: userData.state,
-      country: userData.country,
-      companyRegNo: userData.companyRegNo,
-      companyPhone: userData.companyPhone,
-      numOfEmployees: userData.numOfEmployees,
-      companyID: admin._id,
-    });
-
-    console.log(admin, company);
+    // const company = await Company.create({
+    //   businessType: userData.businessType,
+    //   address: userData.address,
+    //   state: userData.state,
+    //   country: userData.country,
+    //   companyRegNo: userData.companyRegNo,
+    //   companyPhone: userData.companyPhone,
+    //   numOfEmployees: userData.numOfEmployees,
+    //   companyID: admin._id,
+    // });
 
     res.status(200).json({
       message: "Account created successfully!",
-      data: { admin, company },
+      // data: { admin, company },
     });
   }
 });
