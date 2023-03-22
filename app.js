@@ -37,6 +37,17 @@ app.all("*", (req, res, next) => {
   next(new errorHandler(`Can't find ${req.originalUrl} on this server`, 404));
 });
 
+
+app.use(
+  cors({
+      credentials: true,
+      origin: true,
+      allowedHeaders: "*"
+  })
+)
+
+app.options('*', cors())
+
 app.use(globalErrorHandler);
 
 app.listen(port, () => {
