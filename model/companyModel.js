@@ -3,28 +3,28 @@ import mongoose from "mongoose";
 const companySchema = new mongoose.Schema({
   companyName: {
     type: String,
-    required: [true, "Company name is required"],
+    // required: [true, "Company name is required"],
     unique: true,
   },
   businessType: {
     type: String,
-    required: [true, "Business type is required"],
+    // required: [true, "Business type is required"],
   },
   address: {
     type: String,
-    required: [true, "Address is required"],
+    // required: [true, "Address is required"],
   },
   state: {
     type: String,
-    required: [true, "State is required"],
+    // required: [true, "State is required"],
   },
   country: {
     type: String,
-    required: [true, "Country is required"],
+    // required: [true, "Country is required"],
   },
   companyRegNo: {
     type: String,
-    required: [true, "Company Reg No is required"],
+    // required: [true, "Company Reg No is required"],
     unique: true,
   },
   companyPhone: {
@@ -33,7 +33,7 @@ const companySchema = new mongoose.Schema({
   numOfEmployees: {
     type: String,
     enum: ["0-10", "10-50", "50-100", "100 and above"],
-    required: [true, "Number of employees is required"],
+    // required: [true, "Number of employees is required"],
   },
   companyID: {
     type: mongoose.Schema.Types.ObjectId,
@@ -41,23 +41,23 @@ const companySchema = new mongoose.Schema({
     required: true,
   },
   midYearStartDate: {
-    type: Date
+    type: Date,
   },
   midYearEndDate: {
-    type: Date
+    type: Date,
   },
   fullYearStartDate: {
-    type: Date
+    type: Date,
   },
   fullYearEndDate: {
-    type: Date
+    type: Date,
   },
   appraisalStartDate: {
-    type: Date
+    type: Date,
   },
   appraisalEndDate: {
-    type: Date
-  }
+    type: Date,
+  },
 });
 
 const Company = mongoose.model("Company", companySchema);

@@ -14,10 +14,27 @@ import { use } from "bcrypt/promises.js";
 
 export const adminReg = asyncHandler(async (req, res, next) => {
   /************************* ADMIN PERSONAL INFORMATION ******************************/
-  const { firstName, lastName, email, companyName, password, confirmPassword } =
-    req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    companyName,
+    password,
+    confirmPassword,
+    businessType,
+    address,
+    state,
+    country,
+    companyRegNo,
+    companyPhone,
+    numOfEmployees,
+  } = req.body;
 
-  if (!firstName || !lastName || !email || !password || !confirmPassword) {
+  if (
+    (!firstName || !lastName || !email || !password || !confirmPassword,
+    !businessType || !companyName || !numOfEmployees || !companyRegNo,
+    !businessType || !companyName || !numOfEmployees || !companyRegNo)
+  ) {
     return next(new errorHandler("Please filled the form properly.", 422));
   }
 
@@ -28,35 +45,6 @@ export const adminReg = asyncHandler(async (req, res, next) => {
   if (confirmPassword !== password) {
     // return res.status(422).json({ error: "Passwords Must Matched" });
     return next(new errorHandler("Passwords Must Matched.", 422));
-  }
-
-  const findAdminByEmail = await Admin.findOne({ email });
-
-  if (findAdminByEmail) {
-    return next(new errorHandler("User already exists with this email", 404));
-  }
-
-  // const createAdmin = new Admin({
-  //   firstName,
-  //   lastName,
-  //   email,
-  //   password,
-  //   companyName,
-  // });
-
-  /************************* COMPANY INFORMATION ******************************/
-  const {
-    businessType,
-    address,
-    state,
-    country,
-    companyRegNo,
-    companyPhone,
-    numOfEmployees,
-  } = req.body;
-
-  if (!businessType || !companyName || !numOfEmployees || !companyRegNo) {
-    return next(new errorHandler("Please filled the form properly.", 422));
   }
 
   const findCompanyByName = await Company.findOne({ companyName });
@@ -77,61 +65,60 @@ export const adminReg = asyncHandler(async (req, res, next) => {
       )
     );
   }
+
+  const findAdminByEmail = await Admin.findOne({ email });
+
+  if (findAdminByEmail) {
+    return next(new errorHandler("User already exists with this email", 404));
+  }
+
+  const findAdminByCompanyName = await Admin.findOne({ companyName });
+
+  if (findAdminByCompanyName) {
+    return next(
+      new errorHandler("Company already exists with this Company name", 404)
+    );
+  }
+
   next();
-  // // Save the admin
-  // const admin = await createAdmin.save();
-
-  // const createCompany = new Company({
-  //   companyName,
-  //   companyRegNo,
-  //   businessType,
-  //   companyPhone,
-  //   address,
-  //   state,
-  //   country,
-  //   numOfEmployees,
-  //   companyID: admin._id,
-  // });
-
-  // const company = await createCompany.save();
-
-  // res.json({
-  //   status: "Success",
-  //   message: "Registeration Successfully",
-  //   data: { admin, company },
-  // });
 });
 
 export const createAdminAccount = asyncHandler(async (req, res, next) => {
   // Get user data from request object's locals property
   const userData = req.app.locals.userData;
 
-  if (!userData) {
-    return next(new errorHandler("Unable to create account", 400));
-  } else {
-    // const admin = await Admin.create({
-    //   firstName: userData.firstName,
-    //   lastName: userData.lastName,
-    //   email: userData.email,
-    //   companyName: userData.companyName,
-    //   password: userData.password,
-    // });
-
-    // const company = await Company.create({
-    //   businessType: userData.businessType,
-    //   address: userData.address,
-    //   state: userData.state,
-    //   country: userData.country,
-    //   companyRegNo: userData.companyRegNo,
-    //   companyPhone: userData.companyPhone,
-    //   numOfEmployees: userData.numOfEmployees,
-    //   companyID: admin._id,
-    // });
-
-    res.status(200).json({
-      message: "Account created successfully!",
-      // data: { admin, company },
+  if (userData) {
+    const createAdmin = new Admin({
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      email: userData.email,
+      companyName: userData.companyName,
+      password: userData.password,
     });
+
+    const admin = await createAdmin.save();
+
+    const createCompany = new Company({
+      companyName: userData.companyName,
+      businessType: userData.businessType,
+      address: userData.address,
+      state: userData.state,
+      country: userData.country,
+      companyRegNo: userData.companyRegNo,
+      companyPhone: userData.companyPhone,
+      numOfEmployees: userData.numOfEmployees,
+      companyID: admin._id,
+    });
+
+    const company = await createCompany.save();
+
+    res.json({
+      status: "Success",
+      message: "Registeration Successfully",
+      data: { admin, company },
+    });
+  } else {
+    return next(new errorHandler("Unable to create account", 400));
   }
 });
 
