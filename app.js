@@ -3,14 +3,9 @@ import { dbConnection } from "./DBConnection/DBConnect.js";
 import errorHandler from "./utils/errorHandler.js";
 import dotenv from "dotenv";
 import cors from "cors";
-import adminRoute from "./routes/adminRoutes.js";
 import startup from "./startup/routes.js";
-// import employeeRoute from "./routes/employeeRoutes.js";
-// import goalRouter from "./routes/goalRoutes.js";
 import globalErrorHandler from "./controllers/errorHandlerController.js";
 import cookieParser from "cookie-parser";
-import mongoose from "mongoose";
-// mongoose.set("debug", true);
 
 const app = express();
 app.use(cors());
@@ -22,11 +17,21 @@ dbConnection();
 
 startup(app);
 
-// app.use("/api/v1/admin", adminRoute);
-// app.use("/api/v1/employee", employeeRoute);
-// app.use("/api/v1/goal", goalRouter);
-
 const port = process.env.PORT || 8000;
+
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  next();
+});
 
 app.all("*", (req, res, next) => {
   next(new errorHandler(`Can't find ${req.originalUrl} on this server`, 404));

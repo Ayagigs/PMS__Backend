@@ -8,7 +8,7 @@ import crypto from "crypto";
 import hatchedToken from "../utils/resetToken.js";
 import { emailSender } from "../utils/emailSender.js";
 import Company from "../model/companyModel.js";
-import csv from "csvtojson"
+import csv from "csvtojson";
 import Reviews from "../model/reviewModel.js";
 import { EReviewType } from "../enums/EReviewType.js";
 import { EReviewTime } from "../enums/EReviewTime.js";
@@ -45,7 +45,7 @@ export const employeeReg = asyncHandler(async (req, res, next) => {
   // Find the company with the given companyRegNo, companyName
   const { companyID } = req.params;
 
-  const company = await Company.findOne({companyID});
+  const company = await Company.findOne({ companyID });
 
   if (!company) {
     return next(new errorHandler("Company not Found", 404));
@@ -161,10 +161,6 @@ export const employeeReg = asyncHandler(async (req, res, next) => {
   }
 });
 
-
-
-
-
 export const resetPassword = asyncHandler(async (req, res, next) => {
   const { password, confirmPassword } = req.body;
   const { resetToken } = req.params;
@@ -194,7 +190,6 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
     employee.status = "Active";
     await employee.save();
 
-
     res.status(200).send({
       status: "success",
       message: "Password Reset Successful, Login to continue",
@@ -203,10 +198,6 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
     return next(new errorHandler("Invalid or Expired Token", 404));
   }
 });
-
-
-
-
 
 export const employeeLogin = asyncHandler(async (req, res, next) => {
   const { employeeID, password } = req.body;
@@ -223,7 +214,6 @@ export const employeeLogin = asyncHandler(async (req, res, next) => {
   if (employee.status !== "Active") {
     return next(new errorHandler("Please activate your account", 404));
   }
-  
 
   const pass = bcrypt.compareSync(password, employee.password);
 
@@ -235,13 +225,10 @@ export const employeeLogin = asyncHandler(async (req, res, next) => {
   res.status(200).json({ data: employee, token });
 });
 
-
-
-
 export const getAllEmployees = asyncHandler(async (req, res, next) => {
-  const employees = await Employee.find({ companyID: req.params.companyID }).populate('reviews');
-
-
+  const employees = await Employee.find({
+    companyID: req.params.companyID,
+  }).populate("reviews");
 
   if (employees) {
     res.json({
@@ -253,35 +240,32 @@ export const getAllEmployees = asyncHandler(async (req, res, next) => {
   }
 });
 
-
-
-
 export const registerBulkEmployee = async (req, res) => {
   try {
-    const {companyID} = req.params;
-    const company = await Company.findOne({companyID});
+    const { companyID } = req.params;
+    const company = await Company.findOne({ companyID });
 
     if (!company) {
       return next(new errorHandler("Company not Found", 404));
     }
 
     csv()
-    .fromFile(req.file.path)
-    .then(async (jsonObj) => {
-      var empcount = 0;
-      for (let i = 0; i < jsonObj.length; i++) {
-        const employeeExist = await Employee.find({
-          companyID, employeeID: jsonObj[i]["Employee Id"]
-        });
+      .fromFile(req.file.path)
+      .then(async (jsonObj) => {
+        var empcount = 0;
+        for (let i = 0; i < jsonObj.length; i++) {
+          const employeeExist = await Employee.find({
+            companyID,
+            employeeID: jsonObj[i]["Employee Id"],
+          });
 
-        if (employeeExist.length !== 0) {
-          continue;
-        }
+          if (employeeExist.length !== 0) {
+            continue;
+          }
 
-        
-        const resetToken = await crypto.randomBytes(32).toString("hex");
+          const resetToken = await crypto.randomBytes(32).toString("hex");
 
-        const hatchPasswordToken = hatchedToken(resetToken);
+          const hatchPasswordToken = hatchedToken(resetToken);
 
           const employee = await Employee.create({
             employeeID: jsonObj[i]["Employee Id"],
@@ -301,7 +285,7 @@ export const registerBulkEmployee = async (req, res) => {
             resetTokenExpiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7days in milli
           });
 
-          console.log(employee)
+          console.log(employee);
           empcount++;
 
           const invitationLink = `${process.env.CLIENT_URL}/resetPassword/${resetToken}`;
@@ -375,14 +359,10 @@ export const registerBulkEmployee = async (req, res) => {
           message: `${empcount} Employees added Successfully`,
         });
       });
-
   } catch (error) {
     res.status(500).send({ status: "Fail", message: error.message });
   }
 };
-
-
-
 
 export const getSpecificEmployee = async (req, res) => {
   try {
@@ -400,9 +380,7 @@ export const getSpecificEmployee = async (req, res) => {
   }
 };
 
-
-
-export const editEmployeeDetails = async(req, res) => {
+export const editEmployeeDetails = async (req, res) => {
   const {
     firstName,
     lastName,
@@ -419,66 +397,70 @@ export const editEmployeeDetails = async(req, res) => {
     country,
     gender,
     maritalStatus,
-    DOB
+    DOB,
   } = req.body;
 
-
-  try{
-    const employee = await Employee.findByIdAndUpdate(req.userAuth._id, {
-      $set: {
-        firstName,
-        lastName,
-        middleName,
-        preferredName,
-        jobTitle,
-        employmentStatus,
-        workEmail,
-        phoneNo,
-        workNo,
-        homeNo,
-        address,
-        state,
-        country,
-        gender,
-        maritalStatus,
-        DOB
+  try {
+    const employee = await Employee.findByIdAndUpdate(
+      req.userAuth._id,
+      {
+        $set: {
+          firstName,
+          lastName,
+          middleName,
+          preferredName,
+          jobTitle,
+          employmentStatus,
+          workEmail,
+          phoneNo,
+          workNo,
+          homeNo,
+          address,
+          state,
+          country,
+          gender,
+          maritalStatus,
+          DOB,
+        },
+      },
+      {
+        new: true,
       }
-    }, {
-      new: true
-    })
+    );
 
-    res.status(200).send({status: 'Success', data: employee})
-
-    
-  }catch(error){
+    res.status(200).send({ status: "Success", data: employee });
+  } catch (error) {
     res.status(500).send({ status: "Fail", message: error.message });
   }
-}
+};
 
+export const profilePhotoUpload = asyncHandler(async (req, res, next) => {
+  try {
+    // fint the user that wants to update profile
+    const employee = await Employee.findById(req.userAuth._id);
 
-export const profilePhotoUpload = asyncHandler(async(req, res, next) => {
-
-  try{
-      // fint the user that wants to update profile
-      const employee = await Employee.findById(req.userAuth._id);
-
-      // check if the user exists
-      if(!employee){
-        return next(new errorHandler("No user Found, Please Login", 404));
-      }
-
-      if(req.file){
-        await Employee.findByIdAndUpdate(req.userAuth._id, {
-            $set:{
-                profilePhoto: req.file.path
-            },
-        },{
-            new: true
-        })
-      }
-      res.status(200).send({status: 'Success', message: "Profile Upload Successfull"})
-
-    }catch(error){
-        return res.status(500).send({status: 'Success', message: error.message})
+    // check if the user exists
+    if (!employee) {
+      return next(new errorHandler("No user Found, Please Login", 404));
     }
-})
+
+    if (req.file) {
+      await Employee.findByIdAndUpdate(
+        req.userAuth._id,
+        {
+          $set: {
+            profilePhoto: req.file.path,
+          },
+        },
+        {
+          new: true,
+        }
+      );
+    }
+    res
+      .status(200)
+      .send({ status: "Success", message: "Profile Upload Successfull" });
+  } catch (error) {
+    return res.status(500).send({ status: "Success", message: error.message });
+  }
+});

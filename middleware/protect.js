@@ -1,21 +1,30 @@
 import expressAsyncHandler from "express-async-handler";
-import { obtainTokenFromHeader } from "../utils/obtaintokenfromheader.js";
-import { verifytoken } from "../utils/verifytoken.js";
+import {
+  obtainRefreshTokenFromHeader,
+  obtainTokenFromHeader,
+} from "../utils/obtaintokenfromheader.js";
+import { verifyRefreshToken, verifytoken } from "../utils/verifytoken.js";
 
 export const protect = expressAsyncHandler(async (req, res, next) => {
-  // get token from header
+  // Get access token from header
   const token = obtainTokenFromHeader(req);
 
-  const userDecoded = verifytoken(token);
+  // // Get refresh token from header
+  // const refreshToken = obtainRefreshTokenFromHeader(req);
 
-  req.userAuth = await userDecoded;
+  // Verify access token
+  const userDecoded = verifytoken(token);
+  req.userAuth = userDecoded;
+
+  // // Verify refresh token
+  // const refreshUserDecoded = verifyRefreshToken(refreshToken);
+  // req.refreshToken = refreshUserDecoded;
 
   if (!userDecoded) {
-    return res.json({
+    return res.status(401).json({
       status: "failed",
-      message: "Kindly login, it seem the token is either expired or invalid",
+      message: "Kindly login, it seems the token is either expired or invalid",
     });
-  } else {
-    next();
   }
+  next();
 });

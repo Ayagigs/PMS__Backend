@@ -1,169 +1,20 @@
-{"level":"error","message":"Company not Found"}
-{"level":"error","message":"Company already exists with this Company name"}
-{"level":"error","message":"Company not Found"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this email"}
-{"level":"error","message":"Company already exists with this registeration number"}
 {"level":"error","message":"User already exists with this employeeID"}
 {"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"Company not Found"}
-{"level":"error","message":"Company not Found"}
-{"level":"error","message":"Company not Found"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"Please filled the form properly"}
-{"level":"error","message":"Please filled the form properly"}
-{"level":"error","message":"Employee with Jeffrey@gmail.com not found"}
-{"level":"error","message":"Employee with s not found"}
-{"level":"error","message":"Employee with xtyzzssaq5232b#2$ not found"}
-{"level":"error","message":"Please activate your account"}
-{"level":"error","message":"Please activate your account"}
-{"level":"error","message":"Can't find /api/v1/admin/resetpassword on this server"}
-{"level":"error","message":"Can't find /api/v1/admin/resetpassword on this server"}
-{"level":"error","message":"Please fill the form correctly"}
-{"level":"error","message":"Please fill the form correctly"}
-{"level":"error","message":"passwords not matched"}
-{"level":"error","message":"passwords not matched"}
-{"level":"error","message":"Can't find /api/v1/employee/resetpassword/47e271f6c953062db5fa4f78b8d827c1dd771957847138d2d1f5b728e777b39d on this server"}
-{"level":"error","message":"Employee with xtyzzssaq5232b#2$jq not found"}
-{"level":"error","message":"Incorrect Password"}
-{"level":"error","message":"Access denied"}
-{"level":"error","message":"Access denied"}
-{"level":"error","message":"Access denied"}
-{"level":"error","message":"Access denied"}
-{"level":"error","message":"Access denied"}
-{"level":"error","message":"Access denied"}
-{"level":"error","message":"Access denied"}
-{"level":"error","message":"Access denied"}
-{"level":"error","message":"Access denied"}
-{"level":"error","message":"Access denied"}
-{"level":"error","message":"Access denied"}
-{"level":"error","message":"Please activate your account"}
-{"level":"error","message":"Please activate your account"}
-{"level":"error","message":"Please activate your account"}
-{"level":"error","message":"User already exists with this email"}
-{"level":"error","message":"Company already exists with this Company name"}
-{"level":"error","message":"Access denied"}
-{"level":"error","message":"Access denied"}
-{"level":"error","message":"Access denied"}
-{"level":"error","message":"Employee with wXdags6525 not found"}
-{"level":"error","message":"Please activate your account"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"Can't find /api/v1/employee/findme on this server"}
-{"level":"error","message":"User already exists with this email"}
-{"level":"error","message":"User already exists with this email"}
-{"level":"error","message":"Company already exists with this Company name"}
-{"level":"error","message":"User already exists with this email"}
-{"level":"error","message":"Can't find /api/v1/ceo/login on this server"}
-{"level":"error","message":"Please filled the form properly."}
-{"level":"error","message":"Company not Found"}
-{"level":"error","message":"Company not Found"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"Please fill the form correctly"}
-{"level":"error","message":"passwords not matched"}
-{"level":"error","message":"Invalid or Expired Token"}
-{"level":"error","message":"Invalid or Expired Token"}
-{"level":"error","message":"Invalid or Expired Token"}
-{"level":"error","message":"Invalid or Expired Token"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"Invalid or Expired Token"}
-{"level":"error","message":"Invalid or Expired Token"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"Invalid or Expired Token"}
-{"level":"error","message":"Please filled the form properly"}
-{"level":"error","message":"Employee with sophieokosodo@gmail.com not found"}
 {"level":"error","message":"Please activate your account"}
 {"level":"error","message":"Please activate your account"}
 {"level":"error","message":"Please activate your account"}
 {"level":"error","message":"Please activate your account"}
-{"level":"error","message":"Company already exists with this Company name"}
-{"level":"error","message":"Company already exists with this registeration number"}
-{"level":"error","message":"User already exists with this email"}
-{"level":"error","message":"User already exists with this email"}
-{"level":"error","message":"User already exists with this email"}
-{"level":"error","message":"User already exists with this email"}
-{"level":"error","message":"Can't find /api/v1/admin/resetpassword/98e8afbba813f9f38d0d00098f3064c876059ab911767e697b3ff19364aa182b640ce213df37597ca602ef28 on this server"}
-{"level":"error","message":"Can't find /api/v1/admin/resetpassword/98e8afbba813f9f38d0d00098f3064c876059ab911767e697b3ff19364aa182b640ce213df37597ca602ef28 on this server"}
-{"level":"error","message":"passwords not matched"}
-{"level":"error","message":"Please fill the form correctly"}
-{"level":"error","message":"Can't find /api/v1/employee/changepassword on this server"}
-{"level":"error","message":"Can't find /api/v1/admin/changepassword on this server"}
-{"level":"error","message":"Please add old and new password"}
-{"level":"error","message":"Old password incorrect"}
-{"level":"error","message":"User already exists with this email"}
-{"level":"error","message":"User already exists with this email"}
-{"level":"error","message":"Company already exists with this registeration number"}
-{"level":"error","message":"User not found, Please signup"}
-{"level":"error","message":"User not found, Please signup"}
-{"level":"error","message":"User not found, Please signup"}
-{"level":"error","message":"User not found, Please signup"}
-{"level":"error","message":"User not found, Please signup"}
-{"level":"error","message":"User not found, Please signup"}
-{"level":"error","message":"User not found, Please signup"}
-{"level":"error","message":"Can't find /api/v1/admin/updatepersonalinfo on this server"}
-{"level":"error","message":"Please filled the form properly"}
-{"level":"error","message":"Please filled the form properly"}
-{"level":"error","message":"Invalid Email"}
-{"level":"error","message":"Invalid OTP"}
-{"level":"error","message":"Invalid OTP"}
-{"level":"error","message":"Invalid OTP"}
-{"level":"error","message":"Company not Found"}
-{"level":"error","message":"Company not Found"}
-{"level":"error","message":"Can't find /api/v1/employee/640ce7f713f311483cf7879b on this server"}
-{"level":"error","message":"Can't find /api/v1/employees/640ce7f713f311483cf7879b on this server"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"Access denied"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"Invalid objectID"}
-{"level":"error","message":"Company already exists with this registeration number"}
-{"level":"error","message":"Company already exists with this registeration number"}
-{"level":"error","message":"Invalid OTP"}
-{"level":"error","message":"Invalid OTP"}
-{"level":"error","message":"Company already exists with this registeration number"}
-{"level":"error","message":"Company already exists with this registeration number"}
-{"level":"error","message":"Can't find /api/v1/employee/resetpassword/4937962c644703de1da945899034dc053ab8875646c70c9ff922bfac7e3d53a1 on this server"}
-{"level":"error","message":"Invalid or Expired Token"}
-{"level":"error","message":"Please filled the form properly."}
-{"level":"error","message":"Can't find /api/v1/employee/login on this server"}
-{"level":"error","message":"Access denied"}
-{"level":"error","message":"Invalid OTP"}
-{"level":"error","message":"Invalid OTP"}
-{"level":"error","message":"Company already exists with this Company name"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"Company not Found"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"Invalid or Expired Token"}
-{"level":"error","message":"Invalid or Expired Token"}
-{"level":"error","message":"Can't find /api/v1/review on this server"}
-{"level":"error","message":"Can't find /api/v1/review on this server"}
-{"level":"error","message":"Can't find /api/v1/review/performancereview/655467 on this server"}
-{"level":"error","message":"Can't find /api/v1/review/performancereview/655466567856577 on this server"}
-{"level":"error","message":"Access denied"}
-{"level":"error","message":"Access denied"}
-{"level":"error","message":"360 appraisal review end date can not be earlier than the start date"}
-{"level":"error","message":"Full-Year review end date can not be earlier than the start date"}
-{"level":"error","message":"360 appraisal review end date can not be earlier than the start date"}
-{"level":"error","message":"360 appraisal review end date can not be earlier than the start date"}
-{"level":"error","message":"Mid-Year review end date can not be earlier than the start date"}
-{"level":"error","message":"Full-Year review end date can not be earlier than the start date"}
-{"level":"error","message":"Full-Year review end date can not be earlier than the start date"}
-{"level":"error","message":"360 appraisal review end date can not be earlier than the start date"}
-{"level":"error","message":"Full-Year and Mid-Year Reviews can not be taken in same time frame"}
-{"level":"error","message":"Full-Year review end date can not be earlier than the start date"}
-{"level":"error","message":"Full-Year and Mid-Year Reviews can not be taken in same time frame"}
-{"level":"error","message":"Can't find /api/v1/goal/goalReview/64135320efe35f4a736a5f6c on this server"}
-{"level":"error","message":"Can't find /api/v1/goal/goalReview/64135320efe35f4a736a5f6c on this server"}
-{"level":"error","message":"Can't find /api/v1/goal/goalReview/64135320efe35f4a736a5f6c on this server"}
-{"level":"error","message":"Can't find /api/v1/goal/editgoal on this server"}
-{"level":"error","message":"Company already exists with this Company name"}
-{"level":"error","message":"Company not Found"}
-{"level":"error","message":"User already exists with this employeeID"}
-{"level":"error","message":"Goal not found"}
-{"level":"error","message":"Employee not found"}
-{"level":"error","message":"Employee not found"}
-{"level":"error","message":"Can't find /api/v1/employee/findme/csvupload/6416d45d09114d455ee05bba on this server"}
+{"level":"error","message":"Please activate your account"}
+{"level":"error","message":"Can't find /api/v1/goal/notifications on this server"}
+{"level":"error","message":"Failed to update User Notifications"}
+{"level":"error","message":"User Not Found"}
+{"level":"error","message":"Can't find /api/v1/goal/notifications on this server"}
+{"level":"error","message":"Can't find /api/v1/goal/notifications on this server"}
+{"level":"error","message":"Failed to send Notifications"}
+{"level":"error","message":"Failed to send Notifications"}
+{"level":"error","message":"Failed to send Notifications"}
+{"level":"error","message":"Failed to send Notifications"}
+{"level":"error","message":"Failed to send Notifications"}
+{"level":"error","message":"Failed to send Notifications"}
+{"level":"error","message":"Failed to send Notifications"}
+{"level":"error","message":"Failed to send Notifications"}

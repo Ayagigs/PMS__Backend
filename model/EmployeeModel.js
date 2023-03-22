@@ -49,7 +49,7 @@ const employeeSchema = new mongoose.Schema(
       required: [true, "Phone number is required"],
     },
     workNo: {
-      type: String, 
+      type: String,
     },
     homeNo: {
       type: String,
@@ -83,18 +83,18 @@ const employeeSchema = new mongoose.Schema(
     },
     score: {
       type: Number,
-      default: 0
+      default: 0,
     },
     competency: {
       type: Number,
-      default: 0
+      default: 0,
     },
     finalScore: {
       type: Number,
-      default: 0
+      default: 0,
     },
     rating: {
-      type: String
+      type: String,
     },
     terminationDate: {
       type: Date,
@@ -117,17 +117,17 @@ const employeeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    goals : [
-        {
+    goals: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Goal"
-      }
+        ref: "Goal",
+      },
     ],
     reviews: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Reviews"
-      }
+        ref: "Reviews",
+      },
     ],
     companyID: {
       type: mongoose.Schema.Types.ObjectId,
@@ -137,35 +137,33 @@ const employeeSchema = new mongoose.Schema(
     goalsToReview: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Goal"
-      }
+        ref: "Goal",
+      },
     ],
     appraisalsGiven: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Employee'
-      }
+        ref: "Employee",
+      },
     ],
     performanceReviewGiven: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Employee'
-      }
+        ref: "Employee",
+      },
     ],
     fullYearReviewGiven: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Employee'
-      }
-    ]
+        ref: "Employee",
+      },
+    ],
   },
   {
     timestamps: true,
     toJSON: { virtuals: true },
   }
 );
-
-
 
 employeeSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
@@ -175,7 +173,13 @@ employeeSchema.pre("save", async function (next) {
 
 employeeSchema.methods.generateToken = function () {
   const token = jwt.sign(
-    { _id: this._id, role: this.role },
+    {
+      _id: this._id,
+      role: this.role,
+      workEmail: this.workEmail,
+      firstName: this.firstName,
+      companyID: this.companyID,
+    },
     process.env.JWT_KEY,
     {
       expiresIn: process.env.TOKEN_EXPIRES,
