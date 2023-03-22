@@ -18,3 +18,45 @@
 {"level":"error","message":"Failed to send Notifications"}
 {"level":"error","message":"Failed to send Notifications"}
 {"level":"error","message":"Failed to send Notifications"}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"Please filled the form properly."}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"Company already exists with this registeration number"}
+{"level":"error","message":"Invalid Email"}
+{"level":"error","message":"Invalid Email"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Unable to create account"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Unable to create account"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Unable to create account"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Unable to create account"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Unable to create account"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Unable to create account"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}

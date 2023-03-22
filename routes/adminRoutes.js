@@ -3,6 +3,7 @@ import {
   adminLogin,
   adminReg,
   changePassword,
+  createAdminAccount,
   deactivateEmployee,
   findAdminUser,
   forgotPassword,
@@ -24,17 +25,23 @@ import { profileStorage } from "../config/cloudinary.js";
 
 const router = express.Router();
 
-
-const profileupload = multer({storage: profileStorage})
+const profileupload = multer({ storage: profileStorage });
 
 /************* Admin Routes ************/
 
-router.post("/registeration", generateOTP, adminReg);
+router.post("/registeration", adminReg, localVariables, generateOTP);
 router.post("/login", adminLogin);
 router.post("/logout", logout);
 router.post("/forgotpassword", forgotPassword);
-router.post("/photoupload", protect, restrictedTo('Admin'), profileupload.single("profile"), profilePhotoUpload);
-router.post("/contactus", contactUsMail)
+router.post("/contactus", contactUsMail);
+router.post("/verifyotp", verifyOTP, createAdminAccount);
+router.post(
+  "/photoupload",
+  protect,
+  restrictedTo("Admin"),
+  profileupload.single("profile"),
+  profilePhotoUpload
+);
 
 /************* Put Request ************/
 router.put("/resetpassword/:resetToken", resetPassword);
@@ -43,11 +50,16 @@ router.put("/resetpassword/:resetToken", resetPassword);
 router.patch("/changepassword", protect, changePassword);
 router.patch("/updatecompanydetails", protect, updateCompanyDetails);
 router.patch("/updatepersonalinfo", protect, updatePersonalInfo);
-router.patch("/deactivate/:employeeID", protect, restrictedTo("Admin"), deactivateEmployee);
+router.patch(
+  "/deactivate/:employeeID",
+  protect,
+  restrictedTo("Admin"),
+  deactivateEmployee
+);
 
 /************* Get Request ************/
 router.get("/findme", protect, findAdminUser);
-router.get("/verifyotp", verifyOTP);
-// router.get("/generateotp", localVariables, generateOTP);
+
+router.get("/generateotp", localVariables, generateOTP);
 
 export default router;

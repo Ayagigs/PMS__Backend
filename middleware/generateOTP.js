@@ -39,13 +39,8 @@ const generateOTP = asyncHandler(async (req, res, next) => {
     });
     next();
   } catch (error) {
-    res.status(500).send({ status: "Fail", message: error.message });
+    return next(new errorHandler(error.message, 500));
   }
-
-  // res
-  //   .status(201)
-  //   .send({ Message: "Check your email for OTP", OTP: req.app.locals.OTP });
-
 });
 
 export default generateOTP;

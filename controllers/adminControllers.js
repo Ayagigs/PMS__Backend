@@ -10,6 +10,7 @@ import crypto from "crypto";
 import { emailSender } from "../utils/emailSender.js";
 import Company from "../model/companyModel.js";
 import Employee from "../model/EmployeeModel.js";
+import { use } from "bcrypt/promises.js";
 
 export const adminReg = asyncHandler(async (req, res, next) => {
   /************************* ADMIN PERSONAL INFORMATION ******************************/
@@ -35,14 +36,13 @@ export const adminReg = asyncHandler(async (req, res, next) => {
     return next(new errorHandler("User already exists with this email", 404));
   }
 
-
-  const createAdmin = new Admin({
-    firstName,
-    lastName,
-    email,
-    password,
-    companyName,
-  });
+  // const createAdmin = new Admin({
+  //   firstName,
+  //   lastName,
+  //   email,
+  //   password,
+  //   companyName,
+  // });
 
   /************************* COMPANY INFORMATION ******************************/
   const {
@@ -77,29 +77,64 @@ export const adminReg = asyncHandler(async (req, res, next) => {
       )
     );
   }
+  next();
+  // // Save the admin
+  // const admin = await createAdmin.save();
 
-  // Save the admin
-  const admin = await createAdmin.save();
+  // const createCompany = new Company({
+  //   companyName,
+  //   companyRegNo,
+  //   businessType,
+  //   companyPhone,
+  //   address,
+  //   state,
+  //   country,
+  //   numOfEmployees,
+  //   companyID: admin._id,
+  // });
 
-  const createCompany = new Company({
-    companyName,
-    companyRegNo,
-    businessType,
-    companyPhone,
-    address,
-    state,
-    country,
-    numOfEmployees,
-    companyID: admin._id,
-  });
+  // const company = await createCompany.save();
 
-  const company = await createCompany.save();
+  // res.json({
+  //   status: "Success",
+  //   message: "Registeration Successfully",
+  //   data: { admin, company },
+  // });
+});
 
-  res.json({
-    status: "Success",
-    message: "Registeration Successfully",
-    data: { admin, company },
-  });
+export const createAdminAccount = asyncHandler(async (req, res, next) => {
+  // Get user data from request object's locals property
+  const userData = req.app.locals.userData;
+
+  if (!userData) {
+    return next(new errorHandler("Unable to create account", 400));
+  } else {
+    const admin = await Admin.create({
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      email: userData.email,
+      companyName: userData.companyName,
+      password: userData.password,
+    });
+
+    const company = await Company.create({
+      businessType: userData.businessType,
+      address: userData.address,
+      state: userData.state,
+      country: userData.country,
+      companyRegNo: userData.companyRegNo,
+      companyPhone: userData.companyPhone,
+      numOfEmployees: userData.numOfEmployees,
+      companyID: admin._id,
+    });
+
+    console.log(admin, company);
+
+    res.status(200).json({
+      message: "Account created successfully!",
+      data: { admin, company },
+    });
+  }
 });
 
 //Login Admin
@@ -264,8 +299,8 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
 
 export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
   const company = await Company.findOne({ companyID: req.userAuth._id });
-  console.log(company)
-company.app
+  console.log(company);
+  company.app;
   if (company) {
     const {
       companyName,
@@ -280,32 +315,62 @@ company.app
       fullYearStartDate,
       fullYearEndDate,
       appraisalStartDate,
-      appraisalEndDate
+      appraisalEndDate,
     } = req.body;
 
     // validation for mid year end date should not be earlier than the start date
-    if(midYearEndDate <= midYearStartDate){
-      return next(new errorHandler("Mid-Year review end date can not be earlier than the start date", 500));
+    if (midYearEndDate <= midYearStartDate) {
+      return next(
+        new errorHandler(
+          "Mid-Year review end date can not be earlier than the start date",
+          500
+        )
+      );
     }
     // validation for full year end date should not be earlier than the start date
-    if(fullYearEndDate <= fullYearStartDate){
-      return next(new errorHandler("Full-Year review end date can not be earlier than the start date", 500));
-    }
-    
-    // validation for appraisal end date should not be earlier than the start date
-    if(appraisalEndDate <= appraisalStartDate){
-      return next(new errorHandler("360 appraisal review end date can not be earlier than the start date", 500));
-    }
-    
-    // validation for full year and mid year should not be set in the same period
-    if(fullYearStartDate >= midYearStartDate && fullYearStartDate < midYearEndDate){
-      return next(new errorHandler("Full-Year and Mid-Year Reviews can not be taken in same time frame", 500));
-    }
-    if(midYearStartDate >= fullYearStartDate && midYearStartDate < fullYearEndDate){
-      return next(new errorHandler("Full-Year and Mid-Year Reiews can not be taken in same time frame", 500));
+    if (fullYearEndDate <= fullYearStartDate) {
+      return next(
+        new errorHandler(
+          "Full-Year review end date can not be earlier than the start date",
+          500
+        )
+      );
     }
 
-    
+    // validation for appraisal end date should not be earlier than the start date
+    if (appraisalEndDate <= appraisalStartDate) {
+      return next(
+        new errorHandler(
+          "360 appraisal review end date can not be earlier than the start date",
+          500
+        )
+      );
+    }
+
+    // validation for full year and mid year should not be set in the same period
+    if (
+      fullYearStartDate >= midYearStartDate &&
+      fullYearStartDate < midYearEndDate
+    ) {
+      return next(
+        new errorHandler(
+          "Full-Year and Mid-Year Reviews can not be taken in same time frame",
+          500
+        )
+      );
+    }
+    if (
+      midYearStartDate >= fullYearStartDate &&
+      midYearStartDate < fullYearEndDate
+    ) {
+      return next(
+        new errorHandler(
+          "Full-Year and Mid-Year Reiews can not be taken in same time frame",
+          500
+        )
+      );
+    }
+
     const updateCompany = await Company.findOneAndUpdate(
       { companyID: req.userAuth._id },
       {
@@ -322,7 +387,7 @@ company.app
           fullYearStartDate,
           fullYearEndDate,
           appraisalStartDate,
-          appraisalEndDate
+          appraisalEndDate,
         },
       },
       {
@@ -344,7 +409,7 @@ company.app
 
     res.status(200).json({
       status: "Success",
-      data: {updateCompany,}
+      data: { updateCompany },
     });
   } else {
     return next(new errorHandler("User not found, Please signup", 404));
@@ -390,21 +455,20 @@ export const updatePersonalInfo = asyncHandler(async (req, res, next) => {
 
 export const findAdminUser = asyncHandler(async (req, res, next) => {
   const adminUser = await Admin.findById(req.userAuth);
-  const company = await Company.find({companyName: adminUser.companyName})
+  const company = await Company.find({ companyName: adminUser.companyName });
 
   if (!adminUser) {
     return next(new errorHandler("No user Found, Please Login", 404));
   }
   res.status(200).json({
     status: "Success",
-    data: {adminUser, company},
+    data: { adminUser, company },
   });
 });
 
-
-export const deactivateEmployee = asyncHandler(async(req, res, next) => {
+export const deactivateEmployee = asyncHandler(async (req, res, next) => {
   const adminUser = await Admin.findById(req.userAuth);
-  const {employeeID} = req.params;
+  const { employeeID } = req.params;
 
   if (!adminUser) {
     return next(new errorHandler("No user Found, Please Login", 404));
@@ -414,47 +478,51 @@ export const deactivateEmployee = asyncHandler(async(req, res, next) => {
     return next(new errorHandler("Invalid objectID", 404));
   }
 
-  const employee = await Employee.findByIdAndUpdate(employeeID, {
-    $set: {
-      status: Inactive
+  const employee = await Employee.findByIdAndUpdate(
+    employeeID,
+    {
+      $set: {
+        status: Inactive,
+      },
+    },
+    {
+      new: true,
     }
-  }, {
-    new: true
-  })
+  );
 
   res.status(200).json({
     status: "Success",
     data: employee,
   });
-})
+});
 
-
-export const profilePhotoUpload = asyncHandler(async(req, res, next) => {
-
-  try{
+export const profilePhotoUpload = asyncHandler(async (req, res, next) => {
+  try {
     // fint the user that wants to update profile
     const admin = await Admin.findById(req.userAuth._id);
 
     // check if the user exists
-    if(!admin){
+    if (!admin) {
       return next(new errorHandler("User not Found", 404));
     }
 
-    if(req.file){
-      await Admin.findByIdAndUpdate(req.userAuth._id, {
-          $set:{
-              profilePhoto: req.file.path
+    if (req.file) {
+      await Admin.findByIdAndUpdate(
+        req.userAuth._id,
+        {
+          $set: {
+            profilePhoto: req.file.path,
           },
-      },{
-          new: true
-      })
+        },
+        {
+          new: true,
+        }
+      );
     }
-    res.status(200).send({status: 'Success', message: 'Profile Upload Successfull'})
-
-    }catch(error){
-        return res.status(500).send({status: 'Success', message: error.message})
-    }
-})
-
-
-
+    res
+      .status(200)
+      .send({ status: "Success", message: "Profile Upload Successfull" });
+  } catch (error) {
+    return res.status(500).send({ status: "Success", message: error.message });
+  }
+});

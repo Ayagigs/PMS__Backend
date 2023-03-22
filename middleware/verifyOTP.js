@@ -8,8 +8,11 @@ const verifyOTP = asyncHandler(async (req, res, next) => {
     req.app.locals.OTP = null;
     req.app.locals.resetSession = true;
 
+    // console.log(  req.app.locals.userData);
+    next();
     return res.status(201).send({ message: "Verify successfully" });
   }
+
   return next(new errorHandler("Invalid OTP", 400));
 });
 
