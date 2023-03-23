@@ -167,7 +167,7 @@ export const googleLogin = asyncHandler(async (req, res, next) => {
       idToken: tokenId,
       audience: process.env.GOOGLE_CLIENT_ID,
     })
-    .the((response) => {
+    .then((response) => {
       const { email_verified } = response.payload;
       console.log(response.payload);
     });
