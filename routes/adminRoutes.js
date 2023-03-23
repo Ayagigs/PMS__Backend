@@ -7,6 +7,7 @@ import {
   deactivateEmployee,
   findAdminUser,
   forgotPassword,
+  googleLogin,
   logout,
   profilePhotoUpload,
   resetPassword,
@@ -31,6 +32,7 @@ const profileupload = multer({ storage: profileStorage });
 
 router.post("/registeration", adminReg, localVariables, generateOTP);
 router.post("/login", adminLogin);
+router.post("/googlelogin", googleLogin);
 router.post("/logout", logout);
 router.post("/forgotpassword", forgotPassword);
 router.post("/contactus", contactUsMail);
