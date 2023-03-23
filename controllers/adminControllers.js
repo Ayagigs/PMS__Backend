@@ -6,11 +6,22 @@ import Token from "../model/tokenModel.js";
 import asyncHandler from "express-async-handler";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
+import { OAuth2Client } from "google-auth-library";
 
 import { emailSender } from "../utils/emailSender.js";
 import Company from "../model/companyModel.js";
 import Employee from "../model/EmployeeModel.js";
 import { use } from "bcrypt/promises.js";
+
+// const client = new OAuth2Client(
+//   "685377135851-fem8icfu49q7ui3mu36ujdrfftsdda6b.apps.googleusercontent.com"
+// );
+
+const client = new OAuth2Client(
+  process.env.GOOGLE_CLIENT_ID
+  // process.env.GOOGLE_CLIENT_SECRET,
+  // process.env.CLIENT_URL
+);
 
 export const adminReg = asyncHandler(async (req, res, next) => {
   /************************* ADMIN PERSONAL INFORMATION ******************************/
@@ -146,6 +157,20 @@ export const adminLogin = asyncHandler(async (req, res, next) => {
 
   const token = admin.generateToken();
   res.status(200).json({ data: admin, token });
+});
+
+export const googleLogin = asyncHandler(async (req, res, next) => {
+  const { tokenId } = req.body;
+
+  client
+    .verifyIdToken({
+      idToken: tokenId,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    })
+    .the((response) => {
+      const { email_verified } = response.payload;
+      console.log(response.payload);
+    });
 });
 
 //Logout Admin
