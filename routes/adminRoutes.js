@@ -15,11 +15,11 @@ import {
 } from "../controllers/adminControllers.js";
 import { contactUsMail } from "../controllers/contactusController.js";
 
-import generateOTP from "../middleware/generateOtp.js";
+import generateOTP from "../middleware/generateOTP.js";
 import localVariables from "../middleware/localVariables.js";
 import { protect } from "../middleware/protect.js";
 import restrictedTo from "../middleware/restrictedTo.js";
-import verifyOTP from "../middleware/verifyOtp.js";
+import verifyOTP from "../middleware/verifyOTP.js";
 import multer from "multer";
 import { profileStorage } from "../config/cloudinary.js";
 
