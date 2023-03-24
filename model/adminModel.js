@@ -25,7 +25,8 @@ const AdminSchema = new mongoose.Schema(
       type: String,
       default: "Admin",
     },
-    companyName: { type: String, unique: true }
+    companyName: { type: String, unique: true },
+    emailOrCompanyName: { type: String },
   },
   {
     timestamps: true,

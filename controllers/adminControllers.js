@@ -18,9 +18,7 @@ import { use } from "bcrypt/promises.js";
 // );
 
 const client = new OAuth2Client(
-  process.env.GOOGLE_CLIENT_ID
-  // process.env.GOOGLE_CLIENT_SECRET,
-  // process.env.CLIENT_URL
+  "685377135851-fem8icfu49q7ui3mu36ujdrfftsdda6b.apps.googleusercontent.com"
 );
 
 export const adminReg = asyncHandler(async (req, res, next) => {
@@ -135,18 +133,28 @@ export const createAdminAccount = asyncHandler(async (req, res, next) => {
 
 //Login Admin
 export const adminLogin = asyncHandler(async (req, res, next) => {
-  const { email, password } = req.body;
+  const { emailOrCompanyName, password } = req.body;
 
-  if (!validator.isEmail(email)) {
-    return next(new errorHandler("Invalid Email", 422));
+  console.log(emailOrCompanyName, password);
+
+  if (
+    !validator.isEmail(emailOrCompanyName) &&
+    !(
+      typeof emailOrCompanyName === "string" &&
+      emailOrCompanyName.trim().length > 0
+    )
+  ) {
+    return next(new errorHandler("Invalid Email or Company Name", 422));
   }
 
-  const admin = await Admin.findOne({ email });
+  const admin = await Admin.findOne({
+    $or: [{ email: emailOrCompanyName }, { companyName: emailOrCompanyName }],
+  });
+
+  // const admin = await Admin.findOne({ email });
 
   if (!admin) {
-    return res
-      .status(401)
-      .json({ message: "No company with this email address" });
+    return res.status(401).json({ message: "No Credentials Found" });
   }
 
   const pass = bcrypt.compareSync(password, admin.password);
@@ -162,10 +170,12 @@ export const adminLogin = asyncHandler(async (req, res, next) => {
 export const googleLogin = asyncHandler(async (req, res, next) => {
   const { tokenId } = req.body;
 
+  // console.log(tokenId);
   client
     .verifyIdToken({
       idToken: tokenId,
-      audience: process.env.GOOGLE_CLIENT_ID,
+      audience:
+        "685377135851-fem8icfu49q7ui3mu36ujdrfftsdda6b.apps.googleusercontent.com",
     })
     .then((response) => {
       const { email_verified } = response.payload;
