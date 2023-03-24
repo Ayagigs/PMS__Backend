@@ -24,6 +24,7 @@ goalRoute.get("/employeegoals/:companyID", protect, getEmployeeAndGoal);
 // Get all goals for an employee
 goalRoute.get("/goals", protect, getAllGoals);
 goalRoute.get("/findgoal/:goalID", protect, findGoalById);
+goalRoute.get("/companygoal/:companyID", protect, restrictedTo('Admin', 'HR Manager'), findGoalById);
 
 // Edit the goals
 goalRoute.patch("/edit/:id", protect, editGoal);

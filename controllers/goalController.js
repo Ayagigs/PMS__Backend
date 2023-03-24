@@ -120,6 +120,22 @@ export const getAllGoals = async (req, res) => {
   }
 };
 
+export const getAllCompanyGoals = async (req, res) => {
+  const {companyID} = req.params;
+  try {
+    const goals = await Goal.find({ companyID: companyID}).populate(
+      "reviewers"
+    );
+
+    res.status(200).json({
+      success: true,
+      data: goals,
+    });
+  } catch (error) {
+    res.status(500).send({ status: "Fail", message: error.message });
+  }
+};
+
 export const editGoal = asyncHandler(async (req, res, next) => {
   const {
     goaltitle,
