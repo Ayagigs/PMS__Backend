@@ -95,7 +95,8 @@ export const adminReg = asyncHandler(async (req, res, next) => {
 export const createAdminAccount = asyncHandler(async (req, res, next) => {
   // Get user data from request object's locals property
   const userData = req.app.locals.userData;
-
+  console.log(req.app.locals.userData);
+  console.log(userData);
   if (userData) {
     const createAdmin = new Admin({
       firstName: userData.firstName,
@@ -170,17 +171,17 @@ export const adminLogin = asyncHandler(async (req, res, next) => {
 export const googleLogin = asyncHandler(async (req, res, next) => {
   const { tokenId } = req.body;
 
-  // console.log(tokenId);
-  client
-    .verifyIdToken({
-      idToken: tokenId,
-      audience:
-        "685377135851-fem8icfu49q7ui3mu36ujdrfftsdda6b.apps.googleusercontent.com",
-    })
-    .then((response) => {
-      const { email_verified } = response.payload;
-      console.log(response.payload);
-    });
+  console.log("Success");
+  // client
+  //   .verifyIdToken({
+  //     idToken: tokenId,
+  //     audience:
+  //       "685377135851-fem8icfu49q7ui3mu36ujdrfftsdda6b.apps.googleusercontent.com",
+  //   })
+  //   .then((response) => {
+  //     const { email_verified } = response.payload;
+  //     console.log(response.payload);
+  //   });
 });
 
 //Logout Admin

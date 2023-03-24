@@ -3,6 +3,9 @@ const localVariables = (req, res, next) => {
     OTP: null,
     resetSession: false,
     userData: req.body,
+    userEmail: req.body.email,
+    userFirstName: req.body.firstName,
+   
   };
 
   next();

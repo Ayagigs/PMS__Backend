@@ -109,3 +109,13 @@
 {"level":"error","message":"Can't find /api/v1/googlelogin on this server"}
 {"level":"error","message":"Can't find /api/v1/googlelogin on this server"}
 {"level":"error","message":"Can't find /api/v1/googlelogin on this server"}
+{"level":"error","message":"Company already exists with this Company name"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
