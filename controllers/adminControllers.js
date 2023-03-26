@@ -167,17 +167,17 @@ export const googleLogin = asyncHandler(async (req, res, next) => {
   const { tokenId } = req.body;
 
   res.send({ status: "Success", tokenId });
-  console.log("Success Dev");
-  // client
-  //   .verifyIdToken({
-  //     idToken: tokenId,
-  //     audience:
-  //       "685377135851-fem8icfu49q7ui3mu36ujdrfftsdda6b.apps.googleusercontent.com",
-  //   })
-  //   .then((response) => {
-  //     const { email_verified } = response.payload;
-  //     console.log(response.payload);
-  //   });
+  console.log("Success Dev", tokenId);
+  client
+    .verifyIdToken({
+      idToken: tokenId,
+      audience:
+        "644468853015-cadrgrgrabl4vacc4evt7g342qiqa2t2.apps.googleusercontent.com",
+    })
+    .then((response) => {
+      const { email_verified } = response.payload;
+      console.log(response.payload);
+    });
 });
 
 //Logout Admin

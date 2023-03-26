@@ -21,16 +21,15 @@ export default function (app) {
 
     res.send({ status: "Success", tokenId });
     console.log("Success Dev");
-    // client
-    //   .verifyIdToken({
-    //     idToken: tokenId,
-    //     audience:
-    //       "685377135851-fem8icfu49q7ui3mu36ujdrfftsdda6b.apps.googleusercontent.com",
-    //   })
-    //   .then((response) => {
-    //     const { email_verified } = response.payload;
-    //     console.log(response.payload);
-    //   });
+    client
+      .verifyIdToken({
+        idToken: tokenId,
+        audience:
+          "685377135851-fem8icfu49q7ui3mu36ujdrfftsdda6b.apps.googleusercontent.com",
+      })
+      .then((response) => {
+        const { email_verified } = response.payload;
+        console.log(response.payload);
+      });
   });
 }
-// https://pms-jq9o.onrender.com/auth/google/callback
