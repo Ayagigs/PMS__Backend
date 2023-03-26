@@ -26,7 +26,7 @@ const goalSchema = new mongoose.Schema({
   ],
   status: {
     type: String,
-    enum: ["In Progress", "Completed", "Overdue"],
+    enum: ["In Progress", "Completed", "Overdue", "Not Started"],
     default: "In Progress",
   },
   owner: {

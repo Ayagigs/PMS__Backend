@@ -3,6 +3,7 @@ import {
   addGoal,
   editGoal,
   findGoalById,
+  getAllCompanyGoals,
   getAllGoals,
   getEmployeeAndGoal,
   sendGoalDeadlineNotification,
@@ -25,6 +26,7 @@ goalRoute.get("/employeegoals/:companyID", protect, getEmployeeAndGoal);
 goalRoute.get("/goals", protect, getAllGoals);
 goalRoute.get("/findgoal/:goalID", protect, findGoalById);
 goalRoute.get("/companygoal/:companyID", protect, restrictedTo('Admin', 'HR Manager'), findGoalById);
+goalRoute.get("/companygoals", protect, restrictedTo('Admin', 'HR Manager'), getAllCompanyGoals);
 
 // Edit the goals
 goalRoute.patch("/edit/:id", protect, editGoal);

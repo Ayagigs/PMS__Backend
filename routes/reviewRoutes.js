@@ -1,5 +1,5 @@
 import express from 'express';
-import { add360Appraisal, addGoalReview, addPerformanceReview, addSelfAppraisal, employeesFor360Appraisal, employeesForGoalReview, employeesForPerformanceReview, getAllReviews, getMyReviews, getSelfAppraisal } from '../controllers/reviewController.js';
+import { add360Appraisal, addGoalReview, addPerformanceReview, addSelfAppraisal, appraisalProgress, employeesFor360Appraisal, employeesForGoalReview, employeesForPerformanceReview, getAllReviews, getMyReviews, getSelfAppraisal, performanceReviewProgress, selfAppraisedProgress } from '../controllers/reviewController.js';
 import canReviewGoal from '../middleware/canReviewGoal.js';
 import isAppraisalTime from '../middleware/isAppraisalTime.js';
 import isReviewTime from '../middleware/isReviewTime.js';
@@ -22,6 +22,9 @@ reviewRoute.get("/selfappraisal", protect, isAppraisalTime, getSelfAppraisal)
 reviewRoute.get("/goalReview", protect, employeesForGoalReview)
 reviewRoute.get("/allreviews/:companyID", protect, restrictedTo("HR Manager","Performance Manager", "Admin"),  getAllReviews)
 reviewRoute.get("/myreviews", protect, getMyReviews)
+reviewRoute.get("/performancereviewbar", protect, performanceReviewProgress)
+reviewRoute.get("/appraisalbar", protect, appraisalProgress)
+reviewRoute.get("/selfappraisalbar", protect, selfAppraisedProgress)
 
 
 

@@ -38,6 +38,18 @@ export const addGoal = asyncHandler(async (req, res, next) => {
     return next(new errorHandler("Invalid or Expired token", 404));
   }
 
+  const today = new Date()
+  let status = ''
+
+  if(today >= startdate && today <= enddate){
+    status = 'In Progress'
+  }else if(today >= enddate){
+    status = 'Overdue'
+  }else{
+    status = 'Not Started'
+  }
+
+
   try {
     const goal = await Goal.create({
       goaltitle,
@@ -45,6 +57,7 @@ export const addGoal = asyncHandler(async (req, res, next) => {
       enddate,
       category,
       description,
+      status: status,
       keyobjectives,
       companyID: goalOwner.companyID,
       owner: goalOwner._id,
@@ -80,6 +93,56 @@ export const addGoal = asyncHandler(async (req, res, next) => {
       success: true,
       data: goal,
     });
+
+    if(status === "Not Started"){
+
+      setTimeout(async () => {
+        await Goal.findByIdAndUpdate(
+          goal._id,
+          {
+            $set: {
+              status: 'In Progress',
+            },
+          },
+          {
+            new: true,
+          }
+        );
+      }, startdate - today);
+      
+
+      setTimeout(async () => {
+        await Goal.findByIdAndUpdate(
+          goal._id,
+          {
+            $set: {
+              status: 'Overdue',
+            },
+          },
+          {
+            new: true,
+          }
+        );
+      }, enddate - today);
+
+    }
+
+    if(status === "In Progress"){
+      setTimeout(async () => {
+        await Goal.findByIdAndUpdate(
+          goal._id,
+          {
+            $set: {
+              status: 'Overdue',
+            },
+          },
+          {
+            new: true,
+          }
+        );
+      }, enddate - today);
+    }
+    
   } catch (error) {
     res.status(500).send({ status: "Fail", message: error.message });
   }
