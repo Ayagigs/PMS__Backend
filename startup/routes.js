@@ -16,4 +16,21 @@ export default function (app) {
   app.use("/api/v1/department", departmentRoute);
   app.use("/api/v1/category", categoryRoute);
   app.use("/api/v1/question", questionRoute);
+  app.use("/auth/google/callback", async (req, res, next) => {
+    const { tokenId } = req.body;
+
+    res.send({ status: "Success", tokenId });
+    console.log("Success Dev");
+    // client
+    //   .verifyIdToken({
+    //     idToken: tokenId,
+    //     audience:
+    //       "685377135851-fem8icfu49q7ui3mu36ujdrfftsdda6b.apps.googleusercontent.com",
+    //   })
+    //   .then((response) => {
+    //     const { email_verified } = response.payload;
+    //     console.log(response.payload);
+    //   });
+  });
 }
+// https://pms-jq9o.onrender.com/auth/google/callback

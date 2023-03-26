@@ -37,6 +37,7 @@ router.post("/logout", logout);
 router.post("/forgotpassword", forgotPassword);
 router.post("/contactus", contactUsMail);
 router.post("/verifyotp", verifyOTP, createAdminAccount);
+router.post("/generateotp", localVariables, generateOTP);
 router.post(
   "/photoupload",
   protect,
@@ -61,7 +62,5 @@ router.patch(
 
 /************* Get Request ************/
 router.get("/findme", protect, findAdminUser);
-
-router.post("/generateotp", localVariables, generateOTP);
 
 export default router;

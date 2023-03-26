@@ -1,17 +1,14 @@
 import Admin from "../model/adminModel.js";
 import validator from "validator";
-// import generateToken from "../utils/generatetoken.js";
 import errorHandler from "../utils/errorHandler.js";
 import Token from "../model/tokenModel.js";
 import asyncHandler from "express-async-handler";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { OAuth2Client } from "google-auth-library";
-
 import { emailSender } from "../utils/emailSender.js";
 import Company from "../model/companyModel.js";
 import Employee from "../model/EmployeeModel.js";
-import { use } from "bcrypt/promises.js";
 
 // const client = new OAuth2Client(
 //   "685377135851-fem8icfu49q7ui3mu36ujdrfftsdda6b.apps.googleusercontent.com"
@@ -122,10 +119,12 @@ export const createAdminAccount = asyncHandler(async (req, res, next) => {
 
     const company = await createCompany.save();
 
+    const token = await admin.generateToken();
     res.json({
       status: "Success",
       message: "Registeration Successfully",
       data: { admin, company },
+      token,
     });
   } else {
     return next(new errorHandler("Unable to create account", 400));
@@ -135,8 +134,6 @@ export const createAdminAccount = asyncHandler(async (req, res, next) => {
 //Login Admin
 export const adminLogin = asyncHandler(async (req, res, next) => {
   const { emailOrCompanyName, password } = req.body;
-
-  console.log(emailOrCompanyName, password);
 
   if (
     !validator.isEmail(emailOrCompanyName) &&
@@ -151,8 +148,6 @@ export const adminLogin = asyncHandler(async (req, res, next) => {
   const admin = await Admin.findOne({
     $or: [{ email: emailOrCompanyName }, { companyName: emailOrCompanyName }],
   });
-
-  // const admin = await Admin.findOne({ email });
 
   if (!admin) {
     return res.status(401).json({ message: "No Credentials Found" });
@@ -171,7 +166,8 @@ export const adminLogin = asyncHandler(async (req, res, next) => {
 export const googleLogin = asyncHandler(async (req, res, next) => {
   const { tokenId } = req.body;
 
-  console.log("Success");
+  res.send({ status: "Success", tokenId });
+  console.log("Success Dev");
   // client
   //   .verifyIdToken({
   //     idToken: tokenId,
