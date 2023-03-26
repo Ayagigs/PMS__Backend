@@ -106,3 +106,27 @@
 {"level":"error","message":"Company already exists with this Company name"}
 {"level":"error","message":"Company already exists with this registeration number"}
 {"level":"error","message":"User already exists with this email"}
+{"level":"error","message":"Can't find /api/v1/googlelogin on this server"}
+{"level":"error","message":"Can't find /api/v1/googlelogin on this server"}
+{"level":"error","message":"Can't find /api/v1/googlelogin on this server"}
+{"level":"error","message":"Company already exists with this Company name"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Invalid OTP"}
+{"level":"error","message":"Company already exists with this Company name"}
+{"level":"error","message":"Company already exists with this Company name"}
+{"level":"error","message":"Please filled the form properly."}
+{"level":"error","message":"Please filled the form properly."}
+{"level":"error","message":"Please filled the form properly."}
+{"level":"error","message":"Please filled the form properly."}
+{"level":"error","message":"Please filled the form properly."}
+{"level":"error","message":"Please filled the form properly."}
+{"level":"error","message":"Can't find /api/v1/admin/googlelogin on this server"}
+{"level":"error","message":"Can't find /api/v1/admin/registeration on this server"}
+{"level":"error","message":"Can't find /auth/google/callback on this server"}

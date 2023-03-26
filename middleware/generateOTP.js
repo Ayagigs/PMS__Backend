@@ -36,6 +36,9 @@ const generateOTP = asyncHandler(async (req, res, next) => {
       success: true,
       message: "Check your email for OTP",
       OTP: req.app.locals.OTP,
+      email: req.app.locals.userEmail,
+      firstName: req.app.locals.userFirstName,
+      details: req.app.locals.userData,
     });
   } catch (error) {
     return next(new errorHandler(error.message, 500));

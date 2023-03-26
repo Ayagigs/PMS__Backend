@@ -1,16 +1,22 @@
 import Admin from "../model/adminModel.js";
 import validator from "validator";
-// import generateToken from "../utils/generatetoken.js";
 import errorHandler from "../utils/errorHandler.js";
 import Token from "../model/tokenModel.js";
 import asyncHandler from "express-async-handler";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-
+import { OAuth2Client } from "google-auth-library";
 import { emailSender } from "../utils/emailSender.js";
 import Company from "../model/companyModel.js";
 import Employee from "../model/EmployeeModel.js";
-import { use } from "bcrypt/promises.js";
+
+// const client = new OAuth2Client(
+//   "685377135851-fem8icfu49q7ui3mu36ujdrfftsdda6b.apps.googleusercontent.com"
+// );
+
+const client = new OAuth2Client(
+  "685377135851-fem8icfu49q7ui3mu36ujdrfftsdda6b.apps.googleusercontent.com"
+);
 
 export const adminReg = asyncHandler(async (req, res, next) => {
   /************************* ADMIN PERSONAL INFORMATION ******************************/
@@ -86,7 +92,8 @@ export const adminReg = asyncHandler(async (req, res, next) => {
 export const createAdminAccount = asyncHandler(async (req, res, next) => {
   // Get user data from request object's locals property
   const userData = req.app.locals.userData;
-
+  console.log(req.app.locals.userData);
+  console.log(userData);
   if (userData) {
     const createAdmin = new Admin({
       firstName: userData.firstName,
@@ -112,10 +119,12 @@ export const createAdminAccount = asyncHandler(async (req, res, next) => {
 
     const company = await createCompany.save();
 
+    const token = await admin.generateToken();
     res.json({
       status: "Success",
       message: "Registeration Successfully",
       data: { admin, company },
+      token,
     });
   } else {
     return next(new errorHandler("Unable to create account", 400));
@@ -124,18 +133,24 @@ export const createAdminAccount = asyncHandler(async (req, res, next) => {
 
 //Login Admin
 export const adminLogin = asyncHandler(async (req, res, next) => {
-  const { email, password } = req.body;
+  const { emailOrCompanyName, password } = req.body;
 
-  if (!validator.isEmail(email)) {
-    return next(new errorHandler("Invalid Email", 422));
+  if (
+    !validator.isEmail(emailOrCompanyName) &&
+    !(
+      typeof emailOrCompanyName === "string" &&
+      emailOrCompanyName.trim().length > 0
+    )
+  ) {
+    return next(new errorHandler("Invalid Email or Company Name", 422));
   }
 
-  const admin = await Admin.findOne({ email });
+  const admin = await Admin.findOne({
+    $or: [{ email: emailOrCompanyName }, { companyName: emailOrCompanyName }],
+  });
 
   if (!admin) {
-    return res
-      .status(401)
-      .json({ message: "No company with this email address" });
+    return res.status(401).json({ message: "No Credentials Found" });
   }
 
   const pass = bcrypt.compareSync(password, admin.password);
@@ -146,6 +161,23 @@ export const adminLogin = asyncHandler(async (req, res, next) => {
 
   const token = admin.generateToken();
   res.status(200).json({ data: admin, token });
+});
+
+export const googleLogin = asyncHandler(async (req, res, next) => {
+  const { tokenId } = req.body;
+
+  res.send({ status: "Success", tokenId });
+  console.log("Success Dev", tokenId);
+  client
+    .verifyIdToken({
+      idToken: tokenId,
+      audience:
+        "644468853015-cadrgrgrabl4vacc4evt7g342qiqa2t2.apps.googleusercontent.com",
+    })
+    .then((response) => {
+      const { email_verified } = response.payload;
+      console.log(response.payload);
+    });
 });
 
 //Logout Admin
