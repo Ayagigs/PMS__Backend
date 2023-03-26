@@ -94,7 +94,12 @@ export const getEmployeeAndGoal = asyncHandler(async (req, res, next) => {
 
     const employees = await Goal.find({ companyID })
       .populate("owner")
-      .populate("reviews");
+      .populate({ 
+        path: 'reviews',
+        populate: {
+          path: 'reviewer',
+        }
+      })
 
     res.status(200).json({
       success: true,
