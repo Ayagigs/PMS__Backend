@@ -92,8 +92,6 @@ export const adminReg = asyncHandler(async (req, res, next) => {
 export const createAdminAccount = asyncHandler(async (req, res, next) => {
   // Get user data from request object's locals property
   const userData = req.app.locals.userData;
-  console.log(req.app.locals.userData);
-  console.log(userData);
   if (userData) {
     const createAdmin = new Admin({
       firstName: userData.firstName,
@@ -123,8 +121,7 @@ export const createAdminAccount = asyncHandler(async (req, res, next) => {
     res.json({
       status: "Success",
       message: "Registeration Successfully",
-      data: { admin, company },
-      token,
+      data: { admin, company, token },
     });
   } else {
     return next(new errorHandler("Unable to create account", 400));
