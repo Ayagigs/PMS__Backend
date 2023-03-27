@@ -112,34 +112,27 @@ export const addGoal = asyncHandler(async (req, res, next) => {
       
 
       setTimeout(async () => {
-        await Goal.findByIdAndUpdate(
-          goal._id,
-          {
-            $set: {
-              status: 'Overdue',
-            },
-          },
-          {
-            new: true,
-          }
-        );
+        const goal = await Goal.findById(goal._id)
+
+        if(goal.status == 'In Progress'){
+          goal.status = 'Overdue'
+
+          await goal.save()
+        }
+        
       }, enddate - today);
 
     }
 
     if(status === "In Progress"){
       setTimeout(async () => {
-        await Goal.findByIdAndUpdate(
-          goal._id,
-          {
-            $set: {
-              status: 'Overdue',
-            },
-          },
-          {
-            new: true,
-          }
-        );
+        const goal = await Goal.findById(goal._id)
+
+        if(goal.status == 'In Progress'){
+          goal.status = 'Overdue'
+
+          await goal.save()
+        }
       }, enddate - today);
     }
     
