@@ -248,7 +248,7 @@ export const addGoalReview = async (req, res) => {
     
     // get details of employee being reviewed
     const employeeBeingReviewed = await Employee.findById(goal.owner)
-    if(reviewer.role === ('Performance Manager' || 'HR Manager') || goal.reviewers.includes(reviewer._id)){
+    if(reviewer.role == 'Performance Manager' || reviewer.role ==  'HR Manager' || goal.reviewers.includes(reviewer._id)){
       
         let score = scores.reduce((a, b) => a + b)/scores.length
         let competency = competencyScores.reduce((a, b) => a + b)/competencyScores.length
@@ -297,7 +297,7 @@ export const addGoalReview = async (req, res) => {
       .status(403)
       .send({
         status: "Forbidden",
-        message: "You Cannn not review this goal",
+        message: "You Can not review this goal",
     });
 
     
