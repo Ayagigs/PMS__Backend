@@ -24,14 +24,14 @@ export default function (app) {
       // Check if user is an employee
       const employee = await Employee.findOne({ email: req.body.email });
       if (employee) {
-        res.status(200).json({ status: "succes", employee });
+        res.status(200).json({ status: "succes", data: employee });
         return;
       }
 
       // Check if user is an admin
       const admin = await Admin.findOne({ email: req.body.email });
       if (admin) {
-        res.status(200).json({ status: "succes", admin });
+        res.status(200).json({ status: "succes", data: admin });
         return;
       }
 
