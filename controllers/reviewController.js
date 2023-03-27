@@ -248,60 +248,60 @@ export const addGoalReview = async (req, res) => {
     
     // get details of employee being reviewed
     const employeeBeingReviewed = await Employee.findById(goal.owner)
-    if(reviewer.role === 'Staff'){
-      if (!goal.reviewers.includes(reviewer._id)  ) {
-        return res
-          .status(403)
-          .send({
-            status: "Forbidden",
-            message: "You Cannn not review this goal",
-          });
-      }
+    if(reviewer.role === ('Performance Manager' || 'HR Manager') || goal.reviewers.includes(reviewer._id)){
+      
+        let score = scores.reduce((a, b) => a + b)/scores.length
+        let competency = competencyScores.reduce((a, b) => a + b)/competencyScores.length
+        
+    
+        const finalScore = ((score + competency) / 2).toFixed(1);
+    
+    
+        const review = await Reviews.create({
+          reviewer: req.userAuth._id,
+          reviewee: goal.owner,
+          reviewType: EReviewType.GOALREVIEW,
+          goal: goalID,
+          score: score.toFixed(1),
+          competency: competency.toFixed(1),
+          date: Date.now(),
+          ratings: ratingCalculator(finalScore),
+          finalScore: finalScore,
+          feedback
+        });
+    
+        goal.reviews.push(review._id);
+        
+        employeeBeingReviewed.reviews.push(review._id)
+    
+        employeeBeingReviewed.score = ((employeeBeingReviewed.score + score)/2).toFixed(1)
+        employeeBeingReviewed.competency = ((employeeBeingReviewed.competency + competency)/2).toFixed(1)
+        employeeBeingReviewed.finalScore = (employeeBeingReviewed.competency + employeeBeingReviewed.score)/2
+        employeeBeingReviewed.rating = ratingCalculator(employeeBeingReviewed.finalScore.toFixed(1))
+    
+        await employeeBeingReviewed.save()
+        await goal.save();
+    
+        // remove the goal reviewed now from the list of goal you need to review
+        reviewer.goalsToReview = reviewer.goalsToReview.filter(
+          (user) => user.toString() !== goalID
+        );
+    
+        // console.log(reviewer)
+    
+        await reviewer.save();
+        res.status(200).send({ status: "Success", message: review });
     }
 
-    
-    let score = scores.reduce((a, b) => a + b)/scores.length
-    let competency = competencyScores.reduce((a, b) => a + b)/competencyScores.length
-    
-
-    const finalScore = ((score + competency) / 2).toFixed(1);
-
-
-    const review = await Reviews.create({
-      reviewer: req.userAuth._id,
-      reviewee: goal.owner,
-      reviewType: EReviewType.GOALREVIEW,
-      goal: goalID,
-      score: score.toFixed(1),
-      competency: competency.toFixed(1),
-      date: Date.now(),
-      ratings: ratingCalculator(finalScore),
-      finalScore: finalScore,
-      feedback
+    return res
+      .status(403)
+      .send({
+        status: "Forbidden",
+        message: "You Cannn not review this goal",
     });
 
-    goal.reviews.push(review._id);
     
-    employeeBeingReviewed.reviews.push(review._id)
 
-    employeeBeingReviewed.score = ((employeeBeingReviewed.score + score)/2).toFixed(1)
-    employeeBeingReviewed.competency = ((employeeBeingReviewed.competency + competency)/2).toFixed(1)
-    employeeBeingReviewed.finalScore = (employeeBeingReviewed.competency + employeeBeingReviewed.score)/2
-    employeeBeingReviewed.rating = ratingCalculator(employeeBeingReviewed.finalScore.toFixed(1))
-
-    await employeeBeingReviewed.save()
-    await goal.save();
-
-    // remove the goal reviewed now from the list of goal you need to review
-    reviewer.goalsToReview = reviewer.goalsToReview.filter(
-      (user) => user.toString() !== goalID
-    );
-
-    // console.log(reviewer)
-
-    await reviewer.save();
-
-    res.status(200).send({ status: "Success", message: review });
   } catch (error) {
     res.status(500).send({ status: "Fail", message: error.message });
   }
