@@ -166,8 +166,6 @@ export const adminLogin = asyncHandler(async (req, res, next) => {
 export const googleLogin = asyncHandler(async (req, res, next) => {
   const { tokenId } = req.body;
 
-  res.send({ status: "Success", tokenId });
-  console.log("Success Dev", tokenId);
   client
     .verifyIdToken({
       idToken: tokenId,
@@ -176,6 +174,7 @@ export const googleLogin = asyncHandler(async (req, res, next) => {
     })
     .then((response) => {
       const { email_verified } = response.payload;
+      console.log(email_verified);
       console.log(response.payload);
     });
 });
@@ -222,15 +221,52 @@ export const forgotPassword = asyncHandler(async (req, res, next) => {
 
   // Reset Email
   const message = `
-  <h2>Hello ${admin.firstName}</h2>
+  <div
+  style="
+    width: 658px;
+    border-radius: 0px;
+    padding: 48px;
+    background: #f1f3f4;
+  "
+>
+  <h2>Hello Ignatius</h2>
   <p>Please use the url below to rest your password</p>
-  <p>
-  This reset link is valid for only 30minutes
-  </p>
-  <a href=${resetUrl} clicktracking=off>${resetUrl}</a>
+  <p>This reset link is valid for only 30minutes</p>
 
-  <p><Regards.../P>
+  <p
+    style="
+      padding: 19px 32px;
+      text-decoration: none;
+      color: white;
+
+      width: 211px;
+      background: rgba(62, 69, 235, 1);
+    "
+  >
+    <a
+      href="${resetUrl}"
+      clicktracking="off"
+      style="
+        font-family: 'Satoshi';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 140%;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: #ffffff;
+        text-decoration: none;
+        justify-content: center;
+      "
+      >${resetUrl}</a
+    >
+  </p>
+  <!-- <a href="${resetUrl}" clicktracking="off">${resetUrl}</a> -->
+
+  <p>Regards...</p>
   <p>Aya Team4</p>
+</div>
   `;
 
   const subject = "Password Reset Request";

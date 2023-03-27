@@ -130,3 +130,6 @@
 {"level":"error","message":"Can't find /api/v1/admin/googlelogin on this server"}
 {"level":"error","message":"Can't find /api/v1/admin/registeration on this server"}
 {"level":"error","message":"Can't find /auth/google/callback on this server"}
+{"level":"error","message":"Please fill the form correctly"}
+{"level":"error","message":"passwords not matched"}
+{"level":"error","message":"Invalid or Expired Token"}

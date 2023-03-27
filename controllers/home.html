@@ -13,16 +13,11 @@
         border-radius: 0px;
         padding: 48px;
         background: #f1f3f4;
-        
       "
     >
-      <h2>Hey ${employee.firstName}</h2>
-      <p>
-        Aya and Co Ltd Team has invited you to join the team on View as an
-        Employee. Accept the invitation to start creating awesome things
-        together.
-      </p>
-      <p>This invite only lasts for 7 days.</p>
+      <h2>Hello Ignatius</h2>
+      <p>Please use the url below to rest your password</p>
+      <p>This reset link is valid for only 30minutes</p>
 
       <p
         style="
@@ -35,7 +30,7 @@
         "
       >
         <a
-          href="${invitationLink}"
+          href="${resetUrl}"
           clicktracking="off"
           style="
             font-family: 'Satoshi';
@@ -50,12 +45,12 @@
             text-decoration: none;
             justify-content: center;
           "
-          >Accept Invitation</a
+          >${resetUrl}</a
         >
       </p>
       <!-- <a href="${resetUrl}" clicktracking="off">${resetUrl}</a> -->
 
-      <p><Regards.../P></p>
+      <p>Regards...</p>
       <p>Aya Team4</p>
     </div>
   </body>
