@@ -248,7 +248,7 @@ export const addGoalReview = async (req, res) => {
     
     // get details of employee being reviewed
     const employeeBeingReviewed = await Employee.findById(goal.owner)
-    if(reviewer.role !== ('Performance Manager' || 'HR Manager')){
+    if(reviewer.role === 'Staff'){
       if (!goal.reviewers.includes(reviewer._id)  ) {
         return res
           .status(403)
