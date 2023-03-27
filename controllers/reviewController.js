@@ -550,17 +550,21 @@ export const performanceReviewProgress = async(req, res) => {
     if (today >= company.midYearStartDate && today <= company.midYearEndDate && employee){
       pms = await Employee.find({role: {$ne : 'Staff'}, companyID : employee.companyID, department: employee.department})
       reviewsgotten = reviews.filter((el) => el.date >= company.midYearStartDate && el.date <= company.midYearEndDate && el.reviewTime === EReviewTime.MIDYEAR)
+      res.status(200).send({ status: "Success", data: {expected: pms.length, got: reviewsgotten.length} });
     }else if (today >= company.midYearStartDate && today <= company.midYearEndDate){
       pms = await Employee.find({role: {$ne : 'Staff'}, companyID : id})
       reviewsgotten = reviews.filter((el) => el.date >= company.midYearStartDate && el.date <= company.midYearEndDate && el.reviewTime === EReviewTime.MIDYEAR)
+      res.status(200).send({ status: "Success", data: {expected: pms.length, got: reviewsgotten.length} });
     }
     
     if (today >= company.fullYearStartDate && today <= company.fullYearEndDate && employee){
       pms = await Employee.find({role: {$ne : 'Staff'}, companyID : employee.companyID, department: employee.department})
       reviewsgotten = reviews.filter((el) => el.date >= company.fullYearStartDate && el.date <= company.fullYearEndDate && el.reviewTime === EReviewTime.FULLYEAR)
+      res.status(200).send({ status: "Success", data: {expected: pms.length, got: reviewsgotten.length} });
     }else if (today >= company.fullYearStartDate && today <= company.fullYearEndDate){
       pms = await Employee.find({role: {$ne : 'Staff'}, companyID : id})
       reviewsgotten = reviews.filter((el) => el.date >= company.fullYearStartDate && el.date <= company.fullYearEndDate && el.reviewTime === EReviewTime.FULLYEAR)
+      res.status(200).send({ status: "Success", data: {expected: pms.length, got: reviewsgotten.length} });
     }
 
     res.status(200).send({ status: "Success", data: {expected: pms.length, got: reviewsgotten.length} });
@@ -595,6 +599,7 @@ export const appraisalProgress = async(req, res) => {
           _id: {$ne : req.userAuth._id}
       })
       reviewsgotten = reviews.filter((el) => el.date >= company.appraisalStartDate && el.date <= company.appraisalEndDate && el.reviewType == EReviewType["360APPRAISAL"])
+      res.status(200).send({ status: "Success", data: {expected: appraisalExpected.length, got: reviewsgotten.length} });
     }else if (today >= company.appraisalStartDate && today <= company.appraisalEndDate){
       appraisalExpected = await Employee.find(
         {
@@ -603,8 +608,9 @@ export const appraisalProgress = async(req, res) => {
           _id: {$ne : req.userAuth._id}
       })
       reviewsgotten = reviews.filter((el) => el.date >= company.appraisalStartDate && el.date <= company.appraisalEndDate && el.reviewType == EReviewType["360APPRAISAL"])
+      res.status(200).send({ status: "Success", data: {expected: appraisalExpected.length, got: reviewsgotten.length} });
     }
-
+    
     res.status(200).send({ status: "Success", data: {expected: appraisalExpected.length, got: reviewsgotten.length} });
 
 
@@ -629,11 +635,13 @@ export const selfAppraisedProgress = async(req, res) => {
     if (today >= company.appraisalStartDate && today <= company.appraisalEndDate && employee){
       appraisalExpected = 1
       reviewsgotten = employee.selfAppraised === true ? 1 : 0
+      res.status(200).send({ status: "Success", data: {expected: appraisalExpected, got: reviewsgotten} });
     }else if(today >= company.appraisalStartDate && today <= company.appraisalEndDate){
       appraisalExpected = await Employee.find({companyID: req.userAuth._id}).length
       reviewsgotten = await Employee.find({companyID: req.userAuth._id, selfAppraised: true}).length
+      res.status(200).send({ status: "Success", data: {expected: appraisalExpected, got: reviewsgotten} });
     }
-
+    
     res.status(200).send({ status: "Success", data: {expected: appraisalExpected, got: reviewsgotten} });
 
 
