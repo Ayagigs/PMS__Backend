@@ -14,8 +14,14 @@ import Employee from "../model/EmployeeModel.js";
 //   "685377135851-fem8icfu49q7ui3mu36ujdrfftsdda6b.apps.googleusercontent.com"
 // );
 
-const client = new OAuth2Client(
-  "685377135851-fem8icfu49q7ui3mu36ujdrfftsdda6b.apps.googleusercontent.com"
+// const client = new OAuth2Client(
+//   "685377135851-fem8icfu49q7ui3mu36ujdrfftsdda6b.apps.googleusercontent.com"
+// );
+
+const oAuth2Client = new OAuth2Client(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  "postmessage"
 );
 
 export const adminReg = asyncHandler(async (req, res, next) => {
@@ -161,19 +167,28 @@ export const adminLogin = asyncHandler(async (req, res, next) => {
 });
 
 export const googleLogin = asyncHandler(async (req, res, next) => {
-  const { tokenId } = req.body;
+  try {
+    console.log(req.body.email);
+    // Check if user is an employee
+    const employee = await Employee.findOne({ email: req.body.email });
+    if (employee) {
+      res.status(200).json({ status: "succes", employee });
+      return;
+    }
 
-  client
-    .verifyIdToken({
-      idToken: tokenId,
-      audience:
-        "644468853015-cadrgrgrabl4vacc4evt7g342qiqa2t2.apps.googleusercontent.com",
-    })
-    .then((response) => {
-      const { email_verified } = response.payload;
-      console.log(email_verified);
-      console.log(response.payload);
-    });
+    // Check if user is an admin
+    const admin = await Admin.findOne({ email: req.body.email });
+    if (admin) {
+      res.status(200).json({ status: "succes", admin });
+      return;
+    }
+
+    // User not found
+    res.status(404).json({ message: "User not found" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 //Logout Admin

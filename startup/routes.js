@@ -6,6 +6,8 @@ import categoryRoute from "../routes/goalcategoryRoutes.js";
 import goalRoute from "../routes/goalRoutes.js";
 import questionRoute from "../routes/questionRoutes.js";
 import reviewRoute from "../routes/reviewRoutes.js";
+import Employee from "../model/EmployeeModel.js";
+import Admin from "../model/adminModel.js";
 
 export default function (app) {
   //   app.use(express.json());
@@ -17,19 +19,27 @@ export default function (app) {
   app.use("/api/v1/category", categoryRoute);
   app.use("/api/v1/question", questionRoute);
   app.use("/auth/google/callback", async (req, res, next) => {
-    const { tokenId } = req.body;
+    try {
+      console.log(req.body.email);
+      // Check if user is an employee
+      const employee = await Employee.findOne({ email: req.body.email });
+      if (employee) {
+        res.status(200).json({ status: "succes", employee });
+        return;
+      }
 
-    res.send({ status: "Success", tokenId });
-    console.log("Success Dev");
-    client
-      .verifyIdToken({
-        idToken: tokenId,
-        audience:
-          "685377135851-fem8icfu49q7ui3mu36ujdrfftsdda6b.apps.googleusercontent.com",
-      })
-      .then((response) => {
-        const { email_verified } = response.payload;
-        console.log(response.payload);
-      });
+      // Check if user is an admin
+      const admin = await Admin.findOne({ email: req.body.email });
+      if (admin) {
+        res.status(200).json({ status: "succes", admin });
+        return;
+      }
+
+      // User not found
+      res.status(404).json({ message: "User not found" });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server error" });
+    }
   });
 }
