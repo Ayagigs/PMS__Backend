@@ -491,10 +491,6 @@ export const deactivateEmployee = asyncHandler(async (req, res, next) => {
     return next(new errorHandler("No user Found, Please Login", 404));
   }
 
-  if (!mongoose.Types.ObjectId.isValid(employeeID)) {
-    return next(new errorHandler("Invalid objectID", 404));
-  }
-
   const employee = await Employee.findByIdAndUpdate(
     employeeID,
     {
