@@ -140,6 +140,9 @@ const employeeSchema = new mongoose.Schema(
         ref: "Goal",
       },
     ],
+    selfAppraised : {
+      type: Boolean
+    },
     appraisalsGiven: [
       {
         type: mongoose.Schema.Types.ObjectId,

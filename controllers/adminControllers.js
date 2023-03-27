@@ -517,7 +517,7 @@ export const findAdminUser = asyncHandler(async (req, res, next) => {
 });
 
 export const deactivateEmployee = asyncHandler(async (req, res, next) => {
-  const adminUser = await Admin.findById(req.userAuth);
+  const adminUser = await Admin.findById(req.userAuth._id);
   const { employeeID } = req.params;
 
   if (!adminUser) {
