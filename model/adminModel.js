@@ -25,6 +25,9 @@ const AdminSchema = new mongoose.Schema(
       type: String,
       default: "Admin",
     },
+    profilePhoto: {
+      type: String
+    },
     companyName: { type: String, unique: true },
     emailOrCompanyName: { type: String },
   },

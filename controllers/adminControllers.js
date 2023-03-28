@@ -543,7 +543,7 @@ export const deactivateEmployee = asyncHandler(async (req, res, next) => {
     employeeID,
     {
       $set: {
-        status: Inactive,
+        status: 'Inactive',
       },
     },
     {
