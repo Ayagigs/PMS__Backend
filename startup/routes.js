@@ -36,7 +36,9 @@ export default function (app) {
       }
 
       // User not found
-      res.status(404).json({ message: "User not found" });
+      res.status(404).json({
+        message: "User not found, kindly login with your company email address",
+      });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Server error" });
