@@ -20,9 +20,8 @@ export default function (app) {
   app.use("/api/v1/question", questionRoute);
   app.use("/auth/google/callback", async (req, res, next) => {
     try {
-      console.log(req.body.email);
       // Check if user is an employee
-      const employee = await Employee.findOne({ email: req.body.email });
+      const employee = await Employee.findOne({ workEmail: req.body.email });
       if (employee) {
         res.status(200).json({ status: "succes", data: employee });
         return;
@@ -37,7 +36,7 @@ export default function (app) {
 
       // User not found
       res.status(404).json({
-        message: "User not found, kindly login with your company email address",
+        message: "kindly login with your company email address",
       });
     } catch (err) {
       console.error(err);
