@@ -120,7 +120,7 @@ export const addGoal = asyncHandler(async (req, res, next) => {
           await goal.save()
         }
         
-      }, enddate - today);
+      }, enddate - new Date());
 
     }
 
