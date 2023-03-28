@@ -24,7 +24,7 @@ export default function (app) {
       const employee = await Employee.findOne({ workEmail: req.body.email });
       if (employee) {
         const token = employee.generateToken();
-        res.status(200).json({ status: "succes", data: employee, token });
+        res.status(200).json({ status: "succes", data: { employee, token } });
         return;
       }
 
@@ -32,7 +32,7 @@ export default function (app) {
       const admin = await Admin.findOne({ email: req.body.email });
       if (admin) {
         const token = admin.generateToken();
-        res.status(200).json({ status: "succes", data: admin, token });
+        res.status(200).json({ status: "succes", data: { admin, token } });
         return;
       }
 
