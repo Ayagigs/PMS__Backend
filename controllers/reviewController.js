@@ -375,6 +375,7 @@ export const getSelfAppraisal = async (req, res, next) => {
     // once the review period is over, clears the array containing those reviewed
     const delay = company.appraisalEndDate - today;
 
+    res.status(200).send({ status: "Success", data: employee });
 
     setTimeout(async () => {
       await Employee.findByIdAndUpdate(
@@ -390,7 +391,6 @@ export const getSelfAppraisal = async (req, res, next) => {
       );
     }, delay);
 
-    res.status(200).send({ status: "Success", data: employeeNotReviewed });
   } catch (error) {
     res.status(500).send({ status: "Fail", message: error.message });
   }
