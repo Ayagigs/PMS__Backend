@@ -446,18 +446,6 @@ export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
       }
     );
 
-    await Admin.findByIdAndUpdate(
-      req.userAuth._id,
-      {
-        $set: {
-          companyName,
-        },
-      },
-      {
-        new: true,
-      }
-    );
-
     res.status(200).json({
       status: "Success",
       data: { updateCompany },
