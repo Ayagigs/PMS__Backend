@@ -11,6 +11,7 @@ import {
   logout,
   profilePhotoUpload,
   resetPassword,
+  updateCompany,
   updateCompanyDetails,
   updatePersonalInfo,
 } from "../controllers/adminControllers.js";
@@ -52,6 +53,7 @@ router.put("/resetpassword/:resetToken", resetPassword);
 /************* Patch Request ************/
 router.patch("/changepassword", protect, changePassword);
 router.patch("/updatecompanydetails", protect, updateCompanyDetails);
+router.patch("/updatecompany", protect, updateCompany);
 router.patch("/updatepersonalinfo", protect, updatePersonalInfo);
 router.patch(
   "/deactivate/:employeeID",

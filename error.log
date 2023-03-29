@@ -134,3 +134,9 @@
 {"level":"error","message":"passwords not matched"}
 {"level":"error","message":"Invalid or Expired Token"}
 {"level":"error","message":"Company already exists with this Company name"}
+{"level":"error","message":"Please filled the form properly"}
+{"level":"error","message":"Please filled the form properly"}
+{"level":"error","message":"Email not Available"}
+{"level":"error","message":"Email not Available"}
+{"level":"error","message":"Email already exists in the company"}
+{"level":"error","message":"Email already exists in the company"}

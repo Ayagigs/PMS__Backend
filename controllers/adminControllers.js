@@ -368,13 +368,6 @@ export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
   company.app;
   if (company) {
     const {
-      companyName,
-      businessType,
-      address,
-      state,
-      country,
-      companyRegNo,
-      numOfEmployees,
       midYearStartDate,
       midYearEndDate,
       fullYearStartDate,
@@ -440,13 +433,6 @@ export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
       { companyID: req.userAuth._id },
       {
         $set: {
-          companyName,
-          companyRegNo,
-          businessType,
-          address,
-          state,
-          country,
-          numOfEmployees,
           midYearStartDate,
           midYearEndDate,
           fullYearStartDate,
@@ -481,18 +467,101 @@ export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
   }
 });
 
+export const updateCompany = asyncHandler(async (req, res, next) => {
+  const company = await Company.findOne({ companyID: req.userAuth._id });
+
+  if (company) {
+    const {
+      companyName,
+      businessType,
+      address,
+      state,
+      country,
+      companyRegNo,
+      numOfEmployees,
+    } = req.body;
+
+    const updateCompany = await Company.findOneAndUpdate(
+      { companyID: req.userAuth._id },
+      {
+        $set: {
+          companyName,
+          companyRegNo,
+          businessType,
+          address,
+          state,
+          country,
+          numOfEmployees,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+
+    await Admin.findByIdAndUpdate(
+      req.userAuth._id,
+      {
+        $set: {
+          companyName,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.status(200).json({
+      status: "Success",
+      data: { updateCompany },
+    });
+  } else {
+    return next(new errorHandler("User not found, Please signup", 404));
+  }
+});
+
 export const updatePersonalInfo = asyncHandler(async (req, res, next) => {
-  const adminUser = await Admin.findById(req.userAuth);
+  const adminUser = await Admin.findById(req.userAuth._id);
 
   if (adminUser) {
     const { firstName, lastName, email } = req.body;
 
-    if (!firstName || !lastName || !email) {
-      return next(new errorHandler("Please filled the form properly", 422));
-    }
-
     if (!validator.isEmail(email)) {
       return next(new errorHandler("Invalid Email", 422));
+    }
+    const company = await Company.findById(adminUser.companyID);
+
+    // Check if the email is taken by another admin in the company
+    const adminWithEmail = await Admin.findOne({
+      email,
+      companyID: company._id,
+    });
+
+    if (
+      adminWithEmail &&
+      adminWithEmail._id.toString() !== adminUser._id.toString()
+    ) {
+      return next(
+        new errorHandler(
+          "Email is already taken by another admin in the company",
+          422
+        )
+      );
+    }
+
+    // Check if the email is taken by an employee in the company
+    const employeeWithEmail = await Employee.findOne({
+      email,
+      companyID: company._id,
+    });
+
+    if (employeeWithEmail) {
+      return next(
+        new errorHandler(
+          "Email is already taken by an employee in the company",
+          422
+        )
+      );
     }
 
     const updateInfo = await Admin.findByIdAndUpdate(
