@@ -336,7 +336,7 @@ export const employeesFor360Appraisal = async (req, res, next) => {
     }
 
     // once the review period is over, clears the array containing those reviewed
-    const delay = company.appraisalEndDate - today;
+    const delay = company.appraisalEndDate - today
 
 
     setTimeout(async () => {
@@ -353,7 +353,7 @@ export const employeesFor360Appraisal = async (req, res, next) => {
       );
     }, delay);
 
-    res.status(200).send({ status: "Success", data: employeeNotReviewed });
+    res.status(200).send({ status: "Success", data: {employeeNotReviewed, due: company.appraisalEndDate} });
   } catch (error) {
     res.status(500).send({ status: "Fail", message: error.message });
   }
@@ -447,7 +447,7 @@ export const employeesForPerformanceReview = async (req, res) => {
           }
         );
       }, delay);
-      res.status(200).send({ status: "Success", data: employeeNotReviewed });
+      res.status(200).send({ status: "Success", data: {employeeNotReviewed, due: company.midYearEndDate} });
     }
 
     // checking if it is a full year before executing the functions
@@ -478,7 +478,7 @@ export const employeesForPerformanceReview = async (req, res) => {
         );
       }, delay);
 
-      res.status(200).send({ status: "Success", data: employeeNotReviewed });
+      res.status(200).send({ status: "Success", data: {employeeNotReviewed, due: company.fullYearEndDate} });
     }
   } catch (error) {
     res.status(500).send({ status: "Fail", message: error.message });
@@ -637,9 +637,9 @@ export const selfAppraisedProgress = async(req, res) => {
       reviewsgotten = employee.selfAppraised === true ? 1 : 0
       res.status(200).send({ status: "Success", data: {expected: appraisalExpected, got: reviewsgotten} });
     }else if(today >= company.appraisalStartDate && today <= company.appraisalEndDate){
-      appraisalExpected = await Employee.find({companyID: req.userAuth._id}).length
-      reviewsgotten = await Employee.find({companyID: req.userAuth._id, selfAppraised: true}).length
-      res.status(200).send({ status: "Success", data: {expected: appraisalExpected, got: reviewsgotten} });
+      appraisalExpected = await Employee.find({companyID: req.userAuth._id})
+      reviewsgotten = await Employee.find({companyID: req.userAuth._id, selfAppraised: true})
+      res.status(200).send({ status: "Success", data: {expected: appraisalExpected.length, got: reviewsgotten.length} });
     }
     
     res.status(200).send({ status: "Success", data: {expected: appraisalExpected, got: reviewsgotten} });

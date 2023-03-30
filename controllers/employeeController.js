@@ -465,6 +465,29 @@ export const profilePhotoUpload = asyncHandler(async (req, res, next) => {
   }
 });
 
+export const searchEmployeeInDepartment = async (req, res) => {
+  const { searchParams } = req.body;
+
+  try {
+    const employee = await Employee.findById(req.userAuth._id);
+    const colleagues = await Employee.find({
+      department: employee.department,
+      role: "Staff",
+      companyID: employee.companyID,
+    });
+
+    const employees = colleagues.filter(
+      (el) =>
+        el.firstName.includes(searchParams) ||
+        el.lastName.includes(searchParams)
+    );
+
+    res.status(200).send({ status: "Success", data: employees });
+  } catch (error) {
+    return res.status(500).send({ status: "Success", message: error.message });
+  }
+};
+
 export const changePassword = asyncHandler(async (req, res, next) => {
   const employee = await Employee.findById(req.userAuth._id);
 
