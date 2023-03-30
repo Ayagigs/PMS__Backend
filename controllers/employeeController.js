@@ -464,3 +464,37 @@ export const profilePhotoUpload = asyncHandler(async (req, res, next) => {
     return res.status(500).send({ status: "Success", message: error.message });
   }
 });
+
+export const changePassword = asyncHandler(async (req, res, next) => {
+  const employee = await Employee.findById(req.userAuth._id);
+
+  if (!employee) {
+    return next(new errorHandler("User not found, Please signup", 404));
+  }
+
+  const { currentPassword, newPassword, confirmPassword } = req.body;
+  if (!currentPassword || !newPassword || !confirmPassword) {
+    return next(new errorHandler("Please complete all fields", 400));
+  }
+
+  if (confirmPassword !== newPassword) {
+    // return res.status(422).json({ error: "Passwords Must Matched" });
+    return next(
+      new errorHandler("Current Password and new Password must match.", 422)
+    );
+  }
+
+  // check if old password matches password in DB
+  const passwordCorrect = await bcrypt.compareSync(
+    currentPassword,
+    employee.password
+  );
+
+  if (employee && passwordCorrect) {
+    employee.password = newPassword;
+    await employee.save();
+    res.status(200).send("Password change successful");
+  } else {
+    return next(new errorHandler("Current Password incorrect", 400));
+  }
+});

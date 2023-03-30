@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  changePassword,
   editEmployeeDetails,
   employeeLogin,
   employeeReg,
@@ -13,7 +14,7 @@ import { protect } from "../middleware/protect.js";
 import multer from "multer";
 import { profileStorage } from "../config/cloudinary.js";
 import restrictedTo from "../middleware/restrictedTo.js";
-import generateOTP from "../middleware/generateOTP.js"
+import generateOTP from "../middleware/generateOTP.js";
 import { v2 as cloudinary } from "cloudinary";
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -25,9 +26,9 @@ var storage = multer.diskStorage({
 });
 
 const employeeRoute = express.Router();
-const upload = multer({storage});
+const upload = multer({ storage });
 
-const profileupload = multer({storage: profileStorage})
+const profileupload = multer({ storage: profileStorage });
 // ************************ POST REQUEST ************************
 employeeRoute.post(
   "/registeration/:companyID",
@@ -37,7 +38,12 @@ employeeRoute.post(
 );
 employeeRoute.post("/login", employeeLogin);
 employeeRoute.post("/resetpassword/:resetToken", resetPassword);
-employeeRoute.post("/profile",protect, profileupload.single('profile'), profilePhotoUpload)
+employeeRoute.post(
+  "/profile",
+  protect,
+  profileupload.single("profile"),
+  profilePhotoUpload
+);
 
 // Add employees using csv files
 employeeRoute.post(
@@ -47,14 +53,14 @@ employeeRoute.post(
   restrictedTo("Admin", "HR Manager"),
   registerBulkEmployee,
   generateOTP
-  );
-  
+);
+
 // ****************************** PATCH REQUEST ***************************
-employeeRoute.patch("/editdetails", protect, editEmployeeDetails)
+employeeRoute.patch("/editdetails", protect, editEmployeeDetails);
+employeeRoute.patch("/changepassword", protect, changePassword);
 
 // ******************************** GET REQUEST **************************
 employeeRoute.get("/employees/:companyID", protect, getAllEmployees);
 employeeRoute.get("/findme", protect, getSpecificEmployee);
-
 
 export default employeeRoute;

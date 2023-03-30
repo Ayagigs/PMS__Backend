@@ -140,3 +140,5 @@
 {"level":"error","message":"Email not Available"}
 {"level":"error","message":"Email already exists in the company"}
 {"level":"error","message":"Email already exists in the company"}
+{"level":"error","message":"Please fill the form correctly"}
+{"level":"error","message":"Invalid or Expired Token"}
