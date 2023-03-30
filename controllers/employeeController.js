@@ -522,7 +522,7 @@ export const changePassword = asyncHandler(async (req, res, next) => {
   }
 });
 
-const updateNotificationPreferences = async (req, res) => {
+export const updateNotificationPreferences = async (req, res) => {
   try {
     const employeeID = req.userAuth._id;
     const {

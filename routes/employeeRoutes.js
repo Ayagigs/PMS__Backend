@@ -8,6 +8,7 @@ import {
   getSpecificEmployee,
   profilePhotoUpload,
   registerBulkEmployee,
+  updateNotificationPreferences,
   resetPassword,
   searchEmployeeInDepartment,
 } from "../controllers/employeeController.js";
@@ -60,6 +61,7 @@ employeeRoute.post("/searchEmployees", protect, searchEmployeeInDepartment);
 // ****************************** PATCH REQUEST ***************************
 employeeRoute.patch("/editdetails", protect, editEmployeeDetails);
 employeeRoute.patch("/changepassword", protect, changePassword);
+employeeRoute.patch("/notifications", protect, updateNotificationPreferences);
 
 // ******************************** GET REQUEST **************************
 employeeRoute.get("/employees/:companyID", protect, getAllEmployees);
