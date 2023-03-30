@@ -8,6 +8,8 @@ import {
   profilePhotoUpload,
   registerBulkEmployee,
   resetPassword,
+  searchEmployeeInComapny,
+  searchEmployeeInDepartment,
 } from "../controllers/employeeController.js";
 import { protect } from "../middleware/protect.js";
 import multer from "multer";
@@ -48,6 +50,7 @@ employeeRoute.post(
   registerBulkEmployee,
   generateOTP
   );
+  employeeRoute.post("/searchEmployees", protect, searchEmployeeInDepartment)
   
 // ****************************** PATCH REQUEST ***************************
 employeeRoute.patch("/editdetails", protect, editEmployeeDetails)
