@@ -521,3 +521,46 @@ export const changePassword = asyncHandler(async (req, res, next) => {
     return next(new errorHandler("Current Password incorrect", 400));
   }
 });
+
+const updateNotificationPreferences = async (req, res) => {
+  try {
+    const employeeID = req.userAuth._id;
+    const {
+      pushCommentNotification,
+      pushGoalDeadlineNotification,
+      emailCommentNotification,
+      emailNewsUpdateNotification,
+      emailReminderNotification,
+    } = req.body;
+
+    const notification = await Notification.findOne({ employeeID: employeeID });
+
+    if (!notification) {
+      return res
+        .status(404)
+        .json({ message: "Notification preferences not found" });
+    }
+
+    notification.pushCommentNotification =
+      pushCommentNotification || notification.pushCommentNotification;
+    notification.pushGoalDeadlineNotification =
+      pushGoalDeadlineNotification || notification.pushGoalDeadlineNotification;
+    notification.emailCommentNotification =
+      emailCommentNotification || notification.emailCommentNotification;
+    notification.emailNewsUpdateNotification =
+      emailNewsUpdateNotification || notification.emailNewsUpdateNotification;
+    notification.emailReminderNotification =
+      emailReminderNotification || notification.emailReminderNotification;
+
+    await notification.save();
+
+    res
+      .status(200)
+      .json({ message: "Notification preferences updated successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Server error occurred while updating notification preferences",
+    });
+  }
+};

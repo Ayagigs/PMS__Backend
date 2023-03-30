@@ -9,7 +9,6 @@ import {
   profilePhotoUpload,
   registerBulkEmployee,
   resetPassword,
-  searchEmployeeInComapny,
   searchEmployeeInDepartment,
 } from "../controllers/employeeController.js";
 import { protect } from "../middleware/protect.js";

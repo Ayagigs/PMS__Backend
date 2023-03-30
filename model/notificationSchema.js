@@ -1,20 +1,16 @@
 import mongoose from "mongoose";
 
 const notificationSchema = new mongoose.Schema({
-  user: {
+  employeeID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Employee",
     required: true,
   },
-  pushGoalDeadline: {
+  pushCommentNotification: {
     type: Boolean,
     default: false,
   },
-  commentNotification: {
-    type: Boolean,
-    default: false,
-  },
-  emailGoalDeadline: {
+  pushGoalDeadlineNotification: {
     type: Boolean,
     default: false,
   },
@@ -22,7 +18,15 @@ const notificationSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  oneSignalUserId: {
+  emailNewsUpdateNotification: {
+    type: Boolean,
+    default: false,
+  },
+  emailReminderNotification: {
+    type: Boolean,
+    default: false,
+  },
+  oneSignalId: {
     type: String,
   },
   createdAt: {
