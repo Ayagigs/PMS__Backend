@@ -526,13 +526,11 @@ export const changePassword = asyncHandler(async (req, res, next) => {
 export const updateNotificationPreferences = asyncHandler(
   async (req, res, next) => {
     const updateFields = req.body;
-    console.log(req.userAuth._id);
 
     try {
       let notification = await Notification.findOne({
         employeeID: req.userAuth._id,
       });
-      console.log(notification);
 
       if (!notification) {
         // Create new notification document if it doesn't exist
