@@ -142,3 +142,4 @@
 {"level":"error","message":"Email already exists in the company"}
 {"level":"error","message":"Please fill the form correctly"}
 {"level":"error","message":"Invalid or Expired Token"}
+{"level":"error","message":"Can't find /api/v1/goal/notifications on this server"}

@@ -22,7 +22,7 @@ const notificationSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  emailReminderNotification: {
+  emailGoalDeadlineNotification: {
     type: Boolean,
     default: false,
   },
