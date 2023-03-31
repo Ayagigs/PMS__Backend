@@ -170,7 +170,7 @@ export const googleLogin = asyncHandler(async (req, res, next) => {
   try {
     console.log(req.body.email);
     // Check if user is an employee
-    const employee = await Employee.findOne({ email: req.body.email });
+    const employee = await Employee.findOne({ email: req.body.email});
     if (employee) {
       res.status(200).json({ status: "succes", employee });
       return;
