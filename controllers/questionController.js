@@ -27,7 +27,7 @@ export const addQuestion = async(req, res) => {
             options,
             reviewType,
             category,
-            companyID: req.userAuth._id
+            companyID: companyID
         })
         console.log(questions)
 
