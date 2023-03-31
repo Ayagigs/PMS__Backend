@@ -465,23 +465,102 @@ export const profilePhotoUpload = asyncHandler(async (req, res, next) => {
   }
 });
 
+export const searchEmployeeInDepartment = async (req, res) => {
+  const { searchParams } = req.body;
 
+  try {
+    const employee = await Employee.findById(req.userAuth._id);
+    const colleagues = await Employee.find({
+      department: employee.department,
+      role: "Staff",
+      companyID: employee.companyID,
+    });
 
-export const searchEmployeeInDepartment = async(req, res) => {
-  const {searchParams} = req.body;
+    const employees = colleagues.filter(
+      (el) =>
+        el.firstName.includes(searchParams) ||
+        el.lastName.includes(searchParams)
+    );
 
-  try{
-    const employee = await Employee.findById(req.userAuth._id)
-    const colleagues = await Employee.find({department: employee.department, role: 'Staff', companyID: employee.companyID}) 
-
-    const employees = colleagues.filter((el) => el.firstName.includes(searchParams) || el.lastName.includes(searchParams))
-
-    
-    res
-      .status(200)
-      .send({ status: "Success", data: employees });
-
+    res.status(200).send({ status: "Success", data: employees });
   } catch (error) {
     return res.status(500).send({ status: "Success", message: error.message });
   }
-}
+};
+
+export const changePassword = asyncHandler(async (req, res, next) => {
+  const employee = await Employee.findById(req.userAuth._id);
+
+  if (!employee) {
+    return next(new errorHandler("User not found, Please signup", 404));
+  }
+
+  const { currentPassword, newPassword, confirmPassword } = req.body;
+  if (!currentPassword || !newPassword || !confirmPassword) {
+    return next(new errorHandler("Please complete all fields", 400));
+  }
+
+  if (confirmPassword !== newPassword) {
+    // return res.status(422).json({ error: "Passwords Must Matched" });
+    return next(
+      new errorHandler("Current Password and new Password must match.", 422)
+    );
+  }
+
+  // check if old password matches password in DB
+  const passwordCorrect = await bcrypt.compareSync(
+    currentPassword,
+    employee.password
+  );
+
+  if (employee && passwordCorrect) {
+    employee.password = newPassword;
+    await employee.save();
+    res.status(200).send("Password change successful");
+  } else {
+    return next(new errorHandler("Current Password incorrect", 400));
+  }
+});
+
+export const updateNotificationPreferences = async (req, res) => {
+  try {
+    const employeeID = req.userAuth._id;
+    const {
+      pushCommentNotification,
+      pushGoalDeadlineNotification,
+      emailCommentNotification,
+      emailNewsUpdateNotification,
+      emailReminderNotification,
+    } = req.body;
+
+    const notification = await Notification.findOne({ employeeID: employeeID });
+
+    if (!notification) {
+      return res
+        .status(404)
+        .json({ message: "Notification preferences not found" });
+    }
+
+    notification.pushCommentNotification =
+      pushCommentNotification || notification.pushCommentNotification;
+    notification.pushGoalDeadlineNotification =
+      pushGoalDeadlineNotification || notification.pushGoalDeadlineNotification;
+    notification.emailCommentNotification =
+      emailCommentNotification || notification.emailCommentNotification;
+    notification.emailNewsUpdateNotification =
+      emailNewsUpdateNotification || notification.emailNewsUpdateNotification;
+    notification.emailReminderNotification =
+      emailReminderNotification || notification.emailReminderNotification;
+
+    await notification.save();
+
+    res
+      .status(200)
+      .json({ message: "Notification preferences updated successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Server error occurred while updating notification preferences",
+    });
+  }
+};
