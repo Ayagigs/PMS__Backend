@@ -406,10 +406,10 @@ export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
     }
 
     // validation for full year and mid year should not be set in the same period
-    if (
-      fullYearStartDate >= midYearStartDate &&
-      fullYearStartDate < midYearEndDate
-    ) {
+    if (fullYearStartDate && midYearStartDate &&
+      (fullYearStartDate >= midYearStartDate &&
+      fullYearStartDate < midYearEndDate)
+    ){
       return next(
         new errorHandler(
           "Full-Year and Mid-Year Reviews can not be taken in same time frame",
@@ -417,9 +417,9 @@ export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
         )
       );
     }
-    if (
+    if (fullYearStartDate && midYearStartDate && (
       midYearStartDate >= fullYearStartDate &&
-      midYearStartDate < fullYearEndDate
+      midYearStartDate < fullYearEndDate)
     ) {
       return next(
         new errorHandler(
@@ -639,7 +639,7 @@ export const profilePhotoUpload = asyncHandler(async (req, res, next) => {
     }
     res
       .status(200)
-      .send({ status: "Success", message: "Profile Upload Successfull" });
+      .send({ status: "Success", data: {profilePhoto: req.file.path} });
   } catch (error) {
     return res.status(500).send({ status: "Success", message: error.message });
   }
