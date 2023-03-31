@@ -38,17 +38,16 @@ export const addGoal = asyncHandler(async (req, res, next) => {
     return next(new errorHandler("Invalid or Expired token", 404));
   }
 
-  const today = new Date()
-  let status = ''
+  const today = new Date();
+  let status = "";
 
-  if(today >= startdate && today <= enddate){
-    status = 'In Progress'
-  }else if(today >= enddate){
-    status = 'Overdue'
-  }else{
-    status = 'Not Started'
+  if (today >= startdate && today <= enddate) {
+    status = "In Progress";
+  } else if (today >= enddate) {
+    status = "Overdue";
+  } else {
+    status = "Not Started";
   }
-
 
   try {
     const goal = await Goal.create({
@@ -94,14 +93,13 @@ export const addGoal = asyncHandler(async (req, res, next) => {
       data: goal,
     });
 
-    if(status === "Not Started"){
-
+    if (status === "Not Started") {
       setTimeout(async () => {
         await Goal.findByIdAndUpdate(
           goal._id,
           {
             $set: {
-              status: 'In Progress',
+              status: "In Progress",
             },
           },
           {
@@ -109,33 +107,29 @@ export const addGoal = asyncHandler(async (req, res, next) => {
           }
         );
       }, startdate - today);
-      
 
       setTimeout(async () => {
-        const goal = await Goal.findById(goal._id)
+        const goal = await Goal.findById(goal._id);
 
-        if(goal.status == 'In Progress'){
-          goal.status = 'Overdue'
+        if (goal.status == "In Progress") {
+          goal.status = "Overdue";
 
-          await goal.save()
+          await goal.save();
         }
-        
       }, enddate - new Date());
-
     }
 
-    if(status === "In Progress"){
+    if (status === "In Progress") {
       setTimeout(async () => {
-        const goal = await Goal.findById(goal._id)
+        const goal = await Goal.findById(goal._id);
 
-        if(goal.status == 'In Progress'){
-          goal.status = 'Overdue'
+        if (goal.status == "In Progress") {
+          goal.status = "Overdue";
 
-          await goal.save()
+          await goal.save();
         }
       }, enddate - today);
     }
-    
   } catch (error) {
     res.status(500).send({ status: "Fail", message: error.message });
   }
@@ -150,12 +144,12 @@ export const getEmployeeAndGoal = asyncHandler(async (req, res, next) => {
 
     const employees = await Goal.find({ companyID })
       .populate("owner")
-      .populate({ 
-        path: 'reviews',
+      .populate({
+        path: "reviews",
         populate: {
-          path: 'reviewer',
-        }
-      })
+          path: "reviewer",
+        },
+      });
 
     res.status(200).json({
       success: true,
@@ -182,9 +176,9 @@ export const getAllGoals = async (req, res) => {
 };
 
 export const getAllCompanyGoals = async (req, res) => {
-  const {companyID} = req.params;
+  const { companyID } = req.params;
   try {
-    const goals = await Goal.find({ companyID: companyID}).populate(
+    const goals = await Goal.find({ companyID: companyID }).populate(
       "reviewers"
     );
 

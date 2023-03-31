@@ -530,7 +530,7 @@ export const updateNotificationPreferences = async (req, res) => {
       pushGoalDeadlineNotification,
       emailCommentNotification,
       emailNewsUpdateNotification,
-      emailReminderNotification,
+      emailGoalDeadlineNotification,
     } = req.body;
 
     const notification = await Notification.findOne({ employeeID: employeeID });
@@ -549,8 +549,9 @@ export const updateNotificationPreferences = async (req, res) => {
       emailCommentNotification || notification.emailCommentNotification;
     notification.emailNewsUpdateNotification =
       emailNewsUpdateNotification || notification.emailNewsUpdateNotification;
-    notification.emailReminderNotification =
-      emailReminderNotification || notification.emailReminderNotification;
+    notification.emailGoalDeadlineNotification =
+      emailGoalDeadlineNotification ||
+      notification.emailGoalDeadlineNotification;
 
     await notification.save();
 
