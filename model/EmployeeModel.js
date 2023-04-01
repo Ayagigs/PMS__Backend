@@ -141,7 +141,8 @@ const employeeSchema = new mongoose.Schema(
       },
     ],
     selfAppraised : {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     appraisalsGiven: [
       {
