@@ -527,6 +527,12 @@ export const updateNotificationPreferences = asyncHandler(
   async (req, res, next) => {
     const updateFields = req.body;
 
+    const employee = await Employee.findById(req.userAuth._id);
+
+    if (!employee) {
+      return next(new errorHandler("User not found, Please signup", 404));
+    }
+
     try {
       let notification = await Notification.findOne({
         employeeID: req.userAuth._id,
