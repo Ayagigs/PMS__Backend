@@ -1,5 +1,6 @@
 import Question from "../model/questionModel.js";
 import Admin from "../model/adminModel.js";
+import { EReviewType } from "../enums/EReviewType.js";
 
 export const addQuestion = async(req, res) => {
     const {questions, options, reviewType, category} = req.body;
@@ -27,7 +28,7 @@ export const addQuestion = async(req, res) => {
             options,
             reviewType,
             category,
-            companyID: req.userAuth._id
+            companyID: companyID
         })
         console.log(questions)
 
@@ -122,12 +123,37 @@ export const updateOption  = async(req, res) => {
     const {options} = req.body;
     
     try{
-        const questions = await Question.find({companyID})
+        // performance review question
+        const question1 = await Question.findOne({companyID, reviewType: EReviewType.PERFORMANCE})
+        const question2 = await Question.findOne({companyID, reviewType: EReviewType["360APPRAISAL"]})
+        const question3 = await Question.findOne({companyID, reviewType: EReviewType.COMPETENCY})
+        const question4 = await Question.findOne({companyID, reviewType: EReviewType.GOALREVIEW})
+        const question5 = await Question.findOne({companyID, reviewType: EReviewType.SELFAPPRAISAL})
 
-        for(let i = 0; i < questions.length; i++){
-            questions[0].options = options
+        if(question1){
+            question1.options = options
 
-            await questions[0].save()
+            await question1.save()
+        }
+        if(question2){
+            question2.options = options
+
+            await question2.save()
+        }
+        if(question3){
+            question3.options = options
+
+            await question3.save()
+        }
+        if(question4){
+            question4.options = options
+
+            await question4.save()
+        }
+        if(question5){
+            question5.options = options
+
+            await question5.save()
         }
     
         res.status(200).send({status: 'Success', data: {options}})

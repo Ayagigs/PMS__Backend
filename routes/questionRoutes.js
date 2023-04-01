@@ -5,7 +5,7 @@ import { addQuestion, deleteaQuestion, editQuestion, getAllQuestion, getCompeten
 
 const questionRoute = express.Router()
 
-questionRoute.post("/setquestion", protect, restrictedTo('Admin', 'HR Manager'), addQuestion);
+questionRoute.post("/setquestion/:companyID", protect, restrictedTo('Admin', 'HR Manager'), addQuestion);
 questionRoute.patch("/editquestion/:questionID", protect, restrictedTo("Admin", "HR Manager"), editQuestion);
 questionRoute.patch("/setoptions/:companyID", protect, restrictedTo("Admin", "HR Manager"), updateOption);
 questionRoute.delete("/delete/:questionID/:question", protect, restrictedTo("Admin", "HR Manager"), deleteaQuestion);
