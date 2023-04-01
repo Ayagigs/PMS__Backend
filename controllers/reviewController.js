@@ -137,10 +137,10 @@ export const addSelfAppraisal = async (req, res) => {
 
     employee.reviews.push(review._id)
 
-    employee.score = (employeeBeingReviewed.score + score)/2
-    employee.competency = (employeeBeingReviewed.competency + competency)/2
-    employee.finalScore = (employeeBeingReviewed.competency + employeeBeingReviewed.score)/2
-    employee.rating = ratingCalculator(employeeBeingReviewed.finalScore.toFixed(1))
+    employee.score = (employee.score + score)/2
+    employee.competency = (employee.competency + competency)/2
+    employee.finalScore = (employee.competency + employeeBeingReviewed.score)/2
+    employee.rating = ratingCalculator(employee.finalScore.toFixed(1))
     employee.selfAppraised = true
 
     await employee.save();
@@ -503,6 +503,7 @@ export const employeesForGoalReview = async (req, res) => {
 };
 
 
+
 export const getMyReviews = async (req, res) => {
   const reviews = await Reviews.find({ reviewee: req.userAuth._id }).populate('reviewer')
 
@@ -512,6 +513,7 @@ export const getMyReviews = async (req, res) => {
     res.status(500).send({ status: "Fail", message: error.message });
   }
 };
+
 
 
 export const getAllReviews = async(req, res) => {
