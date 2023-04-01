@@ -88,7 +88,7 @@ export const employeeReg = asyncHandler(async (req, res, next) => {
     console.log(req.userAuth);
 
     // res.status(200).json({ status: "Success", data: employee });
-    const invitationLink = `${process.env.CLIENT_URL}/resetPassword/${resetToken}`;
+    const invitationLink = `${"https://develop--viewpms.netlify.app"}/resetPassword/${resetToken}`;
 
     // Reset Email
     const message = `
