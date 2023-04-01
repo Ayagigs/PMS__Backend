@@ -326,7 +326,7 @@ export const employeesFor360Appraisal = async (req, res, next) => {
     });
     const employeesAlreadyReviewed = employee.appraisalsGiven;
 
-    const employeeNotReviewed = [];
+    let employeeNotReviewed = [];
 
     for (let i = 0; i < employeesInDepartment.length; i++) {
       // checking id the employee has already been reviewed before pushing it to the array of those not reviewed
@@ -403,7 +403,7 @@ export const employeesForPerformanceReview = async (req, res) => {
     // get details of the person giving the review and company they belong to
     const reviewer = await Employee.findById(req.userAuth._id);
     const company = await Company.findOne({ companyID: reviewer.companyID });
-    const employeesInDepartment = [];
+    let employeesInDepartment = [];
 
     if (reviewer.role === "Performance Manager") {
       employeesInDepartment = await Employee.find({
@@ -421,7 +421,7 @@ export const employeesForPerformanceReview = async (req, res) => {
       });
     }
     const employeesAlreadyReviewed = reviewer.performanceReviewGiven;
-    const employeeNotReviewed = [];
+    let employeeNotReviewed = [];
     const today = new Date();
     // checking if it is a mid-year befoe executing the functions
     if (today >= company.midYearStartDate && today <= company.midYearEndDate) {
