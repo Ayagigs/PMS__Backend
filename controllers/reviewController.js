@@ -555,6 +555,9 @@ export const performanceReviewProgress = async(req, res) => {
     if (today >= company.midYearStartDate && today <= company.midYearEndDate && employee){
       pms = await Employee.find({role: {$ne : 'Staff'}, companyID : employee.companyID, department: employee.department})
       reviewsgotten = reviews.filter((el) => el.date >= company.midYearStartDate && el.date <= company.midYearEndDate && el.reviewTime === EReviewTime.MIDYEAR && el.reviewee == employee._id)
+      if(employee.role === 'Performance Manager'){
+        pms = await Employee.find({role: 'HR Manager', companyID: employee.companyID, department: department})
+      }
       res.status(200).send({ status: "Success", data: {expected: pms.length, got: reviewsgotten.length} });
     }else if (today >= company.midYearStartDate && today <= company.midYearEndDate){
       pms = await Employee.find({role: 'Staff', companyID : id})
