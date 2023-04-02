@@ -12,7 +12,7 @@ const isAppraisalTime = async(req, res, next) => {
     const today = new Date();
     // today.setHours(today.getHours() + 1);
 
-    if(today >= company.appraisalStartDate || today <= company.appraisalEndDate){
+    if(today >= company.appraisalStartDate && today <= company.appraisalEndDate){
         next()
     }else{
         res.status(200).send({status: 'Success', message: 'It is not yet time for 360 appraisal'})

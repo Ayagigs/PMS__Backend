@@ -8,7 +8,7 @@ export const addQuestion = async(req, res) => {
 
     
     try{
-        const questionFound = await Question.findOne({reviewType, category})
+        const questionFound = await Question.findOne({reviewType, category, companyID})
         if(questionFound){
             const question = await Question.findOneAndUpdate({companyID, reviewType, category}, {
                 $set: {
