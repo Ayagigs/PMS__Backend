@@ -467,8 +467,7 @@ export const profilePhotoUpload = asyncHandler(async (req, res, next) => {
 
 
 
-export const searchEmployeeInDepartment = async (req, res) => {
-  const { searchParams } = req.body;
+export const getEmployeeInDepartment = async (req, res) => {
 
   try {
     const employee = await Employee.findById(req.userAuth._id);
@@ -478,13 +477,7 @@ export const searchEmployeeInDepartment = async (req, res) => {
       companyID: employee.companyID,
     });
 
-    const employees = colleagues.filter(
-      (el) =>
-        el.firstName.includes(searchParams) ||
-        el.lastName.includes(searchParams)
-    );
-
-    res.status(200).send({ status: "Success", data: employees });
+    res.status(200).send({ status: "Success", data: colleagues });
   } catch (error) {
     return res.status(500).send({ status: "Success", message: error.message });
   }
