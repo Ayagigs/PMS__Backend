@@ -611,7 +611,7 @@ export const appraisalProgress = async(req, res) => {
     }else if (today >= company.appraisalStartDate && today <= company.appraisalEndDate){
       appraisalExpected = await Employee.find(
         {
-          companyID : employee.companyID,
+          companyID : id,
           status: "Active",
           _id: {$ne : req.userAuth._id}
       })
