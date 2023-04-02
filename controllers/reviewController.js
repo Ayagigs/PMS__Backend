@@ -277,10 +277,10 @@ export const addGoalReview = async (req, res) => {
         
         employeeBeingReviewed.reviews.push(review._id)
     
-        employeeBeingReviewed.score = ((employeeBeingReviewed.score + score)/2).toFixed(1)
-        employeeBeingReviewed.competency = ((employeeBeingReviewed.competency + competency)/2).toFixed(1)
-        employeeBeingReviewed.finalScore = (employeeBeingReviewed.competency + employeeBeingReviewed.score)/2
-        employeeBeingReviewed.rating = ratingCalculator(employeeBeingReviewed.finalScore.toFixed(1))
+        // employeeBeingReviewed.score = ((employeeBeingReviewed.score + score)/2).toFixed(1)
+        // employeeBeingReviewed.competency = ((employeeBeingReviewed.competency + competency)/2).toFixed(1)
+        // employeeBeingReviewed.finalScore = (employeeBeingReviewed.competency + employeeBeingReviewed.score)/2
+        // employeeBeingReviewed.rating = ratingCalculator(employeeBeingReviewed.finalScore.toFixed(1))
     
         await employeeBeingReviewed.save()
         await goal.save();
