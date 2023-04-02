@@ -461,7 +461,7 @@ export const employeesForPerformanceReview = async (req, res) => {
       let delay = company.fullYearEndDate - today;
 
       for (let i = 0; i < employeesInDepartment.length; i++) {
-        if (!employeesAlreadyReviewed.includes(employeesInDepartment[i])) {
+        if (!(employeesAlreadyReviewed.includes(employeesInDepartment[i]))) {
           employeeNotReviewed.push(employeesInDepartment[i]);
         }
       }
