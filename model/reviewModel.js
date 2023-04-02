@@ -46,6 +46,10 @@ const reviewSchema = new mongoose.Schema({
     finalScore: {
         type: Number,
         required: [true, "Final Score is needed"]
+    },
+    companyID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Admin"
     }
 })
 

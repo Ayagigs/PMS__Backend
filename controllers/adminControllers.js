@@ -608,9 +608,11 @@ export const deactivateEmployee = asyncHandler(async (req, res, next) => {
     }
   );
 
+  const allEmployees = await Employee.find({companyID: req.userAuth._id})
+
   res.status(200).json({
     status: "Success",
-    data: employee,
+    data: allEmployees,
   });
 });
 
