@@ -497,7 +497,8 @@ export const searchEmployee = async (req, res) => {
 
   try {
     const employees = await Employee.find({
-      $or: [{firstName:{$regex: searchParams, $options: "i"}}, {lastName: {$regex: searchParams, $options: "i"}}]
+      $or: [{firstName:{$regex: searchParams, $options: "i"}}, {lastName: {$regex: searchParams, $options: "i"}}],
+      companyID: req.userAuth._id
     });
 
     res.status(200).send({ status: "Success", data: employees });
