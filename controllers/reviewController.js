@@ -141,7 +141,7 @@ export const addSelfAppraisal = async (req, res) => {
 
     employee.score = (employee.score + score)/2
     employee.competency = (employee.competency + competency)/2
-    employee.finalScore = (employee.competency + employeeBeingReviewed.score)/2
+    employee.finalScore = (employee.competency + employee.score)/2
     employee.rating = ratingCalculator(employee.finalScore.toFixed(1))
     employee.selfAppraised = true
 
@@ -431,7 +431,7 @@ export const employeesForPerformanceReview = async (req, res) => {
       let delay = company.midYearEndDate - today;
 
       for (let i = 0; i < employeesInDepartment.length; i++) {
-        if (!employeesAlreadyReviewed.includes(employeesInDepartment[i])) {
+        if (!employeesAlreadyReviewed.includes(employeesInDepartment[i]._id)) {
           employeeNotReviewed.push(employeesInDepartment[i]);
         }
       }
@@ -461,7 +461,7 @@ export const employeesForPerformanceReview = async (req, res) => {
       let delay = company.fullYearEndDate - today;
 
       for (let i = 0; i < employeesInDepartment.length; i++) {
-        if (!employeesAlreadyReviewed.includes(employeesInDepartment[i])) {
+        if (!employeesAlreadyReviewed.includes(employeesInDepartment[i]._id)) {
           employeeNotReviewed.push(employeesInDepartment[i]);
         }
       }
@@ -555,6 +555,9 @@ export const performanceReviewProgress = async(req, res) => {
     if (today >= company.midYearStartDate && today <= company.midYearEndDate && employee){
       pms = await Employee.find({role: {$ne : 'Staff'}, companyID : employee.companyID, department: employee.department})
       reviewsgotten = reviews.filter((el) => el.date >= company.midYearStartDate && el.date <= company.midYearEndDate && el.reviewTime === EReviewTime.MIDYEAR && el.reviewee == employee._id)
+      if(employee.role === 'Performance Manager'){
+        pms = await Employee.find({role: 'HR Manager', companyID: employee.companyID, department: department})
+      }
       res.status(200).send({ status: "Success", data: {expected: pms.length, got: reviewsgotten.length} });
     }else if (today >= company.midYearStartDate && today <= company.midYearEndDate){
       pms = await Employee.find({role: 'Staff', companyID : id})
@@ -608,7 +611,7 @@ export const appraisalProgress = async(req, res) => {
     }else if (today >= company.appraisalStartDate && today <= company.appraisalEndDate){
       appraisalExpected = await Employee.find(
         {
-          companyID : employee.companyID,
+          companyID : id,
           status: "Active",
           _id: {$ne : req.userAuth._id}
       })

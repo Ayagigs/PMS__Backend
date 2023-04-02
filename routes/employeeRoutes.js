@@ -11,6 +11,7 @@ import {
   updateNotificationPreferences,
   resetPassword,
   searchEmployeeInDepartment,
+  searchEmployee,
 } from "../controllers/employeeController.js";
 import { protect } from "../middleware/protect.js";
 import multer from "multer";
@@ -57,6 +58,7 @@ employeeRoute.post(
   generateOTP
 );
 employeeRoute.post("/searchEmployees", protect, searchEmployeeInDepartment);
+employeeRoute.post("/search", protect, searchEmployee);
 
 // ****************************** PATCH REQUEST ***************************
 employeeRoute.patch("/editdetails", protect, editEmployeeDetails);
