@@ -141,7 +141,7 @@ export const addSelfAppraisal = async (req, res) => {
 
     employee.score = (employee.score + score)/2
     employee.competency = (employee.competency + competency)/2
-    employee.finalScore = (employee.competency + employeeBeingReviewed.score)/2
+    employee.finalScore = (employee.competency + employee.score)/2
     employee.rating = ratingCalculator(employee.finalScore.toFixed(1))
     employee.selfAppraised = true
 
