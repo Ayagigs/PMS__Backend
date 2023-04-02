@@ -257,7 +257,7 @@ export const addGoalReview = async (req, res) => {
         let competency = competencyScores.reduce((a, b) => a + b)/competencyScores.length
         
     
-        const finalScore = ((score + competency) / 2).toFixed(1);
+        const finalScore = score.toFixed(1);
     
     
         const review = await Reviews.create({
@@ -266,10 +266,10 @@ export const addGoalReview = async (req, res) => {
           reviewType: EReviewType.GOALREVIEW,
           goal: goalID,
           score: score.toFixed(1),
-          competency: competency.toFixed(1),
+          // competency: competency.toFixed(1),
           date: Date.now(),
           ratings: ratingCalculator(finalScore),
-          finalScore: finalScore,
+          finalScore: score.toFixed(1),
           feedback
         });
     
