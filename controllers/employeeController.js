@@ -12,6 +12,7 @@ import csv from "csvtojson";
 import Reviews from "../model/reviewModel.js";
 import { EReviewType } from "../enums/EReviewType.js";
 import { EReviewTime } from "../enums/EReviewTime.js";
+import Notification from "../model/notificationSchema.js";
 
 export const employeeReg = asyncHandler(async (req, res, next) => {
   const {
@@ -87,7 +88,7 @@ export const employeeReg = asyncHandler(async (req, res, next) => {
     console.log(req.userAuth);
 
     // res.status(200).json({ status: "Success", data: employee });
-    const invitationLink = `${process.env.CLIENT_URL}/resetPassword/${resetToken}`;
+    const invitationLink = `${"https://develop--viewpms.netlify.app"}/resetPassword/${resetToken}`;
 
     // Reset Email
     const message = `
@@ -538,45 +539,43 @@ export const changePassword = asyncHandler(async (req, res, next) => {
   }
 });
 
-export const updateNotificationPreferences = async (req, res) => {
-  try {
-    const employeeID = req.userAuth._id;
-    const {
-      pushCommentNotification,
-      pushGoalDeadlineNotification,
-      emailCommentNotification,
-      emailNewsUpdateNotification,
-      emailReminderNotification,
-    } = req.body;
+export const updateNotificationPreferences = asyncHandler(
+  async (req, res, next) => {
+    const updateFields = req.body;
 
-    const notification = await Notification.findOne({ employeeID: employeeID });
+    const employee = await Employee.findById(req.userAuth._id);
 
-    if (!notification) {
-      return res
-        .status(404)
-        .json({ message: "Notification preferences not found" });
+    if (!employee) {
+      return next(new errorHandler("User not found, Please signup", 404));
     }
 
-    notification.pushCommentNotification =
-      pushCommentNotification || notification.pushCommentNotification;
-    notification.pushGoalDeadlineNotification =
-      pushGoalDeadlineNotification || notification.pushGoalDeadlineNotification;
-    notification.emailCommentNotification =
-      emailCommentNotification || notification.emailCommentNotification;
-    notification.emailNewsUpdateNotification =
-      emailNewsUpdateNotification || notification.emailNewsUpdateNotification;
-    notification.emailReminderNotification =
-      emailReminderNotification || notification.emailReminderNotification;
+    try {
+      let notification = await Notification.findOne({
+        employeeID: req.userAuth._id,
+      });
 
-    await notification.save();
+      if (!notification) {
+        // Create new notification document if it doesn't exist
+        notification = new Notification({
+          employeeID: req.userAuth._id,
+          ...updateFields,
+        });
 
-    res
-      .status(200)
-      .json({ message: "Notification preferences updated successfully" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      message: "Server error occurred while updating notification preferences",
-    });
+        await notification.save();
+      } else {
+        // Update existing notification document
+        notification.set(updateFields);
+        notification.updatedAt = Date.now();
+        await notification.save();
+      }
+
+      res.status(200).json({ success: true, notification });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).json({
+        success: false,
+        error: "Failed to create or update notifications",
+      });
+    }
   }
-};
+);
