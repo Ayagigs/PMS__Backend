@@ -554,9 +554,10 @@ export const performanceReviewProgress = async(req, res) => {
     // checking if it is a mid-year befoe executing the functions
     if (today >= company.midYearStartDate && today <= company.midYearEndDate && employee){
       pms = await Employee.find({role: {$ne : 'Staff'}, companyID : employee.companyID, department: employee.department, status: 'Active'})
-      reviewsgotten = reviews.filter((el) => el.date >= company.midYearStartDate && el.date <= company.midYearEndDate && el.reviewTime === EReviewTime.MIDYEAR && el.reviewee == employee._id)
+      reviewsgotten = reviews.filter((el) => el.date >= company.midYearStartDate && el.date <= company.midYearEndDate && el.reviewTime === EReviewTime.MIDYEAR && el.reviewee == req.userAuth._id)
       if(employee.role === 'Performance Manager'){
         pms = await Employee.find({role: 'HR Manager', companyID: employee.companyID, department: department})
+        return res.status(200).send({ status: "Success", data: {expected: pms.length, got: reviewsgotten.length} });
       }
       res.status(200).send({ status: "Success", data: {expected: pms.length, got: reviewsgotten.length} });
     }else if (today >= company.midYearStartDate && today <= company.midYearEndDate){
@@ -567,7 +568,7 @@ export const performanceReviewProgress = async(req, res) => {
     
     if (today >= company.fullYearStartDate && today <= company.fullYearEndDate && employee){
       pms = await Employee.find({role: {$ne : 'Staff'}, companyID : employee.companyID, department: employee.department, status: 'Active'})
-      reviewsgotten = reviews.filter((el) => el.date >= company.fullYearStartDate && el.date <= company.fullYearEndDate && el.reviewTime === EReviewTime.FULLYEAR && el.reviewee == employee._id)
+      reviewsgotten = reviews.filter((el) => el.date >= company.fullYearStartDate && el.date <= company.fullYearEndDate && el.reviewTime === EReviewTime.FULLYEAR && el.reviewee ==  req.userAuth._id)
       if(employee.role === 'Performance Manager'){
         pms = await Employee.find({role: 'HR Manager', companyID: employee.companyID, department: department})
       }
