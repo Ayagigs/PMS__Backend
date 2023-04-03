@@ -475,6 +475,7 @@ export const getEmployeeInDepartment = async (req, res) => {
       department: employee.department,
       role: "Staff",
       companyID: employee.companyID,
+      id: {$ne: req.userAuth._id}
     });
 
     res.status(200).send({ status: "Success", data: colleagues });
