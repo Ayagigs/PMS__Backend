@@ -253,11 +253,10 @@ export const addGoalReview = async (req, res) => {
     const employeeBeingReviewed = await Employee.findById(goal.owner)
     if(reviewer.role == 'Performance Manager' || reviewer.role ==  'HR Manager' || goal.reviewers.includes(reviewer._id)){
       
-        let score = scores.reduce((a, b) => a + b)/scores.length
-        let competency = competencyScores.reduce((a, b) => a + b)/competencyScores.length
+        // let competency = competencyScores.reduce((a, b) => a + b)/competencyScores.length
         
     
-        const finalScore = score.toFixed(1);
+        const finalScore = scores.toFixed(1);
     
     
         const review = await Reviews.create({
@@ -265,11 +264,11 @@ export const addGoalReview = async (req, res) => {
           reviewee: goal.owner,
           reviewType: EReviewType.GOALREVIEW,
           goal: goalID,
-          score: score.toFixed(1),
-          // competency: competency.toFixed(1),
+          score: scores.toFixed(1),
+          // competency: competency.  toFixed(1),
           date: Date.now(),
           ratings: ratingCalculator(finalScore),
-          finalScore: score.toFixed(1),
+          finalScore: scores.toFixed(1),
           feedback
         });
     
