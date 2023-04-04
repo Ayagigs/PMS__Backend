@@ -28,8 +28,7 @@ const reviewSchema = new mongoose.Schema({
         required: [true, "Score is needed"]
     },
     competency: {
-        type: Number,
-        required: [true, "Competency Score is needed"]
+        type: Number
     },
     goal: {
         type: mongoose.Schema.Types.ObjectId,
