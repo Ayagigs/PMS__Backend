@@ -526,6 +526,7 @@ export const changePassword = asyncHandler(async (req, res, next) => {
 export const updateNotificationPreferences = asyncHandler(
   async (req, res, next) => {
     const updateFields = req.body;
+    const playerID = req.params;
 
     const employee = await Employee.findById(req.userAuth._id);
 
@@ -553,7 +554,7 @@ export const updateNotificationPreferences = asyncHandler(
         await notification.save();
       }
 
-      res.status(200).json({ success: true, notification });
+      res.status(200).json({ success: true, notification, playerID });
     } catch (err) {
       console.error(err.message);
       res.status(500).json({
