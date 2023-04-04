@@ -466,8 +466,9 @@ export const profilePhotoUpload = asyncHandler(async (req, res, next) => {
   }
 });
 
-export const searchEmployeeInDepartment = async (req, res) => {
-  const { searchParams } = req.body;
+
+
+export const getEmployeeInDepartment = async (req, res) => {
 
   try {
     const employee = await Employee.findById(req.userAuth._id);
@@ -475,19 +476,34 @@ export const searchEmployeeInDepartment = async (req, res) => {
       department: employee.department,
       role: "Staff",
       companyID: employee.companyID,
+      id: {$ne: req.userAuth._id}
     });
 
-    const employees = colleagues.filter(
-      (el) =>
-        el.firstName.includes(searchParams) ||
-        el.lastName.includes(searchParams)
-    );
+    res.status(200).send({ status: "Success", data: colleagues });
+  } catch (error) {
+    return res.status(500).send({ status: "Success", message: error.message });
+  }
+};
+
+
+
+export const searchEmployee = async (req, res) => {
+  const { searchParams } = req.body;
+
+  try {
+    const employees = await Employee.find({
+      $or: [{firstName:{$regex: searchParams, $options: "i"}}, {lastName: {$regex: searchParams, $options: "i"}}],
+      companyID: req.userAuth._id
+    });
 
     res.status(200).send({ status: "Success", data: employees });
   } catch (error) {
     return res.status(500).send({ status: "Success", message: error.message });
   }
 };
+
+
+
 
 export const changePassword = asyncHandler(async (req, res, next) => {
   const employee = await Employee.findById(req.userAuth._id);
