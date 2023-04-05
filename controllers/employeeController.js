@@ -537,12 +537,12 @@ export const changePassword = asyncHandler(async (req, res, next) => {
 export const updateNotificationPreferences = asyncHandler(
   async (req, res, next) => {
     const updateFields = req.body;
-    const playerID = req.params;
+    const playerID = req.params.playerID;
 
     const employee = await Employee.findById(req.userAuth._id);
 
     if (!employee) {
-      return next(new errorHandler("User not found, Please signup", 404));
+      return next(new Error("User not found, please sign up"));
     }
 
     try {
@@ -562,11 +562,12 @@ export const updateNotificationPreferences = asyncHandler(
       } else {
         // Update existing notification document
         notification.set(updateFields);
+        notification.oneSignalId = playerID;
         notification.updatedAt = Date.now();
         await notification.save();
       }
 
-      res.status(200).json({ success: true, notification, playerID });
+      res.status(200).json({ success: true, notification });
     } catch (err) {
       console.error(err.message);
       res.status(500).json({
