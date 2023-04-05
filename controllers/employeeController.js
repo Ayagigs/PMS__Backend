@@ -554,8 +554,8 @@ export const updateNotificationPreferences = asyncHandler(
         // Create new notification document if it doesn't exist
         notification = new Notification({
           employeeID: req.userAuth._id,
-          oneSignalId: playerID,
           ...updateFields,
+          oneSignalId: playerID,
         });
 
         await notification.save();
