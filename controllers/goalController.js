@@ -164,7 +164,12 @@ export const getAllGoals = async (req, res) => {
   try {
     const goals = await Goal.find({ owner: req.userAuth._id }).populate(
       "reviewers"
-    );
+    ).populate({
+      path: "reviews",
+      populate: {
+        path: "reviewer",
+      },
+    });
 
     res.status(200).json({
       success: true,
