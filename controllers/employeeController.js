@@ -460,11 +460,7 @@ export const profilePhotoUpload = asyncHandler(async (req, res, next) => {
     }
     res
       .status(200)
-<<<<<<< HEAD
       .send({ status: "Success", data: {profilePhoto: req.file.path} });
-=======
-      .send({ status: "Success", data: { profilePhoto: req.file.path } });
->>>>>>> b42807f21c09a0c0e7a23e7e44f2e85c36f643c0
   } catch (error) {
     return res.status(500).send({ status: "Success", message: error.message });
   }
