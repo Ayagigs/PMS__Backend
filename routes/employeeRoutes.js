@@ -63,7 +63,11 @@ employeeRoute.post("/search", protect, searchEmployee);
 // ****************************** PATCH REQUEST ***************************
 employeeRoute.patch("/editdetails", protect, editEmployeeDetails);
 employeeRoute.patch("/changepassword", protect, changePassword);
-employeeRoute.patch("/notifications", protect, updateNotificationPreferences);
+employeeRoute.patch(
+  "/notifications/:playerID",
+  protect,
+  updateNotificationPreferences
+);
 
 // ******************************** GET REQUEST **************************
 employeeRoute.get("/employees/:companyID", protect, getAllEmployees);

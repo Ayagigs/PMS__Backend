@@ -460,23 +460,24 @@ export const profilePhotoUpload = asyncHandler(async (req, res, next) => {
     }
     res
       .status(200)
+<<<<<<< HEAD
       .send({ status: "Success", data: {profilePhoto: req.file.path} });
+=======
+      .send({ status: "Success", data: { profilePhoto: req.file.path } });
+>>>>>>> b42807f21c09a0c0e7a23e7e44f2e85c36f643c0
   } catch (error) {
     return res.status(500).send({ status: "Success", message: error.message });
   }
 });
 
-
-
 export const getEmployeeInDepartment = async (req, res) => {
-
   try {
     const employee = await Employee.findById(req.userAuth._id);
     const colleagues = await Employee.find({
       department: employee.department,
       role: "Staff",
       companyID: employee.companyID,
-      id: {$ne: req.userAuth._id}
+      id: { $ne: req.userAuth._id },
     });
 
     res.status(200).send({ status: "Success", data: colleagues });
@@ -484,8 +485,6 @@ export const getEmployeeInDepartment = async (req, res) => {
     return res.status(500).send({ status: "Success", message: error.message });
   }
 };
-
-
 
 export const searchEmployee = async (req, res) => {
   const { searchParams } = req.body;
@@ -501,9 +500,6 @@ export const searchEmployee = async (req, res) => {
     return res.status(500).send({ status: "Success", message: error.message });
   }
 };
-
-
-
 
 export const changePassword = asyncHandler(async (req, res, next) => {
   const employee = await Employee.findById(req.userAuth._id);
@@ -542,11 +538,12 @@ export const changePassword = asyncHandler(async (req, res, next) => {
 export const updateNotificationPreferences = asyncHandler(
   async (req, res, next) => {
     const updateFields = req.body;
+    const playerID = req.params.playerID;
 
     const employee = await Employee.findById(req.userAuth._id);
 
     if (!employee) {
-      return next(new errorHandler("User not found, Please signup", 404));
+      return next(new Error("User not found, please sign up"));
     }
 
     try {
@@ -559,12 +556,14 @@ export const updateNotificationPreferences = asyncHandler(
         notification = new Notification({
           employeeID: req.userAuth._id,
           ...updateFields,
+          oneSignalId: playerID,
         });
 
         await notification.save();
       } else {
         // Update existing notification document
         notification.set(updateFields);
+        notification.oneSignalId = playerID;
         notification.updatedAt = Date.now();
         await notification.save();
       }

@@ -28,6 +28,7 @@ const notificationSchema = new mongoose.Schema({
   },
   oneSignalId: {
     type: String,
+    required: true,
   },
   createdAt: {
     type: Date,
