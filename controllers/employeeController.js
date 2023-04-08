@@ -492,7 +492,7 @@ export const searchEmployee = async (req, res) => {
 
   try {
     const employees = await Employee.find({
-      $or: [{firstName:{$regex: searchParams, $options: "i"}}, {lastName: {$regex: searchParams, $options: "i"}}],
+      $or: [{firstName:{$regex: searchParams, $options: "i"}}, {lastName: {$regex: searchParams, $options: "i"}}, {employeeID: {$regex: searchParams, $options: "i"}}],
       companyID: req.userAuth._id
     });
 
