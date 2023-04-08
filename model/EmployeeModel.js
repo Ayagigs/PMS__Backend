@@ -96,6 +96,9 @@ const employeeSchema = new mongoose.Schema(
     rating: {
       type: String,
     },
+    walletAddress: {
+      type: String,
+    },
     terminationDate: {
       type: Date,
     },
@@ -140,9 +143,9 @@ const employeeSchema = new mongoose.Schema(
         ref: "Goal",
       },
     ],
-    selfAppraised : {
+    selfAppraised: {
       type: Boolean,
-      default: false
+      default: false,
     },
     appraisalsGiven: [
       {

@@ -10,20 +10,6 @@ import { emailSender } from "../utils/emailSender.js";
 import Company from "../model/companyModel.js";
 import Employee from "../model/EmployeeModel.js";
 
-// const client = new OAuth2Client(
-//   "685377135851-fem8icfu49q7ui3mu36ujdrfftsdda6b.apps.googleusercontent.com"
-// );
-
-// const client = new OAuth2Client(
-//   "685377135851-fem8icfu49q7ui3mu36ujdrfftsdda6b.apps.googleusercontent.com"
-// );
-
-const oAuth2Client = new OAuth2Client(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  "postmessage"
-);
-
 export const adminReg = asyncHandler(async (req, res, next) => {
   /************************* ADMIN PERSONAL INFORMATION ******************************/
   const {
@@ -170,7 +156,7 @@ export const googleLogin = asyncHandler(async (req, res, next) => {
   try {
     console.log(req.body.email);
     // Check if user is an employee
-    const employee = await Employee.findOne({ email: req.body.email});
+    const employee = await Employee.findOne({ email: req.body.email });
     if (employee) {
       res.status(200).json({ status: "succes", employee });
       return;
@@ -406,10 +392,12 @@ export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
     }
 
     // validation for full year and mid year should not be set in the same period
-    if (fullYearStartDate && midYearStartDate &&
-      (fullYearStartDate >= midYearStartDate &&
-      fullYearStartDate < midYearEndDate)
-    ){
+    if (
+      fullYearStartDate &&
+      midYearStartDate &&
+      fullYearStartDate >= midYearStartDate &&
+      fullYearStartDate < midYearEndDate
+    ) {
       return next(
         new errorHandler(
           "Full-Year and Mid-Year Reviews can not be taken in same time frame",
@@ -417,9 +405,11 @@ export const updateCompanyDetails = asyncHandler(async (req, res, next) => {
         )
       );
     }
-    if (fullYearStartDate && midYearStartDate && (
+    if (
+      fullYearStartDate &&
+      midYearStartDate &&
       midYearStartDate >= fullYearStartDate &&
-      midYearStartDate < fullYearEndDate)
+      midYearStartDate < fullYearEndDate
     ) {
       return next(
         new errorHandler(
@@ -600,7 +590,7 @@ export const deactivateEmployee = asyncHandler(async (req, res, next) => {
     employeeID,
     {
       $set: {
-        status: 'Inactive',
+        status: "Inactive",
       },
     },
     {
@@ -608,7 +598,7 @@ export const deactivateEmployee = asyncHandler(async (req, res, next) => {
     }
   );
 
-  const allEmployees = await Employee.find({companyID: req.userAuth._id})
+  const allEmployees = await Employee.find({ companyID: req.userAuth._id });
 
   res.status(200).json({
     status: "Success",
@@ -641,7 +631,7 @@ export const profilePhotoUpload = asyncHandler(async (req, res, next) => {
     }
     res
       .status(200)
-      .send({ status: "Success", data: {profilePhoto: req.file.path} });
+      .send({ status: "Success", data: { profilePhoto: req.file.path } });
   } catch (error) {
     return res.status(500).send({ status: "Success", message: error.message });
   }

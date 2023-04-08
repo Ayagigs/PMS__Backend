@@ -26,6 +26,7 @@
     "cron": "^2.3.0",
     "csvtojson": "^2.0.10",
     "dotenv": "^16.0.3",
+    "ethers": "^6.3.0",
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
     "firebase-admin": "^11.5.0",
@@ -43,6 +44,7 @@
     "onesignal-node": "^3.4.0",
     "otp-generator": "^4.0.1",
     "validator": "^13.9.0",
+    "web3": "^1.9.0",
     "winston": "^3.8.2"
   },
   "devDependencies": {

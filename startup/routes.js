@@ -6,6 +6,7 @@ import categoryRoute from "../routes/goalcategoryRoutes.js";
 import goalRoute from "../routes/goalRoutes.js";
 import questionRoute from "../routes/questionRoutes.js";
 import reviewRoute from "../routes/reviewRoutes.js";
+import transactionRoute from "../routes/transactionRoutes.js";
 import Employee from "../model/EmployeeModel.js";
 import Admin from "../model/adminModel.js";
 
@@ -18,6 +19,7 @@ export default function (app) {
   app.use("/api/v1/department", departmentRoute);
   app.use("/api/v1/category", categoryRoute);
   app.use("/api/v1/question", questionRoute);
+  app.use("/api/v1/wallet", transactionRoute);
   app.use("/auth/google/callback", async (req, res, next) => {
     try {
       // Check if user is an employee

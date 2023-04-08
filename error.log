@@ -147,3 +147,8 @@
 {"level":"error","message":"Employee with wXdags6525% not found"}
 {"level":"error","message":"Please activate your account"}
 {"level":"error","message":"Incorrect Password"}
+{"level":"error","message":"Can't find /api/v1/wallet/wallet-balance/ on this server"}
+{"level":"error","message":"Can't find /api/v1/wallet/wallet-balances/0x72Df176246aB8c0520799EEA617c3153aC321d89 on this server"}
+{"level":"error","message":"Can't find /api/v1/wallet/sendtoken/0x6e6C1ce446F3c0C761D5c7A4be8D172120C25c16 on this server"}
+{"level":"error","message":"Can't find /api/v1/transaction-history/sendtokens/0x72Df176246aB8c0520799EEA617c3153aC321d89 on this server"}
+{"level":"error","message":"Transactions Not Found"}
