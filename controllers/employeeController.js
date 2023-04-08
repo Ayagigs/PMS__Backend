@@ -460,7 +460,7 @@ export const profilePhotoUpload = asyncHandler(async (req, res, next) => {
     }
     res
       .status(200)
-      .send({ status: "Success", data: { profilePhoto: req.file.path } });
+      .send({ status: "Success", data: {profilePhoto: req.file.path} });
   } catch (error) {
     return res.status(500).send({ status: "Success", message: error.message });
   }
@@ -487,11 +487,8 @@ export const searchEmployee = async (req, res) => {
 
   try {
     const employees = await Employee.find({
-      $or: [
-        { firstName: { $regex: searchParams, $options: "i" } },
-        { lastName: { $regex: searchParams, $options: "i" } },
-      ],
-      companyID: req.userAuth._id,
+      $or: [{firstName:{$regex: searchParams, $options: "i"}}, {lastName: {$regex: searchParams, $options: "i"}}, {employeeID: {$regex: searchParams, $options: "i"}}],
+      companyID: req.userAuth._id
     });
 
     res.status(200).send({ status: "Success", data: employees });
