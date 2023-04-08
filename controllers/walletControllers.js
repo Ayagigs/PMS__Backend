@@ -2,11 +2,7 @@ import { ethers } from "ethers";
 import asyncHandler from "express-async-handler";
 import Transaction from "../model/transactionSchema.js";
 import { formatEther } from "ethers";
-const tokenAddress = "0xb8f21ca11a20e98e9bcb7638abf9d696be68b943";
 
-// const provider = new ethers.providers.JsonRpcProvider(
-//   "https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78"
-// );
 const provider = new ethers.JsonRpcProvider(
   "https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78"
 );
@@ -686,13 +682,10 @@ export const sendTokensToEmployees = asyncHandler(async (req, res, next) => {
     const { employeeAddress, amount } = req.body;
     console.log(employeeAddress);
 
-    const signer = new ethers.Wallet(
-      "0b5168be9e3c56f9daf197404068694022c5d586ab78dd2d53a30d9b685f4a3f",
-      provider
-    );
+    const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
     // Set up contract instance
-    const contractAddress = "0xb8f21ca11a20e98e9bcb7638abf9d696be68b943";
+    const contractAddress = process.env.SMARK_CONTRACTT_TOKEN_ADDRESS;
     const contract = new ethers.Contract(contractAddress, tokenABI, signer);
 
     // Set up variables for transfer

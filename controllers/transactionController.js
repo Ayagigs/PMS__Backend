@@ -669,66 +669,16 @@ const tokenABI = [
   },
 ];
 
-// import tokenABI from "../utils/tokenABI.json";
-
 import asyncHandler from "express-async-handler";
 import Transaction from "../model/transactionSchema.js";
 
 // const tokenABI = require('./tokenABI.json');
-const tokenAddress = "0xb8f21ca11a20e98e9bcb7638abf9d696be68b943";
+const tokenAddress = process.env.SMARK_CONTRACTT_TOKEN_ADDRESS;
 const providerUrl =
   "https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78";
 
 // initialize Web3
 const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
-
-// export const sendTokensToEmployee = asyncHandler(async (req, res, next) => {
-//   try {
-//     const { employeeAddress, tokenAmount, adminAddress } = req.body;
-
-//     // Create a new Web3 provider with the provider URL
-//     const provider = new Web3.providers.HttpProvider(providerUrl);
-
-//     const web3 = new Web3(provider);
-
-//     const contract = new web3.eth.Contract(tokenABI, tokenAddress);
-
-//     const currentBalance = await contract.methods
-//       .balanceOf(adminAddress)
-//       .call();
-//     console.log(currentBalance);
-
-//     // Check if the admin has enough tokens to send
-//     if (currentBalance < tokenAmount) {
-//       return res.status(400).json({ error: "Insufficient balance" });
-//     }
-
-//     // Generate the transaction data for the transfer function
-//     const transferData = await contract.methods
-//       .transfer(employeeAddress, tokenAmount)
-//       .send({ from: adminAddress });
-
-//     // Record the transaction details in your database
-//     const newTransaction = new Transaction({
-//       senderAddress: adminAddress,
-//       receiverAddress: employeeAddress,
-//       amount: tokenAmount,
-//     });
-
-//     await newTransaction.save();
-
-//     return res.status(200).json({
-//       message: "Token transfer successful",
-//       transferData,
-//       newTransaction,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ error: "An error occurred" });
-//   }
-// });
-
-//0b5168be9e3c56f9daf197404068694022c5d586ab78dd2d53a30d9b685f4a3f
 
 export const sendTokensToEmployee = asyncHandler(async (req, res, next) => {
   try {
@@ -744,8 +694,8 @@ export const sendTokensToEmployee = asyncHandler(async (req, res, next) => {
     // const tokenContract = new web3.eth.Contract(tokenABI, tokenAddress);
 
     // Get the admin's account from their private key
-    const adminPrivateKey =
-      "0b5168be9e3c56f9daf197404068694022c5d586ab78dd2d53a30d9b685f4a3f";
+    const adminPrivateKey = process.env.PRIVATE_KEY;
+
     const adminAccount = web3.eth.accounts.privateKeyToAccount(adminPrivateKey);
 
     const account = web3.eth.accounts.privateKeyToAccount(
@@ -765,21 +715,17 @@ export const sendTokensToEmployee = asyncHandler(async (req, res, next) => {
     console.log(balanceInToken);
 
     // Check if the admin has enough tokens to send
-    if (balanceInToken < tokenAmount) {
+    const tokenAmountInWei = web3.utils.toWei(tokenAmount.toString(), "ether");
+
+    // Check if the admin has enough tokens to send
+    if (adminBalance < tokenAmountInWei) {
       return res.status(400).json({ error: "Insufficient balance" });
-      return;
     }
-    const gas = await tokenContract.methods
-      .transfer(employeeAddress, tokenAmount)
-      .estimateGas({ from: adminAccount.address });
 
     // Call the transfer function of the ERC20 token contract with the employee's address and the number of tokens to send
     const tx = await tokenContract.methods
-      .transfer(employeeAddress, tokenAmount)
+      .transfer(employeeAddress, tokenAmountInWei)
       .send({ from: adminAccount.address, gas: 35018 });
-
-    // Record the transaction details in a database or somewhere else for future reference
-    console.log("Transaction hash:", tx.transactionHash);
 
     //   Record the transaction details in your database
     const newTransaction = new Transaction({
